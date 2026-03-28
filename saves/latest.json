@@ -5632,7 +5632,7 @@
       "gender": "M",
       "program": "IB",
       "color": "#e74c3c",
-      "pin": "2022"
+      "pin": "2500BR"
     },
     {
       "id": 18,
@@ -7286,6 +7286,7 @@
   "meta": {
     "published": true,
     "globalLock": false,
-    "adminPin": "2026"
+    "adminPin": "2026RI",
+    "writeToken": ""
   }
 }
