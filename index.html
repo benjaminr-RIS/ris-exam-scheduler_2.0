@@ -1266,7 +1266,7 @@
                 const match = TEACHERS.find(t => t.pin && pinsMatch(t.pin, val));
                 if (match) {
                     document.getElementById('pinOverlay')?.remove();
-                    currentSession = { role: 'teacher', teacherId: match.id, name: match.name };
+                    currentSession = { role: 'teacher', teacherId: match.id, name: match.name, pin: val };
                     adminUnlocked = false;
                     updateLockUI();
                     return;
@@ -7763,159 +7763,6 @@
             throw new Error('GitHub error ' + res.status);
         }
 
-        // ── Teacher self-claim / unclaim ──────────────────────────────────────────
-        // Both functions: fetch fresh state → verify conditions → write with SHA → reload
-
-        async function claimSlot(calKey, slotId) {
-            if (!currentSession || currentSession.role !== 'teacher') return;
-            const teacherId = currentSession.teacherId;
-
-            // Show spinner on button
-            const btn = document.getElementById('claim-btn-' + slotId);
-            if (btn) { btn.disabled = true; btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i>'; }
-
-            try {
-                // 1. Fetch fresh state + SHA
-                const res = await fetch(ghApiUrl(GH_LATEST) + '?ref=' + GH_BRANCH + '&t=' + Date.now(), { cache: 'no-store' });
-                if (!res.ok) throw new Error('Could not reach schedule. Check your connection.');
-                const fileInfo = await res.json();
-                const freshState = JSON.parse(fromBase64(fileInfo.content));
-                const freshSha = fileInfo.sha;
-
-                // 2. Maintenance check
-                if (!freshState.meta || !freshState.meta.published) {
-                    currentSession = null;
-                    adminUnlocked = false;
-                    updateLockUI();
-                    showPortalMessage('The portal is currently unavailable. Please try again later.', 'warning');
-                    return;
-                }
-
-                // 3. Find the calendar bucket
-                const calBucket = freshState.examData?.[calKey];
-                if (!calBucket) throw new Error('Calendar not found in schedule.');
-
-                // 4. Check slot still has open spots
-                const currentAssigned = (calBucket.assignments?.[slotId] || []).filter(Boolean).length;
-                const needed = calBucket.slotProctorCount?.[slotId] || 0;
-                if (currentAssigned >= needed) {
-                    showPortalMessage('This slot was just filled by someone else. Reloading your schedule\u2026', 'info');
-                    setTimeout(() => { cachedLatestSha = null; applyStateObject(freshState); cachedLatestSha = freshSha; renderTeacherSchedules(); }, 1500);
-                    return;
-                }
-
-                // 5. Check teacher not already assigned
-                if ((calBucket.assignments?.[slotId] || []).includes(teacherId)) {
-                    showPortalMessage('You are already assigned to this slot.', 'info');
-                    return;
-                }
-
-                // 6. Mutate fresh state — add assignment + source tag
-                if (!calBucket.assignments[slotId]) calBucket.assignments[slotId] = [];
-                calBucket.assignments[slotId].push(teacherId);
-                if (!calBucket.assignmentSources) calBucket.assignmentSources = {};
-                if (!calBucket.assignmentSources[slotId]) calBucket.assignmentSources[slotId] = {};
-                calBucket.assignmentSources[slotId][teacherId] = 'self-claimed';
-
-                // 7. Push with SHA using the stored write token
-                const writeToken = freshState.meta?.writeToken ? atob(freshState.meta.writeToken) : '';
-                if (!writeToken) {
-                    showPortalMessage('No write token configured. Ask your admin to set one in Portal Settings.', 'error');
-                    if (btn) { btn.disabled = false; btn.innerHTML = '<i class="fa-solid fa-plus"></i> Claim'; }
-                    return;
-                }
-                const b64 = encodeToB64(freshState);
-                const msg = '[RIS Scheduler] Teacher claim: ' + currentSession.name + ' \u2192 ' + slotId;
-                try {
-                    const newSha = await pushFile(GH_LATEST, b64, msg, freshSha, ghHeaders(writeToken));
-                    cachedLatestSha = newSha;
-                    // Success — apply and re-render
-                    applyStateObject(freshState);
-                    renderTeacherSchedules();
-                    showPortalMessage('Slot claimed! \u2713', 'success');
-                } catch(pushErr) {
-                    if (pushErr.message.includes('409') || pushErr.message.includes('422')) {
-                        showPortalMessage('That slot was just updated. Reloading\u2026', 'info');
-                        setTimeout(() => { cachedLatestSha = null; location.reload(); }, 1800);
-                    } else {
-                        throw pushErr;
-                    }
-                }
-            } catch(e) {
-                console.error('[Claim]', e);
-                showPortalMessage('Error: ' + e.message, 'error');
-                if (btn) { btn.disabled = false; btn.innerHTML = '<i class="fa-solid fa-plus"></i> Claim'; }
-            }
-        }
-
-        async function unclaimSlot(calKey, slotId) {
-            if (!currentSession || currentSession.role !== 'teacher') return;
-            const teacherId = currentSession.teacherId;
-
-            const btn = document.getElementById('unclaim-btn-' + slotId);
-            if (btn) { btn.disabled = true; btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i>'; }
-
-            try {
-                // 1. Fetch fresh state + SHA
-                const res = await fetch(ghApiUrl(GH_LATEST) + '?ref=' + GH_BRANCH + '&t=' + Date.now(), { cache: 'no-store' });
-                if (!res.ok) throw new Error('Could not reach schedule.');
-                const fileInfo = await res.json();
-                const freshState = JSON.parse(fromBase64(fileInfo.content));
-                const freshSha = fileInfo.sha;
-
-                // 2. Maintenance check
-                if (!freshState.meta || !freshState.meta.published) {
-                    currentSession = null; adminUnlocked = false; updateLockUI();
-                    showPortalMessage('The portal is currently unavailable.', 'warning');
-                    return;
-                }
-
-                // 3. Global lock check
-                if (freshState.meta.globalLock) {
-                    showPortalMessage('The schedule has been locked. Unclaiming is no longer available.', 'warning');
-                    applyStateObject(freshState); cachedLatestSha = freshSha;
-                    renderTeacherSchedules();
-                    return;
-                }
-
-                // 4. Remove assignment
-                const calBucket = freshState.examData?.[calKey];
-                if (!calBucket) throw new Error('Calendar not found.');
-                calBucket.assignments[slotId] = (calBucket.assignments[slotId] || []).filter(id => id !== teacherId);
-                if (calBucket.assignmentSources?.[slotId]) {
-                    delete calBucket.assignmentSources[slotId][teacherId];
-                }
-
-                // 5. Push using stored write token
-                const writeToken = freshState.meta?.writeToken ? atob(freshState.meta.writeToken) : '';
-                if (!writeToken) {
-                    showPortalMessage('No write token configured. Ask your admin to set one in Portal Settings.', 'error');
-                    if (btn) { btn.disabled = false; btn.innerHTML = '<i class="fa-solid fa-xmark"></i> Unclaim'; }
-                    return;
-                }
-                const b64 = encodeToB64(freshState);
-                const msg = '[RIS Scheduler] Teacher unclaim: ' + currentSession.name + ' \u2192 ' + slotId;
-                try {
-                    const newSha = await pushFile(GH_LATEST, b64, msg, freshSha, ghHeaders(writeToken));
-                    cachedLatestSha = newSha;
-                    applyStateObject(freshState);
-                    renderTeacherSchedules();
-                    showPortalMessage('Slot unclaimed.', 'info');
-                } catch(pushErr) {
-                    if (pushErr.message.includes('409') || pushErr.message.includes('422')) {
-                        showPortalMessage('Schedule was updated. Reloading\u2026', 'info');
-                        setTimeout(() => { cachedLatestSha = null; location.reload(); }, 1800);
-                    } else {
-                        throw pushErr;
-                    }
-                }
-            } catch(e) {
-                console.error('[Unclaim]', e);
-                showPortalMessage('Error: ' + e.message, 'error');
-                if (btn) { btn.disabled = false; btn.innerHTML = '<i class="fa-solid fa-xmark"></i> Unclaim'; }
-            }
-        }
-
         function showPortalMessage(msg, type) {
             const colors = { success:'#27ae60', info:'#3498db', warning:'#f39c12', error:'#e74c3c' };
             const icons  = { success:'fa-check', info:'fa-circle-info', warning:'fa-triangle-exclamation', error:'fa-xmark' };
@@ -7928,9 +7775,95 @@
             }
             el.style.background = colors[type] || colors.info;
             el.style.opacity = '1';
-            el.innerHTML = `<i class="fa-solid ${icons[type]||'fa-circle-info'}"></i> ${msg}`;
+            el.innerHTML = '<i class="fa-solid ' + (icons[type]||'fa-circle-info') + '"></i> ' + msg;
             clearTimeout(el._timer);
             el._timer = setTimeout(() => { el.style.opacity = '0'; }, 3500);
+        }
+
+        // ── Teacher self-claim / unclaim via Cloudflare Worker ────────────────────
+        const WORKER_URL = 'https://ris-scheduler-v2.benjaminr.workers.dev';
+
+        async function claimSlot(calKey, slotId) {
+            if (!currentSession || currentSession.role !== 'teacher') return;
+            const btn = document.getElementById('claim-btn-' + slotId);
+            if (btn) { btn.disabled = true; btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i>'; }
+            try {
+                const res = await fetch(WORKER_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ action: 'claim', pin: currentSession.pin, calKey, slotId, teacherName: currentSession.name })
+                });
+                const data = await res.json();
+                if (!res.ok) {
+                    if (res.status === 409 && data.conflict) {
+                        showPortalMessage('That slot was just updated. Reloading…', 'info');
+                        setTimeout(() => { cachedLatestSha = null; location.reload(); }, 1800);
+                    } else if (res.status === 403 && data.error && data.error.includes('not published')) {
+                        currentSession = null; adminUnlocked = false; updateLockUI();
+                        showPortalMessage('The portal is currently unavailable.', 'warning');
+                    } else {
+                        showPortalMessage('Error: ' + (data.error || 'Unknown error'), 'error');
+                        if (btn) { btn.disabled = false; btn.innerHTML = '<i class="fa-solid fa-plus"></i> Claim'; }
+                    }
+                    return;
+                }
+                cachedLatestSha = data.newSha;
+                const freshRes = await fetch(ghApiUrl(GH_LATEST) + '?ref=' + GH_BRANCH + '&t=' + Date.now(), { cache: 'no-store' });
+                if (freshRes.ok) {
+                    const fi = await freshRes.json();
+                    applyStateObject(JSON.parse(fromBase64(fi.content)));
+                    cachedLatestSha = fi.sha;
+                }
+                renderTeacherSchedules();
+                showPortalMessage('Slot claimed! ✓', 'success');
+            } catch(e) {
+                console.error('[Claim]', e);
+                showPortalMessage('Error: ' + e.message, 'error');
+                if (btn) { btn.disabled = false; btn.innerHTML = '<i class="fa-solid fa-plus"></i> Claim'; }
+            }
+        }
+
+        async function unclaimSlot(calKey, slotId) {
+            if (!currentSession || currentSession.role !== 'teacher') return;
+            const btn = document.getElementById('unclaim-btn-' + slotId);
+            if (btn) { btn.disabled = true; btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i>'; }
+            try {
+                const res = await fetch(WORKER_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ action: 'unclaim', pin: currentSession.pin, calKey, slotId, teacherName: currentSession.name })
+                });
+                const data = await res.json();
+                if (!res.ok) {
+                    if (res.status === 409 && data.conflict) {
+                        showPortalMessage('Schedule was updated. Reloading…', 'info');
+                        setTimeout(() => { cachedLatestSha = null; location.reload(); }, 1800);
+                    } else if (res.status === 403 && data.locked) {
+                        showPortalMessage('The schedule has been locked. Unclaiming is no longer available.', 'warning');
+                        cachedLatestSha = null; location.reload();
+                    } else if (res.status === 403 && data.error && data.error.includes('not published')) {
+                        currentSession = null; adminUnlocked = false; updateLockUI();
+                        showPortalMessage('The portal is currently unavailable.', 'warning');
+                    } else {
+                        showPortalMessage('Error: ' + (data.error || 'Unknown error'), 'error');
+                        if (btn) { btn.disabled = false; btn.innerHTML = '<i class="fa-solid fa-xmark"></i> Unclaim'; }
+                    }
+                    return;
+                }
+                cachedLatestSha = data.newSha;
+                const freshRes = await fetch(ghApiUrl(GH_LATEST) + '?ref=' + GH_BRANCH + '&t=' + Date.now(), { cache: 'no-store' });
+                if (freshRes.ok) {
+                    const fi = await freshRes.json();
+                    applyStateObject(JSON.parse(fromBase64(fi.content)));
+                    cachedLatestSha = fi.sha;
+                }
+                renderTeacherSchedules();
+                showPortalMessage('Slot unclaimed.', 'info');
+            } catch(e) {
+                console.error('[Unclaim]', e);
+                showPortalMessage('Error: ' + e.message, 'error');
+                if (btn) { btn.disabled = false; btn.innerHTML = '<i class="fa-solid fa-xmark"></i> Unclaim'; }
+            }
         }
         // ── End teacher claim/unclaim ──────────────────────────────────────────────
 
@@ -9778,4 +9711,3 @@
     </script>
 </body>
 </html>
-
