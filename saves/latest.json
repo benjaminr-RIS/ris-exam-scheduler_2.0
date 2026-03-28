@@ -2829,9 +2829,17 @@
         "cal-3-5-1": [],
         "cal-3-5-2": []
       },
-      "specialAssignments": {},
+      "specialAssignments": {
+        "cal-3-6-5": [
+          1
+        ]
+      },
       "manualAssignments": {},
-      "assignmentSources": {}
+      "assignmentSources": {
+        "cal-3-6-5": {
+          "1": "self-claimed"
+        }
+      }
     },
     "cal-4": {
       "startDate": "2026-05-05T00:00:00.000Z",
