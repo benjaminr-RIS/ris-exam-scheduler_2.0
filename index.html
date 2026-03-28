@@ -1191,7 +1191,7 @@
     <script>
         // ─── PORTAL META ──────────────────────────────────────────────────────────
         // published: teachers can log in | globalLock: freeze unclaiming | adminPin: admin PIN
-        let portalMeta = { published: false, globalLock: false, adminPin: '2026AB', writeToken: '' };
+        let portalMeta = { published: false, globalLock: false, adminPin: '2026AB' };
         // ──────────────────────────────────────────────────────────────────────────
 
         // ─── SESSION (not persisted — cleared on tab close) ───────────────────────
@@ -4401,22 +4401,6 @@
                     </div>
                 </div>
 
-                <!-- Write Token -->
-                <div style="margin-bottom:20px;padding:14px 18px;background:#fef9ec;border:1px solid #f6d860;border-radius:8px;display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;">
-                    <div>
-                        <div style="font-size:13px;font-weight:700;color:#2c3e50;margin-bottom:2px;">
-                            <i class="fa-solid fa-key" style="color:#f39c12;margin-right:5px;"></i>Scheduler Write Token
-                        </div>
-                        <div style="font-size:11px;color:#95a5a6;line-height:1.5;">
-                            ${portalMeta.writeToken ? '<span style="color:#27ae60;font-weight:600;">✓ Token is set</span> — teachers can claim slots.' : '<span style="color:#e74c3c;font-weight:600;">⚠ No token set</span> — teacher claims will not work.'}
-                        </div>
-                    </div>
-                    <button onclick="promptWriteToken()"
-                        style="padding:8px 16px;background:#f39c12;color:white;border:none;border-radius:7px;font-weight:700;font-size:12px;cursor:pointer;white-space:nowrap;flex-shrink:0;">
-                        <i class="fa-solid fa-key fa-btn-icon"></i> ${portalMeta.writeToken ? 'Replace Token' : 'Set Token'}
-                    </button>
-                </div>
-
                 <!-- Teacher PIN table -->
                 <div style="margin-bottom:14px;">
                     <div style="font-size:13px;font-weight:700;color:#2c3e50;margin-bottom:3px;">
@@ -4469,7 +4453,7 @@
                 }
                 if (ap) portalMeta.adminPin = ap;
             }
-            // Save write token — handled separately via promptWriteToken()
+            // Teacher writes now go via Cloudflare Worker — no write token needed here
 
             // Validate and save teacher PINs
             let pinError = false;
@@ -4495,35 +4479,6 @@
                 renderPortalSettings(); // refresh validation badges
             });
         }
-        async function promptWriteToken() {
-            const raw = prompt('Paste your GitHub PAT (fine-grained, Contents read/write).\n\nThis will be encoded and saved to GitHub — never stored as plaintext.');
-            if (!raw || !raw.trim()) return;
-            // Base64-encode to avoid GitHub secret scanner rejecting the push
-            portalMeta.writeToken = btoa(raw.trim());
-            // Use the same token as both the write token and the push credential
-            // (admin is setting their own PAT as the scheduler write token)
-            let token = getToken();
-            if (!token) {
-                token = raw.trim(); // reuse what they just entered if no session token yet
-                setToken(token);
-            }
-            try {
-                const headers = ghHeaders(token);
-                const stateObj = buildStateObject();
-                const b64 = encodeToB64(stateObj);
-                const now = new Date();
-                const pad = n => String(n).padStart(2,'0');
-                const ts = now.getFullYear()+'-'+pad(now.getMonth()+1)+'-'+pad(now.getDate())+'_'+pad(now.getHours())+'-'+pad(now.getMinutes())+'-'+pad(now.getSeconds());
-                if (!cachedLatestSha) cachedLatestSha = await getFileSha(GH_LATEST, headers);
-                cachedLatestSha = await pushFile(GH_LATEST, b64, '[RIS Scheduler] Set write token '+ts, cachedLatestSha, headers);
-                showPortalMessage('Write token saved to GitHub ✓', 'success');
-                renderPortalSettings();
-            } catch(e) {
-                console.error('[promptWriteToken]', e);
-                showPortalMessage('Failed to save token: ' + e.message, 'error');
-            }
-        }
-
         // ── End Portal Access Settings ─────────────────────────────────────────────
 
         function updateCalProgram(key, program) {
@@ -7710,7 +7665,7 @@
             });
             // Restore portal meta (published, globalLock, adminPin)
             if (state.meta) {
-                portalMeta = Object.assign({ published: false, globalLock: false, adminPin: '2026AB', writeToken: '' }, state.meta);
+                portalMeta = Object.assign({ published: false, globalLock: false, adminPin: '2026AB' }, state.meta);
             }
             // Sync scheduler toggles for any calendar NOT present in the saved state
             // (i.e. new calendars with no saved settings yet). Calendars that have
@@ -7811,11 +7766,13 @@
                 const freshRes = await fetch(ghApiUrl(GH_LATEST) + '?ref=' + GH_BRANCH + '&t=' + Date.now(), { cache: 'no-store' });
                 if (freshRes.ok) {
                     const fi = await freshRes.json();
+                    const savedTab = currentTab;
                     applyStateObject(JSON.parse(fromBase64(fi.content)));
                     cachedLatestSha = fi.sha;
+                    if (savedTab === 'TEACHER_SCHEDULES') switchTab('TEACHER_SCHEDULES');
                 }
                 renderTeacherSchedules();
-                showPortalMessage('Slot claimed! ✓', 'success');
+                showPortalMessage('Slot claimed! \u2713', 'success');
             } catch(e) {
                 console.error('[Claim]', e);
                 showPortalMessage('Error: ' + e.message, 'error');
@@ -7854,8 +7811,10 @@
                 const freshRes = await fetch(ghApiUrl(GH_LATEST) + '?ref=' + GH_BRANCH + '&t=' + Date.now(), { cache: 'no-store' });
                 if (freshRes.ok) {
                     const fi = await freshRes.json();
+                    const savedTab = currentTab;
                     applyStateObject(JSON.parse(fromBase64(fi.content)));
                     cachedLatestSha = fi.sha;
+                    if (savedTab === 'TEACHER_SCHEDULES') switchTab('TEACHER_SCHEDULES');
                 }
                 renderTeacherSchedules();
                 showPortalMessage('Slot unclaimed.', 'info');
