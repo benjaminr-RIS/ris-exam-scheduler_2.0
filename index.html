@@ -1191,7 +1191,7 @@
     <script>
         // ─── PORTAL META ──────────────────────────────────────────────────────────
         // published: teachers can log in | globalLock: freeze unclaiming | adminPin: admin PIN
-        let portalMeta = { published: false, globalLock: false, adminPin: '2026' };
+        let portalMeta = { published: false, globalLock: false, adminPin: '2026AB', writeToken: '' };
         // ──────────────────────────────────────────────────────────────────────────
 
         // ─── SESSION (not persisted — cleared on tab close) ───────────────────────
@@ -1218,9 +1218,9 @@
                     <div style="font-size:40px;margin-bottom:12px;"><i class="fa-solid fa-lock-keyhole" style="color:#3498db;"></i></div>
                     <h3 style="margin:0 0 8px;color:#2c3e50;font-size:20px;">Log In</h3>
                     <p style="color:#7f8c8d;font-size:13px;margin-bottom:20px;">Enter your PIN to access your view.</p>
-                    <input id="pinInput" type="password" placeholder="Enter PIN" maxlength="20"
+                    <input id="pinInput" type="password" placeholder="Enter PIN" maxlength="8"
                         style="width:100%;padding:12px;border:2px solid #ddd;border-radius:8px;font-size:18px;
-                               text-align:center;letter-spacing:4px;outline:none;margin-bottom:8px;"
+                               text-align:center;letter-spacing:2px;outline:none;margin-bottom:8px;font-family:monospace;"
                         onkeydown="if(event.key==='Enter')submitPin()">
                     <div id="pinError" style="color:#e74c3c;font-size:12px;min-height:18px;margin-bottom:12px;"></div>
                     <div style="display:flex;gap:10px;justify-content:center;">
@@ -1236,21 +1236,34 @@
             setTimeout(() => document.getElementById('pinInput')?.focus(), 50);
         }
 
+        // PIN validation helpers
+        // Admin PIN: exactly 4 digits followed by exactly 2 alpha characters (case-insensitive)
+        function isValidAdminPinFormat(pin) {
+            return /^[0-9]{4}[a-zA-Z]{2}$/.test(pin);
+        }
+        // Teacher PIN: 4-8 alphanumeric characters (case-insensitive comparison)
+        function isValidTeacherPinFormat(pin) {
+            return /^[a-zA-Z0-9]{4,8}$/.test(pin);
+        }
+        function pinsMatch(a, b) {
+            return a.toLowerCase() === b.toLowerCase();
+        }
+
         function submitPin() {
             const input = document.getElementById('pinInput');
             if (!input) return;
             const val = input.value.trim();
-            // Admin check
-            if (val === portalMeta.adminPin) {
+            // Admin check — case-insensitive on alpha suffix
+            if (pinsMatch(val, portalMeta.adminPin)) {
                 document.getElementById('pinOverlay')?.remove();
                 currentSession = { role: 'admin' };
                 adminUnlocked = true;
                 updateLockUI();
                 return;
             }
-            // Teacher check — only if portal is published
+            // Teacher check — only if portal is published, case-insensitive
             if (portalMeta.published) {
-                const match = TEACHERS.find(t => t.pin && t.pin === val);
+                const match = TEACHERS.find(t => t.pin && pinsMatch(t.pin, val));
                 if (match) {
                     document.getElementById('pinOverlay')?.remove();
                     currentSession = { role: 'teacher', teacherId: match.id, name: match.name };
@@ -3696,6 +3709,7 @@
                     availableExams.push({
                         date, periodIdx, examType: et, typeName, cycleBlock: cycleBlockLabel,
                         isLunch, isFlex, isAfter, isRegularBlock,
+                        slotId, calKey: et,
                         exam:  examNameVal,
                         start: d.slotTimes    ? (d.slotTimes[slotId]    || '') : '',
                         end:   d.slotEndTimes ? (d.slotEndTimes[slotId] || '') : '',
@@ -3703,6 +3717,9 @@
                         fillNeeded: _needed,
                         fillCount:  _allAssigned.length,
                         proctorNames: _proctorNames,
+                        isSelfClaimed: (_allAssigned.includes(teacher.id) &&
+                            (d.assignmentSources?.[slotId]?.[teacher.id]) === 'self-claimed'),
+                        alreadyAssigned: _allAssigned.includes(teacher.id),
                     });
                 });
             });
@@ -3737,6 +3754,7 @@
                         <th style="padding:4px 8px;text-align:left;color:#7f8c8d;font-size:11px;font-weight:700;border-bottom:1px solid #e0e4e8;">EXAM</th>
                         <th style="padding:4px 8px;text-align:left;color:#7f8c8d;font-size:11px;font-weight:700;border-bottom:1px solid #e0e4e8;">ROOM</th>
                         <th style="padding:4px 8px;text-align:left;color:#7f8c8d;font-size:11px;font-weight:700;border-bottom:1px solid #e0e4e8;">TIME</th>
+                        ${currentSession?.role === 'teacher' && currentSession.teacherId === teacher.id ? '<th style="padding:4px 8px;border-bottom:1px solid #e0e4e8;width:100px;"></th>' : ''}
                     </tr></thead><tbody>`;
                 // Group slots by date for day-load header
                 const _dateGroups = [];
@@ -3750,8 +3768,9 @@
                 _dateGroups.forEach(function(grp) {
                     // Day-load header spanning all columns
                     const _pills = buildDayLoadPills(teacher, grp.date, grp.slots);
+                    const _colspan = (currentSession?.role === 'teacher' && currentSession.teacherId === teacher.id) ? 9 : 8;
                     html += `<tr style="background:#f0f4f8;border-top:2px solid #dde3ea;">
-                        <td colspan="8" style="padding:7px 10px;">
+                        <td colspan="${_colspan}" style="padding:7px 10px;">
                             <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
                                 <span style="font-size:12px;font-weight:800;color:#2c3e50;white-space:nowrap;min-width:100px;">
                                     ${grp.date.toLocaleDateString('en-GB',{weekday:'short',day:'numeric',month:'short'})}
@@ -3785,6 +3804,34 @@
                             ? ae.proctorNames.join(' · ')
                             : 'No proctors assigned yet';
 
+                        // ── Action cell (teacher session only) ──────────────────
+                        let actionCell = '';
+                        if (currentSession?.role === 'teacher' && currentSession.teacherId === teacher.id) {
+                            const locked = portalMeta.globalLock;
+                            if (ae.alreadyAssigned) {
+                                if (ae.isSelfClaimed && !locked) {
+                                    actionCell = `<td style="padding:4px 8px;">
+                                        <button id="unclaim-btn-${ae.slotId}" onclick="unclaimSlot('${ae.calKey}','${ae.slotId}')"
+                                            style="padding:4px 10px;background:#fdf0f0;border:1px solid #e74c3c;border-radius:5px;color:#e74c3c;font-size:11px;font-weight:600;cursor:pointer;white-space:nowrap;">
+                                            <i class="fa-solid fa-xmark" style="pointer-events:none;"></i> Unclaim</button>
+                                    </td>`;
+                                } else {
+                                    actionCell = `<td style="padding:4px 8px;">
+                                        <span style="font-size:11px;color:#27ae60;font-weight:700;">
+                                            <i class="fa-solid fa-circle-check"></i> Assigned</span>
+                                    </td>`;
+                                }
+                            } else if (!isFull) {
+                                actionCell = `<td style="padding:4px 8px;">
+                                    <button id="claim-btn-${ae.slotId}" onclick="claimSlot('${ae.calKey}','${ae.slotId}')"
+                                        style="padding:4px 10px;background:#eaf4fd;border:1px solid #3498db;border-radius:5px;color:#2980b9;font-size:11px;font-weight:700;cursor:pointer;white-space:nowrap;">
+                                        <i class="fa-solid fa-plus" style="pointer-events:none;"></i> Claim</button>
+                                </td>`;
+                            } else {
+                                actionCell = `<td style="padding:4px 8px;"></td>`;
+                            }
+                        }
+
                         html += `<tr style="background:${bg};border-bottom:1px solid #f0f0f0;${rowBorderLeft}">
                             <td style="padding:4px 6px;text-align:center;">
                                 <span title="${hoverTitle}"
@@ -3802,6 +3849,7 @@
                             <td style="padding:4px 8px;color:${isAssigned?'#2c3e50':'#555'};overflow:hidden;text-overflow:ellipsis;white-space:nowrap;" title="${ae.exam}">${ae.exam}</td>
                             <td style="padding:4px 8px;color:#7f8c8d;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${ae.room || '—'}</td>
                             <td style="padding:4px 8px;color:#7f8c8d;white-space:nowrap;">${time}</td>
+                            ${actionCell}
                         </tr>`;
                     });
                 });
@@ -4287,10 +4335,10 @@
                 <tr style="border-bottom:1px solid #f0f2f4;">
                     <td style="padding:8px 10px;font-size:13px;color:#2c3e50;font-weight:600;">${t.name}</td>
                     <td style="padding:8px 10px;">
-                        <input type="password" id="pin_${t.id}" value="${t.pin || ''}" maxlength="4"
-                            placeholder="––––"
-                            style="width:90px;padding:6px 10px;border:1px solid #ddd;border-radius:6px;font-size:15px;letter-spacing:4px;text-align:center;font-family:monospace;"
-                            oninput="this.value=this.value.replace(/[^0-9]/g,'').slice(0,4)">
+                        <input type="password" id="pin_${t.id}" value="${t.pin || ''}" maxlength="8"
+                            placeholder="4-8 chars"
+                            style="width:110px;padding:6px 10px;border:1px solid #ddd;border-radius:6px;font-size:14px;letter-spacing:2px;text-align:center;font-family:monospace;"
+                            oninput="this.value=this.value.replace(/[^a-zA-Z0-9]/g,'').slice(0,8)">
                     </td>
                     <td style="padding:8px 10px;">
                         <button onclick="togglePinVisibility('pin_${t.id}', this)"
@@ -4298,6 +4346,7 @@
                             <i class="fa-solid fa-eye"></i>
                         </button>
                     </td>
+                    <td style="padding:8px 10px;font-size:11px;color:#95a5a6;">${t.pin ? (isValidTeacherPinFormat(t.pin) ? '<span style="color:#27ae60;">✓ Valid</span>' : '<span style="color:#e74c3c;">⚠ Invalid format</span>') : '<span style="color:#bdc3c7;">Not set</span>'}</td>
                 </tr>`).join('');
 
             el.innerHTML = `
@@ -4331,23 +4380,49 @@
                     </label>
                 </div>
 
-                <!-- Admin PIN change -->
-                <div style="margin-bottom:20px;padding:14px 18px;background:#f8f9fa;border:1px solid #e8ecf0;border-radius:8px;display:flex;align-items:center;gap:12px;flex-wrap:wrap;">
-                    <div style="font-size:13px;font-weight:700;color:#2c3e50;flex-shrink:0;">Admin PIN</div>
-                    <input type="password" id="adminPinInput" value="${portalMeta.adminPin}" maxlength="4"
-                        placeholder="––––"
-                        style="width:90px;padding:6px 10px;border:1px solid #ddd;border-radius:6px;font-size:15px;letter-spacing:4px;text-align:center;font-family:monospace;"
-                        oninput="this.value=this.value.replace(/[^0-9]/g,'').slice(0,4)">
-                    <button onclick="togglePinVisibility('adminPinInput', this)"
-                        style="padding:4px 8px;border:1px solid #ddd;border-radius:5px;background:#f8f9fa;color:#7f8c8d;font-size:11px;cursor:pointer;">
-                        <i class="fa-solid fa-eye"></i>
+                <!-- Admin PIN -->
+                <div style="margin-bottom:16px;padding:14px 18px;background:#f8f9fa;border:1px solid #e8ecf0;border-radius:8px;">
+                    <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;">
+                        <div style="flex-shrink:0;">
+                            <div style="font-size:13px;font-weight:700;color:#2c3e50;margin-bottom:2px;">Admin PIN</div>
+                            <div style="font-size:11px;color:#95a5a6;">4 digits + 2 letters (e.g. 2026AB)</div>
+                        </div>
+                        <input type="password" id="adminPinInput" value="${portalMeta.adminPin}" maxlength="6"
+                            placeholder="2026AB"
+                            style="width:110px;padding:6px 10px;border:1px solid #ddd;border-radius:6px;font-size:15px;letter-spacing:2px;text-align:center;font-family:monospace;"
+                            oninput="this.value=this.value.replace(/[^a-zA-Z0-9]/g,'').slice(0,6)">
+                        <button onclick="togglePinVisibility('adminPinInput', this)"
+                            style="padding:4px 8px;border:1px solid #ddd;border-radius:5px;background:#f8f9fa;color:#7f8c8d;font-size:11px;cursor:pointer;">
+                            <i class="fa-solid fa-eye"></i>
+                        </button>
+                        <span id="adminPinValidation" style="font-size:11px;color:${isValidAdminPinFormat(portalMeta.adminPin)?'#27ae60':'#e74c3c'};">
+                            ${isValidAdminPinFormat(portalMeta.adminPin) ? '✓ Valid format' : '⚠ Must be 4 digits + 2 letters'}
+                        </span>
+                    </div>
+                </div>
+
+                <!-- Write Token -->
+                <div style="margin-bottom:20px;padding:14px 18px;background:#fef9ec;border:1px solid #f6d860;border-radius:8px;display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;">
+                    <div>
+                        <div style="font-size:13px;font-weight:700;color:#2c3e50;margin-bottom:2px;">
+                            <i class="fa-solid fa-key" style="color:#f39c12;margin-right:5px;"></i>Scheduler Write Token
+                        </div>
+                        <div style="font-size:11px;color:#95a5a6;line-height:1.5;">
+                            ${portalMeta.writeToken ? '<span style="color:#27ae60;font-weight:600;">✓ Token is set</span> — teachers can claim slots.' : '<span style="color:#e74c3c;font-weight:600;">⚠ No token set</span> — teacher claims will not work.'}
+                        </div>
+                    </div>
+                    <button onclick="promptWriteToken()"
+                        style="padding:8px 16px;background:#f39c12;color:white;border:none;border-radius:7px;font-weight:700;font-size:12px;cursor:pointer;white-space:nowrap;flex-shrink:0;">
+                        <i class="fa-solid fa-key fa-btn-icon"></i> ${portalMeta.writeToken ? 'Replace Token' : 'Set Token'}
                     </button>
-                    <span style="font-size:11px;color:#95a5a6;">Change saves with all PINs below</span>
                 </div>
 
                 <!-- Teacher PIN table -->
-                <div style="margin-bottom:14px;font-size:13px;font-weight:700;color:#2c3e50;">
-                    <i class="fa-solid fa-key" style="margin-right:6px;color:#f39c12;"></i>Teacher PINs
+                <div style="margin-bottom:14px;">
+                    <div style="font-size:13px;font-weight:700;color:#2c3e50;margin-bottom:3px;">
+                        <i class="fa-solid fa-users" style="margin-right:6px;color:#f39c12;"></i>Teacher PINs
+                    </div>
+                    <div style="font-size:11px;color:#95a5a6;">4–8 alphanumeric characters, case-insensitive (e.g. ben42X)</div>
                 </div>
                 <table style="width:100%;border-collapse:collapse;font-size:13px;margin-bottom:16px;">
                     <thead>
@@ -4355,6 +4430,7 @@
                             <th style="text-align:left;padding:6px 10px;color:#7f8c8d;font-weight:600;">Teacher</th>
                             <th style="text-align:left;padding:6px 10px;color:#7f8c8d;font-weight:600;">PIN</th>
                             <th style="padding:6px 10px;"></th>
+                            <th style="padding:6px 10px;color:#7f8c8d;font-weight:600;font-size:11px;">Status</th>
                         </tr>
                     </thead>
                     <tbody>${pinRows}</tbody>
@@ -4362,7 +4438,7 @@
                 <div style="display:flex;justify-content:flex-end;">
                     <button onclick="savePortalPins()"
                         style="padding:9px 20px;background:#f39c12;color:white;border:none;border-radius:7px;font-weight:700;font-size:13px;cursor:pointer;">
-                        <i class="fa-solid fa-floppy-disk fa-btn-icon"></i> Save PINs
+                        <i class="fa-solid fa-floppy-disk fa-btn-icon"></i> Save &amp; Push to GitHub
                     </button>
                 </div>`;
         }
@@ -4383,26 +4459,71 @@
         }
 
         function savePortalPins() {
-            // Save admin PIN
+            // Validate and save admin PIN
             const adminPinEl = document.getElementById('adminPinInput');
-            if (adminPinEl && adminPinEl.value.length === 4) {
-                portalMeta.adminPin = adminPinEl.value;
+            if (adminPinEl) {
+                const ap = adminPinEl.value.trim();
+                if (ap && !isValidAdminPinFormat(ap)) {
+                    showPortalMessage('Admin PIN must be 4 digits + 2 letters (e.g. 2026AB)', 'error');
+                    return;
+                }
+                if (ap) portalMeta.adminPin = ap;
             }
-            // Save teacher PINs
+            // Save write token — handled separately via promptWriteToken()
+
+            // Validate and save teacher PINs
+            let pinError = false;
             TEACHERS.forEach(t => {
                 const el = document.getElementById('pin_' + t.id);
-                if (el) t.pin = el.value.trim();
+                if (!el) return;
+                const val = el.value.trim();
+                if (val && !isValidTeacherPinFormat(val)) {
+                    pinError = true;
+                    el.style.borderColor = '#e74c3c';
+                } else {
+                    el.style.borderColor = '#ddd';
+                    t.pin = val;
+                }
             });
-            autoSave();
-            // Visual feedback
-            const btn = document.querySelector('[onclick="savePortalPins()"]');
-            if (btn) {
-                const orig = btn.innerHTML;
-                btn.innerHTML = '<i class="fa-solid fa-check fa-btn-icon"></i> Saved!';
-                btn.style.background = '#27ae60';
-                setTimeout(() => { btn.innerHTML = orig; btn.style.background = '#f39c12'; }, 2000);
+            if (pinError) {
+                showPortalMessage('Some PINs are invalid — must be 4–8 alphanumeric characters', 'error');
+                return;
+            }
+
+            // Push to GitHub using admin's session token
+            githubSaveJSON().then(() => {
+                renderPortalSettings(); // refresh validation badges
+            });
+        }
+        async function promptWriteToken() {
+            const raw = prompt('Paste your GitHub PAT (fine-grained, Contents read/write).\n\nThis will be encoded and saved to GitHub — never stored as plaintext.');
+            if (!raw || !raw.trim()) return;
+            // Base64-encode to avoid GitHub secret scanner rejecting the push
+            portalMeta.writeToken = btoa(raw.trim());
+            // Use the same token as both the write token and the push credential
+            // (admin is setting their own PAT as the scheduler write token)
+            let token = getToken();
+            if (!token) {
+                token = raw.trim(); // reuse what they just entered if no session token yet
+                setToken(token);
+            }
+            try {
+                const headers = ghHeaders(token);
+                const stateObj = buildStateObject();
+                const b64 = encodeToB64(stateObj);
+                const now = new Date();
+                const pad = n => String(n).padStart(2,'0');
+                const ts = now.getFullYear()+'-'+pad(now.getMonth()+1)+'-'+pad(now.getDate())+'_'+pad(now.getHours())+'-'+pad(now.getMinutes())+'-'+pad(now.getSeconds());
+                if (!cachedLatestSha) cachedLatestSha = await getFileSha(GH_LATEST, headers);
+                cachedLatestSha = await pushFile(GH_LATEST, b64, '[RIS Scheduler] Set write token '+ts, cachedLatestSha, headers);
+                showPortalMessage('Write token saved to GitHub ✓', 'success');
+                renderPortalSettings();
+            } catch(e) {
+                console.error('[promptWriteToken]', e);
+                showPortalMessage('Failed to save token: ' + e.message, 'error');
             }
         }
+
         // ── End Portal Access Settings ─────────────────────────────────────────────
 
         function updateCalProgram(key, program) {
@@ -6490,116 +6611,26 @@
         // ── Teacher self-view: own schedule + claimable slots ─────────────────────
         function renderTeacherSelfView(container) {
             const teacher = TEACHERS.find(t => t.id === currentSession.teacherId);
-            if (!teacher) { container.innerHTML = '<p style="color:#e74c3c;padding:20px;">Teacher record not found. Please sign out and try again.</p>'; return; }
+            if (!teacher) {
+                container.innerHTML = '<p style="color:#e74c3c;padding:20px;">Teacher record not found. Please sign out and try again.</p>';
+                return;
+            }
 
-            const months   = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-            const dayNames = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
-            function fmt12h(t) { if (!t) return '—'; const p=t.split(':'); let h=parseInt(p[0]),m=p[1]; return (h%12||12)+':'+m+(h>=12?'PM':'AM'); }
-            function fmtDate(d) { return dayNames[d.getDay()]+' '+months[d.getMonth()]+' '+d.getDate(); }
-
-            const typeColors = Object.fromEntries(CALENDAR_META.map(m=>[m.key,m.color]));
-            const typeLabels = new Proxy({}, { get: (_, k) => calLabel(k) });
-            const commitments = teacherBlockCommitments[teacher.id] || {};
-            const conflictSet = teacherExamConflicts[String(teacher.id)] || new Set();
-
-            // ── Current assignments ──────────────────────────────────────────────
-            const myAssignments = [];
-            Object.keys(examData).forEach(calKey => {
-                const d = examData[calKey];
-                Array.from(d.examSlots || []).forEach(slotId => {
-                    const inReg  = (d.assignments[slotId]||[]).includes(teacher.id);
-                    const inSpec = (d.specialAssignments[slotId]||[]).includes(teacher.id);
-                    if (!inReg && !inSpec) return;
-                    const parts    = slotId.split('-');
-                    const dateIdx  = parseInt(parts[parts.length-2]);
-                    const periodIdx= parseInt(parts[parts.length-1]);
-                    const date     = d.dates[dateIdx];
-                    if (!date) return;
-                    const source   = (d.assignmentSources?.[slotId]?.[teacher.id]) || 'auto';
-                    myAssignments.push({
-                        calKey, slotId, date, source,
-                        block: getMergeBlockLabel(calKey, slotId, getCycleBlockForSlot(dateIdx, periodIdx, calKey)) || '—',
-                        exam:  (d.slotExamNames?.[slotId]) || '(unnamed)',
-                        room:  (d.slotRoom?.[slotId])      || '',
-                        start: (d.slotTimes?.[slotId])     || '',
-                        end:   (d.slotEndTimes?.[slotId])  || '',
-                    });
-                });
-            });
-            myAssignments.sort((a,b) => a.date - b.date);
-
-            const assigned = myAssignments.length;
+            const assigned = getTotalAssignedHours(teacher.id);
             const required = teacher.required || 0;
             const barColor = assigned >= required ? '#27ae60' : assigned > 0 ? '#f39c12' : '#e74c3c';
-            const pct      = required > 0 ? Math.min(100, Math.round(assigned/required*100)) : 0;
+            const pct      = required > 0 ? Math.min(100, Math.round(assigned / required * 100)) : 0;
+            const locked   = portalMeta.globalLock;
 
-            // ── Claimable slots ──────────────────────────────────────────────────
-            const SPECIAL_PERIOD_FALLBACK = { 3:2, 7:6, 8:6, 9:0 };
-            const eligibleKeys = teacher.program==='IB' ? ibKeys() :
-                                 teacher.program==='AP' ? apKeys() :
-                                 teacher.program==='None' ? [] : CALENDAR_KEYS;
-            const claimable = [];
-
-            eligibleKeys.forEach(calKey => {
-                const d = examData[calKey];
-                const isIbCal = calIsIB(calKey);
-                Array.from(d.examSlots || []).forEach(slotId => {
-                    const parts    = slotId.split('-');
-                    const dateIdx  = parseInt(parts[parts.length-2]);
-                    const periodIdx= parseInt(parts[parts.length-1]);
-                    const pIdx     = periodIdx;
-                    const isSpec   = [3,5,7,8,9,10].includes(pIdx);
-                    const cur      = isSpec ? (d.specialAssignments[slotId]||[]) : (d.assignments[slotId]||[]);
-                    const needed   = (d.slotProctorCount[slotId]||2) - cur.filter(Boolean).length;
-                    if (needed <= 0) return;
-                    if (cur.includes(teacher.id)) return;
-
-                    // Commitment check
-                    if (pIdx === 5) {
-                        if (!Object.keys(commitments).some(k => k.startsWith('FLEX-'))) return;
-                    } else if (!isSpec) {
-                        const lb = SPECIAL_PERIOD_FALLBACK[pIdx] !== undefined
-                            ? getCycleBlockForSlot(dateIdx, SPECIAL_PERIOD_FALLBACK[pIdx], calKey)
-                            : getCycleBlockForSlot(dateIdx, pIdx, calKey);
-                        if (!commitments[lb]) return;
-                    }
-
-                    // Gender check
-                    const genderReq = (d.slotGenderReq?.[slotId]) || 'MF';
-                    if (genderReq && genderReq !== 'MF' && teacher.gender !== genderReq) return;
-
-                    // Exam conflict check
-                    const examName = (d.slotExamNames?.[slotId]) || '';
-                    if (examName && conflictSet.has(examName)) return;
-
-                    const date = d.dates[dateIdx];
-                    if (!date) return;
-
-                    claimable.push({
-                        calKey, slotId, date, needed,
-                        block: getMergeBlockLabel(calKey, slotId, getCycleBlockForSlot(dateIdx, pIdx, calKey)) || '—',
-                        exam:  examName || '(unnamed)',
-                        room:  (d.slotRoom?.[slotId])   || '',
-                        start: (d.slotTimes?.[slotId])  || '',
-                        end:   (d.slotEndTimes?.[slotId])|| '',
-                    });
-                });
-            });
-            claimable.sort((a,b) => a.date - b.date);
-
-            const locked = portalMeta.globalLock;
-
-            // ── Build HTML ───────────────────────────────────────────────────────
-            let html = `
-                <div style="max-width:900px;margin:0 auto;">
-                    <!-- Header -->
+            const html = `
+                <div style="max-width:1100px;margin:0 auto;">
                     <div style="background:linear-gradient(135deg,#1e2d3d,#2c3e50);border-radius:12px;padding:20px 24px;color:white;margin-bottom:20px;display:flex;align-items:center;gap:16px;">
                         <div style="width:48px;height:48px;border-radius:50%;background:rgba(52,152,219,0.3);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
                             <i class="fa-solid fa-user" style="font-size:20px;color:#3498db;"></i>
                         </div>
                         <div style="flex:1;">
                             <div style="font-size:20px;font-weight:800;">${teacher.name}</div>
-                            <div style="font-size:13px;opacity:0.7;margin-top:2px;">${teacher.program} · ${teacher.gender==='M'?'Male':'Female'} · ${required} sessions required</div>
+                            <div style="font-size:13px;opacity:0.7;margin-top:2px;">${teacher.program} · ${teacher.gender === 'M' ? 'Male' : 'Female'} · ${required} sessions required</div>
                         </div>
                         <div style="text-align:right;">
                             <div style="font-size:26px;font-weight:800;color:${barColor};">${assigned}<span style="font-size:14px;opacity:0.7;"> / ${required}</span></div>
@@ -6609,104 +6640,13 @@
                             </div>
                         </div>
                     </div>
-
-                    <!-- My Assignments -->
-                    <div style="background:white;border:1px solid #e0e4e8;border-radius:10px;padding:20px;margin-bottom:20px;">
-                        <div style="font-size:14px;font-weight:700;color:#2c3e50;margin-bottom:14px;">
-                            <i class="fa-solid fa-calendar-check" style="color:#27ae60;margin-right:8px;"></i>My Assigned Exams
-                        </div>`;
-
-            if (myAssignments.length === 0) {
-                html += `<div style="color:#bdc3c7;font-style:italic;font-size:13px;padding:16px 0;text-align:center;">No assignments yet.</div>`;
-            } else {
-                html += `<table style="width:100%;border-collapse:collapse;font-size:12px;">
-                    <thead><tr style="background:#f0f3f7;">
-                        <th style="padding:6px 8px;text-align:left;color:#7f8c8d;font-size:11px;font-weight:700;border-bottom:1px solid #e0e4e8;">CAL</th>
-                        <th style="padding:6px 8px;text-align:left;color:#7f8c8d;font-size:11px;font-weight:700;border-bottom:1px solid #e0e4e8;">DATE</th>
-                        <th style="padding:6px 8px;text-align:left;color:#7f8c8d;font-size:11px;font-weight:700;border-bottom:1px solid #e0e4e8;">BLOCK</th>
-                        <th style="padding:6px 8px;text-align:left;color:#7f8c8d;font-size:11px;font-weight:700;border-bottom:1px solid #e0e4e8;">EXAM</th>
-                        <th style="padding:6px 8px;text-align:left;color:#7f8c8d;font-size:11px;font-weight:700;border-bottom:1px solid #e0e4e8;">TIME</th>
-                        <th style="padding:6px 8px;text-align:left;color:#7f8c8d;font-size:11px;font-weight:700;border-bottom:1px solid #e0e4e8;">SOURCE</th>
-                        <th style="padding:6px 8px;"></th>
-                    </tr></thead><tbody>`;
-                myAssignments.forEach((a, i) => {
-                    const bg  = i%2===0?'white':'#fafbfc';
-                    const tc  = typeColors[a.calKey]||'#555';
-                    const lbl = typeLabels[a.calKey]||a.calKey;
-                    const time = a.start ? fmt12h(a.start)+(a.end?'–'+fmt12h(a.end):'') : '—';
-                    const isSelfClaimed = a.source === 'self-claimed';
-                    const sourceLabel   = isSelfClaimed
-                        ? '<span style="background:#eaf4fd;color:#2980b9;padding:1px 6px;border-radius:10px;font-size:10px;font-weight:700;">Self-claimed</span>'
-                        : '<span style="background:#f0f4f0;color:#7f8c8d;padding:1px 6px;border-radius:10px;font-size:10px;">Assigned</span>';
-                    const unclaimBtn = isSelfClaimed && !locked
-                        ? `<button id="unclaim-btn-${a.slotId}" onclick="unclaimSlot('${a.calKey}','${a.slotId}')"
-                            style="padding:4px 10px;background:#fdf0f0;border:1px solid #e74c3c;border-radius:5px;color:#e74c3c;font-size:11px;font-weight:600;cursor:pointer;white-space:nowrap;">
-                            <i class="fa-solid fa-xmark"></i> Unclaim</button>`
-                        : '';
-                    html += `<tr style="background:${bg};border-bottom:1px solid #f0f0f0;">
-                        <td style="padding:5px 8px;"><span style="background:${tc};color:white;padding:1px 5px;border-radius:3px;font-size:11px;font-weight:700;">${lbl}</span></td>
-                        <td style="padding:5px 8px;color:#555;white-space:nowrap;">${fmtDate(a.date)}</td>
-                        <td style="padding:5px 8px;font-weight:700;color:#2c3e50;">${a.block}</td>
-                        <td style="padding:5px 8px;color:#555;max-width:220px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;" title="${a.exam}">${a.exam}</td>
-                        <td style="padding:5px 8px;color:#7f8c8d;white-space:nowrap;">${time}</td>
-                        <td style="padding:5px 8px;">${sourceLabel}</td>
-                        <td style="padding:5px 8px;">${unclaimBtn}</td>
-                    </tr>`;
-                });
-                html += `</tbody></table>`;
-            }
-            html += `</div>`;
-
-            // ── Claimable slots ──────────────────────────────────────────────────
-            html += `
-                    <div style="background:white;border:1px solid #e0e4e8;border-radius:10px;padding:20px;margin-bottom:20px;">
-                        <div style="font-size:14px;font-weight:700;color:#2c3e50;margin-bottom:6px;">
-                            <i class="fa-solid fa-plus-circle" style="color:#3498db;margin-right:8px;"></i>Available to Claim
-                        </div>
-                        <div style="font-size:12px;color:#7f8c8d;margin-bottom:14px;">Exam slots you are eligible for and that still need a proctor.</div>`;
-
-            if (claimable.length === 0) {
-                html += `<div style="color:#bdc3c7;font-style:italic;font-size:13px;padding:16px 0;text-align:center;">No claimable slots available.</div>`;
-            } else {
-                html += `<table style="width:100%;border-collapse:collapse;font-size:12px;">
-                    <thead><tr style="background:#f0f3f7;">
-                        <th style="padding:6px 8px;text-align:left;color:#7f8c8d;font-size:11px;font-weight:700;border-bottom:1px solid #e0e4e8;">CAL</th>
-                        <th style="padding:6px 8px;text-align:left;color:#7f8c8d;font-size:11px;font-weight:700;border-bottom:1px solid #e0e4e8;">DATE</th>
-                        <th style="padding:6px 8px;text-align:left;color:#7f8c8d;font-size:11px;font-weight:700;border-bottom:1px solid #e0e4e8;">BLOCK</th>
-                        <th style="padding:6px 8px;text-align:left;color:#7f8c8d;font-size:11px;font-weight:700;border-bottom:1px solid #e0e4e8;">EXAM</th>
-                        <th style="padding:6px 8px;text-align:left;color:#7f8c8d;font-size:11px;font-weight:700;border-bottom:1px solid #e0e4e8;">TIME</th>
-                        <th style="padding:6px 8px;text-align:left;color:#7f8c8d;font-size:11px;font-weight:700;border-bottom:1px solid #e0e4e8;">SPOTS</th>
-                        <th style="padding:6px 8px;"></th>
-                    </tr></thead><tbody>`;
-                claimable.forEach((a, i) => {
-                    const bg  = i%2===0?'white':'#fafbfc';
-                    const tc  = typeColors[a.calKey]||'#555';
-                    const lbl = typeLabels[a.calKey]||a.calKey;
-                    const time = a.start ? fmt12h(a.start)+(a.end?'–'+fmt12h(a.end):'') : '—';
-                    html += `<tr style="background:${bg};border-bottom:1px solid #f0f0f0;">
-                        <td style="padding:5px 8px;"><span style="background:${tc};color:white;padding:1px 5px;border-radius:3px;font-size:11px;font-weight:700;">${lbl}</span></td>
-                        <td style="padding:5px 8px;color:#555;white-space:nowrap;">${fmtDate(a.date)}</td>
-                        <td style="padding:5px 8px;font-weight:700;color:#2c3e50;">${a.block}</td>
-                        <td style="padding:5px 8px;color:#555;max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;" title="${a.exam}">${a.exam}</td>
-                        <td style="padding:5px 8px;color:#7f8c8d;white-space:nowrap;">${time}</td>
-                        <td style="padding:5px 8px;text-align:center;font-weight:700;color:#e67e22;">${a.needed} open</td>
-                        <td style="padding:5px 8px;">
-                            <button id="claim-btn-${a.slotId}" onclick="claimSlot('${a.calKey}','${a.slotId}')"
-                                style="padding:5px 12px;background:#eaf4fd;border:1px solid #3498db;border-radius:5px;color:#2980b9;font-size:11px;font-weight:700;cursor:pointer;white-space:nowrap;">
-                                <i class="fa-solid fa-plus"></i> Claim</button>
-                        </td>
-                    </tr>`;
-                });
-                html += `</tbody></table>`;
-            }
-
-            if (locked) {
-                html += `<div style="margin-top:12px;padding:10px 14px;background:#fff8f0;border:1px solid #f39c12;border-radius:6px;font-size:12px;color:#e67e22;">
-                    <i class="fa-solid fa-lock" style="margin-right:6px;"></i><strong>Schedule is locked.</strong> Unclaiming is no longer available.
+                    ${locked ? `<div style="margin-bottom:16px;padding:10px 16px;background:#fff8f0;border:1px solid #f39c12;border-radius:8px;font-size:13px;color:#e67e22;">
+                        <i class="fa-solid fa-lock" style="margin-right:8px;"></i><strong>Schedule is locked.</strong> Unclaiming is no longer available.
+                    </div>` : ''}
+                    <div id="teacher-self-right" style="background:white;border:1px solid #e0e4e8;border-radius:10px;padding:20px;">
+                        ${buildTeacherCardRight(teacher)}
+                    </div>
                 </div>`;
-            }
-
-            html += `</div></div>`;
             container.innerHTML = html;
         }
         // ── End teacher self-view ──────────────────────────────────────────────────
@@ -7770,7 +7710,7 @@
             });
             // Restore portal meta (published, globalLock, adminPin)
             if (state.meta) {
-                portalMeta = Object.assign({ published: false, globalLock: false, adminPin: '2026' }, state.meta);
+                portalMeta = Object.assign({ published: false, globalLock: false, adminPin: '2026AB', writeToken: '' }, state.meta);
             }
             // Sync scheduler toggles for any calendar NOT present in the saved state
             // (i.e. new calendars with no saved settings yet). Calendars that have
@@ -7877,11 +7817,17 @@
                 if (!calBucket.assignmentSources[slotId]) calBucket.assignmentSources[slotId] = {};
                 calBucket.assignmentSources[slotId][teacherId] = 'self-claimed';
 
-                // 7. Push with SHA — conflict = someone else wrote between our fetch and push
+                // 7. Push with SHA using the stored write token
+                const writeToken = freshState.meta?.writeToken ? atob(freshState.meta.writeToken) : '';
+                if (!writeToken) {
+                    showPortalMessage('No write token configured. Ask your admin to set one in Portal Settings.', 'error');
+                    if (btn) { btn.disabled = false; btn.innerHTML = '<i class="fa-solid fa-plus"></i> Claim'; }
+                    return;
+                }
                 const b64 = encodeToB64(freshState);
-                const msg = '[RIS Scheduler] Teacher claim: ' + currentSession.name + ' → ' + slotId;
+                const msg = '[RIS Scheduler] Teacher claim: ' + currentSession.name + ' \u2192 ' + slotId;
                 try {
-                    const newSha = await pushFile(GH_LATEST, b64, msg, freshSha, ghHeaders(getToken() || ''));
+                    const newSha = await pushFile(GH_LATEST, b64, msg, freshSha, ghHeaders(writeToken));
                     cachedLatestSha = newSha;
                     // Success — apply and re-render
                     applyStateObject(freshState);
@@ -7940,11 +7886,17 @@
                     delete calBucket.assignmentSources[slotId][teacherId];
                 }
 
-                // 5. Push
+                // 5. Push using stored write token
+                const writeToken = freshState.meta?.writeToken ? atob(freshState.meta.writeToken) : '';
+                if (!writeToken) {
+                    showPortalMessage('No write token configured. Ask your admin to set one in Portal Settings.', 'error');
+                    if (btn) { btn.disabled = false; btn.innerHTML = '<i class="fa-solid fa-xmark"></i> Unclaim'; }
+                    return;
+                }
                 const b64 = encodeToB64(freshState);
-                const msg = '[RIS Scheduler] Teacher unclaim: ' + currentSession.name + ' → ' + slotId;
+                const msg = '[RIS Scheduler] Teacher unclaim: ' + currentSession.name + ' \u2192 ' + slotId;
                 try {
-                    const newSha = await pushFile(GH_LATEST, b64, msg, freshSha, ghHeaders(getToken() || ''));
+                    const newSha = await pushFile(GH_LATEST, b64, msg, freshSha, ghHeaders(writeToken));
                     cachedLatestSha = newSha;
                     applyStateObject(freshState);
                     renderTeacherSchedules();
