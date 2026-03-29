@@ -1670,7 +1670,8 @@
       ],
       "assignments": {
         "cal-1-2-1": [
-          1
+          1,
+          8
         ]
       },
       "specialAssignments": {},
@@ -1683,7 +1684,8 @@
         },
         "cal-1-1-5": {},
         "cal-1-2-1": {
-          "1": "self-claimed"
+          "1": "self-claimed",
+          "8": "self-claimed"
         }
       }
     },
