@@ -8118,9 +8118,16 @@
             throw new Error('GitHub error ' + res.status);
         }
 
-        function showPortalMessage(msg, type) {
+        function showPortalMessage(msg, type, duration) {
             const colors = { success:'#27ae60', info:'#3498db', warning:'#f39c12', error:'#e74c3c' };
             const icons  = { success:'fa-check', info:'fa-circle-info', warning:'fa-triangle-exclamation', error:'fa-xmark' };
+            // Inject pulse keyframe once
+            if (!document.getElementById('portalMsgPulseStyle')) {
+                const s = document.createElement('style');
+                s.id = 'portalMsgPulseStyle';
+                s.textContent = '@keyframes portalBannerPulse { 0%,100%{transform:translateX(-50%) scale(1);box-shadow:0 4px 16px rgba(0,0,0,0.25);} 50%{transform:translateX(-50%) scale(1.04);box-shadow:0 6px 28px rgba(0,0,0,0.38);} }';
+                document.head.appendChild(s);
+            }
             let el = document.getElementById('portalMsgBanner');
             if (!el) {
                 el = document.createElement('div');
@@ -8130,9 +8137,15 @@
             }
             el.style.background = colors[type] || colors.info;
             el.style.opacity = '1';
+            el.style.animation = 'none';
             el.innerHTML = '<i class="fa-solid ' + (icons[type]||'fa-circle-info') + '"></i> ' + msg;
             clearTimeout(el._timer);
-            el._timer = setTimeout(() => { el.style.opacity = '0'; }, 3500);
+            const ms = duration || 3500;
+            if (ms >= 2000) {
+                void el.offsetWidth; // reflow to restart animation
+                el.style.animation = 'portalBannerPulse 0.6s ease-in-out 3';
+            }
+            el._timer = setTimeout(() => { el.style.opacity = '0'; el.style.animation = 'none'; }, ms);
         }
 
         // ── Page mask — blocks interaction during claim/unclaim writes ─────────────
@@ -8191,7 +8204,7 @@
                 if (!res.ok) {
                     hidePageMask();
                     if (res.status === 409 && data.conflict) {
-                        showPortalMessage('That slot was just updated. Refreshing\u2026', 'info');
+                        showPortalMessage('Sorry, that slot was just taken by another teacher. You were not assigned that exam. Refreshing\u2026', 'info', 5000);
                         await stealthRefresh('Refreshing schedule\u2026');
                     } else if (res.status === 403 && data.error && data.error.includes('not published')) {
                         currentSession = null; adminUnlocked = false; updateLockUI();
