@@ -1062,8 +1062,8 @@
                             <p style="font-size:13px;color:#7f8c8d;">Configure schedules and defaults that affect how the whole system works.</p>
                         </div>
 
-                        <!-- Three-card grid — one row -->
-                        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;margin-bottom:20px;align-items:start;">
+                        <!-- Four-card grid — one row -->
+                        <div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:16px;margin-bottom:20px;align-items:start;">
 
                             <!-- Card 1: Bell Schedule -->
                             <div id="settingsBellCard" onclick="toggleSettingsCard('bell')"
@@ -1095,7 +1095,22 @@
                                 </div>
                             </div>
 
-                            <!-- Card 3: Portal Access -->
+                            <!-- Card 3: Cycle Calendar -->
+                            <div id="settingsCycleCard" onclick="toggleSettingsCard('cycle')"
+                                style="background:white;border:2px solid #e8ecf0;border-radius:10px;padding:18px;cursor:pointer;transition:all 0.18s;user-select:none;">
+                                <div style="display:flex;align-items:flex-start;gap:12px;">
+                                    <div style="width:28px;height:28px;border-radius:50%;background:#eafaf1;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px;">
+                                        <i class="fa-solid fa-calendar-days" style="font-size:12px;color:#27ae60;"></i>
+                                    </div>
+                                    <div style="flex:1;">
+                                        <div style="font-size:14px;font-weight:700;color:#2c3e50;margin-bottom:3px;">Cycle Calendar</div>
+                                        <div style="font-size:12px;color:#7f8c8d;line-height:1.4;">Import a CSV to map dates to cycle day labels.</div>
+                                    </div>
+                                    <i class="fa-solid fa-chevron-down" id="settingsCycleChevron" style="color:#b2bec3;font-size:12px;margin-top:4px;transition:transform 0.2s;"></i>
+                                </div>
+                            </div>
+
+                            <!-- Card 4: Portal Access -->
                             <div id="settingsPortalCard" onclick="toggleSettingsCard('portal')"
                                 style="background:white;border:2px solid #e8ecf0;border-radius:10px;padding:18px;cursor:pointer;transition:all 0.18s;user-select:none;">
                                 <div style="display:flex;align-items:flex-start;gap:12px;">
@@ -1130,6 +1145,11 @@
                         <!-- Portal Access body — full width, below cards -->
                         <div id="settingsPortalBody" style="display:none;background:white;border:1px solid #e8ecf0;border-radius:8px;padding:20px;margin-bottom:16px;animation:adminFadeIn 0.18s ease both;">
                             <div id="portalSettingsContent"></div>
+                        </div>
+
+                        <!-- Cycle Calendar body — full width, below cards -->
+                        <div id="settingsCycleBody" style="display:none;background:white;border:1px solid #e8ecf0;border-radius:8px;padding:20px;margin-bottom:16px;animation:adminFadeIn 0.18s ease both;">
+                            <div id="cycleCalendarContent"></div>
                         </div>
 
                     </div>
@@ -1498,6 +1518,7 @@
                 bell:   { body:'settingsBellBody',   chev:'settingsBellChevron',   card:'settingsBellCard',   accent:'#3498db', bg:'#f7fbff' },
                 cal:    { body:'settingsCalBody',     chev:'settingsCalChevron',     card:'settingsCalCard',    accent:'#8e44ad', bg:'#fdf8ff' },
                 portal: { body:'settingsPortalBody',  chev:'settingsPortalChevron',  card:'settingsPortalCard', accent:'#f39c12', bg:'#fffcf0' },
+                cycle:  { body:'settingsCycleBody',   chev:'settingsCycleChevron',   card:'settingsCycleCard',  accent:'#27ae60', bg:'#f0faf5' },
             };
             const me   = IDS[which];
             if (!me) return;
@@ -1526,8 +1547,260 @@
                 if (which === 'bell')   renderBellScheduleDisplay();
                 else if (which === 'cal') renderCalNamesSettingsTable();
                 else if (which === 'portal') renderPortalSettings();
+                else if (which === 'cycle') renderCycleCalendarSettings();
             }
         }
+
+
+        // ── Cycle Calendar Settings ────────────────────────────────────────────
+
+        function renderCycleCalendarSettings() {
+            const container = document.getElementById('cycleCalendarContent');
+            if (!container) return;
+
+            const entries = Object.entries(RIS_CYCLE_CALENDAR).sort((a,b) => a[0].localeCompare(b[0]));
+
+            function fmtDate(k) {
+                const [y,m,d] = k.split('-');
+                const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+                const dt = new Date(+y, +m-1, +d);
+                const days = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+                return `${days[dt.getDay()]} ${months[+m-1]} ${+d}`;
+            }
+
+            function labelPill(val) {
+                const letter = val === '?' ? '?' : val[0];
+                const colors = { A:'#3498db', B:'#27ae60', C:'#8e44ad', D:'#e67e22', '?':'#95a5a6' };
+                const bg = colors[letter] || '#95a5a6';
+                return `<span style="display:inline-block;padding:2px 8px;border-radius:10px;background:${bg};color:white;font-size:11px;font-weight:700;">${val}</span>`;
+            }
+
+            container.innerHTML = `
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:24px;align-items:start;">
+
+                    <!-- Left: format + import -->
+                    <div>
+                        <div style="font-size:13px;font-weight:700;color:#2c3e50;margin-bottom:8px;">
+                            <i class="fa-solid fa-file-csv" style="color:#27ae60;margin-right:6px;"></i>CSV Format
+                        </div>
+                        <div style="background:#f8f9fa;border:1px solid #e8ecf0;border-radius:6px;padding:12px;font-size:12px;color:#555;line-height:1.6;margin-bottom:12px;">
+                            Two columns: <code style="background:#e8ecf0;padding:1px 5px;border-radius:3px;">date</code> and
+                            <code style="background:#e8ecf0;padding:1px 5px;border-radius:3px;">cycle_day</code>.<br>
+                            Dates in <strong>YYYY-MM-DD</strong> format. Labels: <strong>A1–D5</strong> for normal days,
+                            <strong>?</strong> for exam-only / non-cycle days.<br>
+                            One import populates all calendars. Days absent from the CSV are treated as non-school days.
+                        </div>
+
+                        <div style="background:#fffbe6;border:1px solid #f9e79f;border-radius:6px;padding:10px 12px;font-size:12px;color:#7d6608;margin-bottom:14px;">
+                            <i class="fa-solid fa-triangle-exclamation" style="margin-right:5px;"></i>
+                            Importing will <strong>replace</strong> the entire cycle calendar. Review the diff before confirming.
+                        </div>
+
+                        <div style="display:flex;gap:10px;margin-bottom:16px;flex-wrap:wrap;">
+                            <button onclick="downloadCycleTemplate()"
+                                style="padding:7px 13px;background:#f0faf5;border:1px solid #27ae60;border-radius:6px;color:#27ae60;font-size:12px;font-weight:600;cursor:pointer;transition:background 0.15s;"
+                                onmouseover="this.style.background='#d5f5e3'" onmouseout="this.style.background='#f0faf5'">
+                                <i class="fa-solid fa-download fa-btn-icon"></i> Blank Template
+                            </button>
+                            <button onclick="downloadCycleExample()"
+                                style="padding:7px 13px;background:#f0faf5;border:1px solid #27ae60;border-radius:6px;color:#27ae60;font-size:12px;font-weight:600;cursor:pointer;transition:background 0.15s;"
+                                onmouseover="this.style.background='#d5f5e3'" onmouseout="this.style.background='#f0faf5'">
+                                <i class="fa-solid fa-calendar-check fa-btn-icon"></i> This Year's Data
+                            </button>
+                        </div>
+
+                        <div style="margin-bottom:6px;font-size:12px;font-weight:600;color:#2c3e50;">Import CSV</div>
+                        <div style="display:flex;gap:10px;align-items:center;">
+                            <input type="file" id="cycleCalCsvInput" accept=".csv"
+                                style="flex:1;font-size:12px;padding:7px;border:1px solid #ddd;border-radius:6px;background:white;cursor:pointer;">
+                            <button onclick="importCycleCalendarCSV()"
+                                style="padding:8px 16px;background:#27ae60;border:none;border-radius:6px;color:white;font-size:12px;font-weight:600;cursor:pointer;white-space:nowrap;transition:background 0.15s;"
+                                onmouseover="this.style.background='#229954'" onmouseout="this.style.background='#27ae60'">
+                                <i class="fa-solid fa-upload fa-btn-icon"></i> Review &amp; Import
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Right: current cycle calendar table -->
+                    <div>
+                        <div style="font-size:13px;font-weight:700;color:#2c3e50;margin-bottom:8px;">
+                            <i class="fa-solid fa-table-list" style="color:#27ae60;margin-right:6px;"></i>Current Cycle Calendar
+                            <span style="font-size:11px;font-weight:400;color:#7f8c8d;margin-left:6px;">(${entries.length} days)</span>
+                        </div>
+                        <div style="max-height:320px;overflow-y:auto;border:1px solid #e8ecf0;border-radius:6px;">
+                            <table style="width:100%;border-collapse:collapse;font-size:12px;">
+                                <thead>
+                                    <tr style="background:#f8f9fa;position:sticky;top:0;">
+                                        <th style="padding:7px 12px;text-align:left;font-weight:700;color:#2c3e50;border-bottom:1px solid #e8ecf0;">Date</th>
+                                        <th style="padding:7px 12px;text-align:left;font-weight:700;color:#2c3e50;border-bottom:1px solid #e8ecf0;">Cycle Day</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    ${entries.map(([k,v], i) => `
+                                        <tr style="background:${i%2===0?'white':'#fafbfc'};">
+                                            <td style="padding:6px 12px;color:#555;border-bottom:1px solid #f0f0f0;">${fmtDate(k)}&nbsp;<span style="color:#b2bec3;font-size:11px;">${k}</span></td>
+                                            <td style="padding:6px 12px;border-bottom:1px solid #f0f0f0;">${labelPill(v)}</td>
+                                        </tr>
+                                    `).join('')}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function downloadCycleTemplate() {
+            const csv = 'date,cycle_day\n# Delete this comment line before importing\n# 2027-04-28,A1\n# 2027-04-29,B2\n# 2027-04-30,?\n';
+            const blob = new Blob([csv], { type: 'text/csv' });
+            const a = document.createElement('a'); a.href = URL.createObjectURL(blob);
+            a.download = 'cycle_calendar_template.csv'; a.click();
+        }
+
+        function downloadCycleExample() {
+            const entries = Object.entries(RIS_CYCLE_CALENDAR).sort((a,b) => a[0].localeCompare(b[0]));
+            const csv = 'date,cycle_day\n' + entries.map(([k,v]) => k + ',' + v).join('\n');
+            const blob = new Blob([csv], { type: 'text/csv' });
+            const a = document.createElement('a'); a.href = URL.createObjectURL(blob);
+            a.download = 'cycle_calendar_2026.csv'; a.click();
+        }
+
+        function importCycleCalendarCSV() {
+            const input = document.getElementById('cycleCalCsvInput');
+            if (!input || !input.files.length) { alert('Please select a CSV file first.'); return; }
+            const file = input.files[0];
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const lines = e.target.result.split('\n').map(l => l.trim()).filter(l => l && !l.startsWith('#'));
+                if (!lines.length) { alert('CSV appears to be empty.'); return; }
+
+                const header = lines[0].toLowerCase();
+                const dataLines = header.includes('date') ? lines.slice(1) : lines;
+
+                const parsed = {};
+                const errors = [];
+                const validLabels = new Set(['A1','A2','A3','A4','A5','B1','B2','B3','B4','B5',
+                    'C1','C2','C3','C4','C5','D1','D2','D3','D4','D5','?']);
+
+                dataLines.forEach((line, idx) => {
+                    const parts = line.split(',');
+                    if (parts.length < 2) return;
+                    const date  = parts[0].trim();
+                    const label = parts[1].trim().toUpperCase();
+                    if (!/^\d{4}-\d{2}-\d{2}$/.test(date)) { errors.push('Row ' + (idx+2) + ': invalid date "' + date + '"'); return; }
+                    if (!validLabels.has(label))             { errors.push('Row ' + (idx+2) + ': unrecognised label "' + label + '"'); return; }
+                    parsed[date] = label;
+                });
+
+                if (errors.length) {
+                    alert('Import errors:\n' + errors.slice(0,10).join('\n') + (errors.length > 10 ? '\n…and ' + (errors.length-10) + ' more' : ''));
+                    return;
+                }
+                if (!Object.keys(parsed).length) { alert('No valid rows found in CSV.'); return; }
+
+                // Build diff
+                const allDates = new Set([...Object.keys(RIS_CYCLE_CALENDAR), ...Object.keys(parsed)]);
+                const changed = [], added = [], removed = [];
+                allDates.forEach(d => {
+                    const old = RIS_CYCLE_CALENDAR[d];
+                    const nw  = parsed[d];
+                    if (old && nw && old !== nw) changed.push({ d, old, nw });
+                    else if (!old && nw) added.push({ d, nw });
+                    else if (old && !nw) removed.push({ d, old });
+                });
+
+                const total     = Object.keys(parsed).length;
+                const unchanged = total - changed.length - added.length;
+
+                function fmtD(k) {
+                    const parts = k.split('-');
+                    const mo = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+                    const dt = new Date(+parts[0], +parts[1]-1, +parts[2]);
+                    return ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'][dt.getDay()] + ' ' + mo[+parts[1]-1] + ' ' + (+parts[2]);
+                }
+                function lc(l) { return ({ A:'#3498db', B:'#27ae60', C:'#8e44ad', D:'#e67e22', '?':'#95a5a6' })[l[0]] || '#95a5a6'; }
+                function pill(v, c) { return '<span style="display:inline-block;padding:1px 7px;border-radius:10px;background:' + c + ';color:white;font-size:11px;font-weight:700;">' + v + '</span>'; }
+
+                let diffHtml = '';
+                if (changed.length) diffHtml += '<div style="font-size:12px;font-weight:700;color:#e67e22;margin:10px 0 5px;"><i class="fa-solid fa-arrow-right-arrow-left" style="margin-right:5px;"></i>Changed (' + changed.length + ')</div>' +
+                    changed.map(r => '<div style="display:flex;align-items:center;gap:8px;padding:4px 0;border-bottom:1px solid #f0f0f0;font-size:12px;"><span style="width:160px;color:#555;">' + fmtD(r.d) + '</span>' + pill(r.old, lc(r.old)) + ' <i class="fa-solid fa-arrow-right" style="color:#b2bec3;font-size:10px;"></i> ' + pill(r.nw, lc(r.nw)) + '</div>').join('');
+                if (added.length) diffHtml += '<div style="font-size:12px;font-weight:700;color:#27ae60;margin:10px 0 5px;"><i class="fa-solid fa-plus" style="margin-right:5px;"></i>Added (' + added.length + ')</div>' +
+                    added.map(r => '<div style="display:flex;align-items:center;gap:8px;padding:4px 0;border-bottom:1px solid #f0f0f0;font-size:12px;"><span style="width:160px;color:#555;">' + fmtD(r.d) + '</span>' + pill(r.nw, lc(r.nw)) + '</div>').join('');
+                if (removed.length) diffHtml += '<div style="font-size:12px;font-weight:700;color:#e74c3c;margin:10px 0 5px;"><i class="fa-solid fa-minus" style="margin-right:5px;"></i>Removed (' + removed.length + ')</div>' +
+                    removed.map(r => '<div style="display:flex;align-items:center;gap:8px;padding:4px 0;border-bottom:1px solid #f0f0f0;font-size:12px;"><span style="width:160px;color:#555;">' + fmtD(r.d) + '</span><span style="text-decoration:line-through;color:#999;">' + pill(r.old, '#ccc') + '</span></div>').join('');
+                if (!changed.length && !added.length && !removed.length)
+                    diffHtml = '<div style="color:#27ae60;font-size:13px;padding:12px 0;"><i class="fa-solid fa-check" style="margin-right:6px;"></i>No changes — imported data matches current cycle calendar.</div>';
+
+                const parsedJson = JSON.stringify(parsed).replace(/'/g, "\\'");
+
+                const overlay = document.createElement('div');
+                overlay.id = 'cycleImportOverlay';
+                overlay.style.cssText = 'position:fixed;inset:0;z-index:99995;background:rgba(0,0,0,0.5);backdrop-filter:blur(2px);display:flex;align-items:center;justify-content:center;';
+                overlay.innerHTML =
+                    '<div style="background:white;border-radius:12px;width:520px;max-width:95vw;max-height:85vh;display:flex;flex-direction:column;box-shadow:0 20px 60px rgba(0,0,0,0.3);animation:adminFadeIn 0.2s ease both;">' +
+                        '<div style="background:linear-gradient(135deg,#1e2d3d,#2c3e50);border-radius:12px 12px 0 0;padding:18px 22px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0;">' +
+                            '<div>' +
+                                '<div style="font-size:16px;font-weight:700;color:white;margin-bottom:2px;"><i class="fa-solid fa-calendar-days" style="margin-right:8px;color:#27ae60;"></i>Review Cycle Calendar Import</div>' +
+                                '<div style="font-size:12px;color:rgba(255,255,255,0.5);">' + total + ' days in file &nbsp;·&nbsp; ' + changed.length + ' changed &nbsp;·&nbsp; ' + added.length + ' added &nbsp;·&nbsp; ' + removed.length + ' removed &nbsp;·&nbsp; ' + unchanged + ' unchanged</div>' +
+                            '</div>' +
+                            '<button onclick="document.getElementById(\'cycleImportOverlay\').remove()" style="background:none;border:none;color:rgba(255,255,255,0.5);font-size:20px;cursor:pointer;line-height:1;padding:4px;">&times;</button>' +
+                        '</div>' +
+                        '<div style="padding:18px 22px;overflow-y:auto;flex:1;">' + diffHtml + '</div>' +
+                        '<div style="padding:14px 22px;border-top:1px solid #e8ecf0;display:flex;justify-content:flex-end;gap:10px;flex-shrink:0;">' +
+                            '<button onclick="document.getElementById(\'cycleImportOverlay\').remove()" style="padding:8px 18px;background:#f8f9fa;border:1px solid #ddd;border-radius:6px;font-size:13px;font-weight:600;cursor:pointer;color:#555;">Cancel</button>' +
+                            '<button onclick="commitCycleCalendarImport()" style="padding:8px 18px;background:#27ae60;border:none;border-radius:6px;color:white;font-size:13px;font-weight:600;cursor:pointer;transition:background 0.15s;" onmouseover="this.style.background=\'#229954\'" onmouseout="this.style.background=\'#27ae60\'"><i class="fa-solid fa-check fa-btn-icon"></i> Apply Import</button>' +
+                        '</div>' +
+                    '</div>';
+
+                // Stash parsed data for commit
+                window._pendingCycleImport = parsed;
+                document.body.appendChild(overlay);
+            };
+            reader.readAsText(file);
+        }
+
+        function commitCycleCalendarImport() {
+            const parsed = window._pendingCycleImport;
+            if (!parsed) return;
+
+            // 1. Replace RIS_CYCLE_CALENDAR
+            Object.keys(RIS_CYCLE_CALENDAR).forEach(k => delete RIS_CYCLE_CALENDAR[k]);
+            Object.assign(RIS_CYCLE_CALENDAR, parsed);
+            window._pendingCycleImport = null;
+
+            // 2. Find the min/max school-day dates in the imported CSV
+            //    (exclude '?' entries — non-cycle days, not school days)
+            const schoolDayKeys = Object.entries(parsed)
+                .filter(([,v]) => v !== '?')
+                .map(([k]) => k)
+                .sort();
+            if (schoolDayKeys.length) {
+                const csvMin = schoolDayKeys[0];
+                const csvMax = schoolDayKeys[schoolDayKeys.length - 1];
+
+                // 3. For every calendar, expand startDate/endDate if CSV covers a wider range.
+                //    Never shrink — only grow, so existing slot dateIdx values stay valid.
+                CALENDAR_META.forEach(m => {
+                    let changed = false;
+                    if (csvMin < m.startDate) { m.startDate = csvMin; changed = true; }
+                    if (csvMax > m.endDate)   { m.endDate   = csvMax; changed = true; }
+                    if (changed) {
+                        examData[m.key].startDate = new Date(m.startDate);
+                        examData[m.key].endDate   = new Date(m.endDate);
+                    }
+                });
+            }
+
+            // 4. Rebuild all date arrays and re-render all calendars
+            initializeExamDates();
+            CALENDAR_KEYS.forEach(k => renderCalendar(k));
+
+            document.getElementById('cycleImportOverlay')?.remove();
+            renderCycleCalendarSettings();
+            showToast('Cycle calendar updated \u2014 ' + Object.keys(parsed).length + ' days loaded. Calendars refreshed.');
+        }
+
+        // ── End Cycle Calendar Settings ────────────────────────────────────────
 
         async function resetToLastSave() {
             if (currentSession?.role !== "admin") { showPinModal(); return; }
@@ -2474,7 +2747,11 @@
                 const end   = new Date(m.endDate);
                 while (current <= end) {
                     const v = RIS_CYCLE_CALENDAR[formatDateKey(current)];
-                    if (v && v !== '?') data.dates.push(new Date(current)); // '?' = no school, skip
+                    // Include all days in RIS_CYCLE_CALENDAR — including '?' (no-school / non-cycle days).
+                    // '?' days appear in the grid as greyed-out "No School" columns but can still
+                    // receive manually-added exam slots if needed.
+                    // Days entirely absent from RIS_CYCLE_CALENDAR are true non-school days and are skipped.
+                    if (v !== undefined) data.dates.push(new Date(current));
                     current.setDate(current.getDate() + 1);
                 }
                 // Inject explicit placeholder if defined in meta (e.g. AP's Sunday/Monday padding)
@@ -2483,22 +2760,6 @@
                     const idx = data.dates.findIndex(d => formatDateKey(d) > pk);
                     if (idx >= 0 && !data.dates.find(d => formatDateKey(d) === pk)) {
                         data.dates.splice(idx, 0, new Date(pk));
-                    }
-                }
-                // Auto-inject any Monday marked '?' that sits immediately before a school week.
-                // This keeps week grids aligned on Monday even when Monday is a holiday.
-                const dateSet = new Set(data.dates.map(d => formatDateKey(d)));
-                for (let i = 0; i < data.dates.length; i++) {
-                    const d = data.dates[i];
-                    if (d.getDay() !== 2) continue; // only look at Tuesdays
-                    // Check if the Monday before this Tuesday is a '?' holiday
-                    const mon = new Date(d);
-                    mon.setDate(mon.getDate() - 1);
-                    const monKey = formatDateKey(mon);
-                    if (RIS_CYCLE_CALENDAR[monKey] === '?' && !dateSet.has(monKey)) {
-                        data.dates.splice(i, 0, mon);
-                        dateSet.add(monKey);
-                        i++; // skip past the injected Monday on the next iteration
                     }
                 }
             });
