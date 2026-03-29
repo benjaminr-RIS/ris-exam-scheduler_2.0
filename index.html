@@ -1475,16 +1475,17 @@
         // ── Scheduler Settings: which period types to include per exam type ──
         // period indices: 3=LUNCH, 5=FLEX, 7=After School, 8=After School (cont.)
         const SCHED_PERIOD_OPTIONS = [
-            { key: 'lunch',  label: 'LUNCH',          periods: [3] },
-            { key: 'flex',   label: 'FLEX (A/B/C/D)', periods: [5] },
-            { key: 'after',  label: 'After School',   periods: [7, 8, 10] },
+            { key: 'lunch',    label: 'LUNCH',          periods: [3] },
+            { key: 'flex',     label: 'FLEX (A/B/C/D)', periods: [5] },
+            { key: 'after',    label: 'After School',   periods: [7, 8, 10] },
+            { key: 'noschool', label: 'No School Days', periods: [] },
         ];
         const EXAM_TYPES_ALL = CALENDAR_KEYS;
 
         // Default: all off — keyed by cal-N
         let schedulerSettings = {};
         EXAM_TYPES_ALL.forEach(t => {
-            schedulerSettings[t] = { lunch: false, flex: false, after: false };
+            schedulerSettings[t] = { lunch: false, flex: false, after: false, noschool: false };
         });
 
         // Auto-enable flex/lunch/after for a calendar based on its actual slot content.
@@ -4398,15 +4399,26 @@
                     const date = d.dates[dateIdx];
                     if (!date) return;
                     const schedule = getScheduleForDate(date);
-                    if (!schedule) return;
                     // BREAK (periodIdx 9) is out-of-band — not in the cycle schedule array
                     const isBreak = periodIdx === 9;
-                    const cycleBlock = isBreak ? 'BREAK' : schedule[periodIdx];
-                    if (!cycleBlock) return;
+                    // For no-school (?) days: schedule is null, fall back to getCycleBlockForSlot
+                    const _rawDateKey = formatDateKey(date);
+                    const isNoSchoolDay = RIS_CYCLE_CALENDAR[_rawDateKey] === '?';
+                    let cycleBlock;
+                    if (isBreak) {
+                        cycleBlock = 'BREAK';
+                    } else if (isNoSchoolDay) {
+                        cycleBlock = '?';
+                    } else {
+                        if (!schedule) return;
+                        cycleBlock = schedule[periodIdx];
+                        if (!cycleBlock) return;
+                    }
                     const isRegularBlock = /^[ABCD][12345]$/.test(cycleBlock);
-                    const isLunch = cycleBlock === 'LUNCH';
-                    const isFlex  = /^FLEX-/.test(cycleBlock);
-                    const isAfter = cycleBlock === 'After School';
+                    const isLunch    = cycleBlock === 'LUNCH';
+                    const isFlex     = /^FLEX-/.test(cycleBlock);
+                    const isAfter    = cycleBlock === 'After School';
+                    const isNoSchool = cycleBlock === '?';
                     // For merged slots, find the next block using MERGE_NEXT
                     const isMerged = d.slotMergeDown && d.slotMergeDown.has(slotId);
                     const nextBlock = isMerged
@@ -4414,16 +4426,18 @@
                         : null;
                     const isNextRegular = nextBlock && /^[ABCD][12345]$/.test(nextBlock);
                     const isNextFlex    = nextBlock && /^FLEX-/.test(nextBlock);
-                    // For BREAK merged slots: availability check is on the absorbed block (e.g. D4)
-                    if (isBreak && isMerged) {
-                        if (isNextRegular && !commitments[nextBlock]) return;
-                    } else {
-                        if ((isRegularBlock || isFlex) && !commitments[cycleBlock]) return;
+                    // No-school day slots: no commitment check — always show in portal
+                    if (!isNoSchool) {
+                        if (isBreak && isMerged) {
+                            if (isNextRegular && !commitments[nextBlock]) return;
+                        } else {
+                            if ((isRegularBlock || isFlex) && !commitments[cycleBlock]) return;
+                        }
+                        if (nextBlock && (isNextRegular || isNextFlex) && !isBreak && !commitments[nextBlock]) return;
                     }
-                    if (nextBlock && (isNextRegular || isNextFlex) && !isBreak && !commitments[nextBlock]) return;
                     const examNameVal = (d.slotExamNames && d.slotExamNames[slotId]) || '(unnamed)';
                     if (conflictSet.has(examNameVal)) return;
-                    const cycleBlockLabel = getMergeBlockLabel(et, slotId, cycleBlock);
+                    const cycleBlockLabel = isNoSchool ? 'No School' : getMergeBlockLabel(et, slotId, cycleBlock);
                     // Proctor fill info
                     const _needed = d.slotProctorCount ? (d.slotProctorCount[slotId] || 2) : 2;
                     // Merge both assignment maps to avoid missing any (period type ambiguity)
@@ -4436,7 +4450,7 @@
                         .filter(Boolean);
                     availableExams.push({
                         date, periodIdx, examType: et, typeName, cycleBlock: cycleBlockLabel,
-                        isLunch, isFlex, isAfter, isRegularBlock,
+                        isLunch, isFlex, isAfter, isNoSchool, isRegularBlock,
                         genderReq: (d.slotGenderReq && d.slotGenderReq[slotId]) || '',
                         slotId, calKey: et,
                         exam:  examNameVal,
@@ -4529,11 +4543,11 @@
                         const rowBorderLeft = isAssigned ? 'border-left:3px solid #27ae60;' : 'border-left:3px solid transparent;';
 
                         const time = ae.start ? fmt12h(ae.start) + (ae.end ? '–' + fmt12h(ae.end) : '') : '—';
-                        const statusColor = isAssigned ? '#27ae60' : ae.isFlex ? '#f59e0b' : ae.isLunch ? '#8b5cf6' : ae.isAfter ? '#6b7280' : '#3498db';
+                        const statusColor = isAssigned ? '#27ae60' : ae.isNoSchool ? '#e74c3c' : ae.isFlex ? '#f59e0b' : ae.isLunch ? '#8b5cf6' : ae.isAfter ? '#6b7280' : '#3498db';
                         const statusWeight = isAssigned ? '800' : '700';
                         const isFull2 = (ae.fillCount || 0) >= (ae.fillNeeded || 2);
-                        const blockLabel = isAssigned ? 'ASSIGNED' : isFull2 ? 'FILLED' : ae.isLunch ? 'LUNCH' : ae.isFlex ? 'FLEX' : ae.isAfter ? 'AFTER' : 'AVAILABLE';
-                        const statusColor2 = isAssigned ? '#27ae60' : isFull2 ? '#27ae60' : ae.isFlex ? '#f59e0b' : ae.isLunch ? '#8b5cf6' : ae.isAfter ? '#6b7280' : '#3498db';
+                        const blockLabel = isAssigned ? 'ASSIGNED' : isFull2 ? 'FILLED' : ae.isNoSchool ? 'NO SCHOOL' : ae.isLunch ? 'LUNCH' : ae.isFlex ? 'FLEX' : ae.isAfter ? 'AFTER' : 'AVAILABLE';
+                        const statusColor2 = isAssigned ? '#27ae60' : isFull2 ? '#27ae60' : ae.isNoSchool ? '#e74c3c' : ae.isFlex ? '#f59e0b' : ae.isLunch ? '#8b5cf6' : ae.isAfter ? '#6b7280' : '#3498db';
 
                         // Fill pill — own column, fixed width, vertically aligned
                         const fn = ae.fillNeeded || 2, fc = ae.fillCount || 0;
@@ -5584,7 +5598,7 @@
 
             ALL_CALS.forEach(examType => {
                 const data = examData[examType];
-                const settings = schedulerSettings[examType] || { lunch: false, flex: false, after: false };
+                const settings = schedulerSettings[examType] || { lunch: false, flex: false, after: false, noschool: false };
                 const excludedPeriods = new Set([3, 5, 7, 8]);
                 if (settings.lunch) excludedPeriods.delete(3);
                 if (settings.flex)  excludedPeriods.delete(5);
@@ -5597,6 +5611,8 @@
                     if (excludedPeriods.has(pIdx)) return;
 
                     const cycleBlock = getCycleBlockForSlot(dateIdx, periodIdx, examType);
+                    // Skip no-school day slots unless admin has enabled them
+                    if (cycleBlock === '?' && !settings.noschool) return;
                     const lookupBlock = SPECIAL_PERIOD_FALLBACK[pIdx] !== undefined
                         ? getCycleBlockForSlot(parseInt(dateIdx), SPECIAL_PERIOD_FALLBACK[pIdx], examType)
                         : cycleBlock;
@@ -5824,7 +5840,7 @@
             let sweepAssigned = 0;
             ALL_CALS.forEach(examType => {
                 const data = examData[examType];
-                const settings = schedulerSettings[examType] || { lunch: false, flex: false, after: false };
+                const settings = schedulerSettings[examType] || { lunch: false, flex: false, after: false, noschool: false };
                 const excludedPeriodsSW = new Set([3, 5, 7, 8]);
                 if (settings.lunch) excludedPeriodsSW.delete(3);
                 if (settings.flex)  excludedPeriodsSW.delete(5);
@@ -5842,6 +5858,9 @@
                     const { dateIdx, periodIdx } = parseSlotId(slotId);
                     const pIdx = parseInt(periodIdx);
                     if (excludedPeriodsSW.has(pIdx)) return;
+                    // Skip no-school day slots unless admin has enabled them
+                    const _swCycleBlock = getCycleBlockForSlot(dateIdx, periodIdx, examType);
+                    if (_swCycleBlock === '?' && !settings.noschool) return;
 
                     const isSpecialPeriod = [3, 5, 7, 8, 9, 10].includes(pIdx);
                     const currentAssignments = isSpecialPeriod
@@ -5948,6 +5967,9 @@
                 data.examSlots.forEach(sid => {
                     const pIdx = parseInt(parseSlotId(sid).periodIdx);
                     if (excl.has(pIdx)) return;
+                    // Skip no-school day slots in report unless enabled
+                    const _rCycleBlock = getCycleBlockForSlot(parseSlotId(sid).dateIdx, pIdx, et);
+                    if (_rCycleBlock === '?' && !settings.noschool) return;
                     const pc = data.slotProctorCount[sid] || 2;
                     const isSpec = [3,5,7,8].includes(pIdx);
                     const a = (isSpec ? (data.specialAssignments[sid]||[]) : (data.assignments[sid]||[])).length;
@@ -8364,7 +8386,11 @@
             TEACHERS = state.teachers;
             if (state.schedulerSettings) {
                 EXAM_TYPES_ALL.forEach(t => {
-                    if (state.schedulerSettings[t]) schedulerSettings[t] = state.schedulerSettings[t];
+                    if (state.schedulerSettings[t]) {
+                        schedulerSettings[t] = state.schedulerSettings[t];
+                        // Back-compat: ensure noschool key exists in older saves
+                        if (schedulerSettings[t].noschool === undefined) schedulerSettings[t].noschool = false;
+                    }
                 });
             }
             // syncSchedSettingsToSlots runs AFTER examData is restored (below)
