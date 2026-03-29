@@ -8485,6 +8485,7 @@
             if (!res.ok) {
                 const err = await res.json().catch(() => ({}));
                 if (res.status === 401 || res.status === 403) sessionStorage.removeItem(GH_TOKEN_KEY);
+                if (res.status === 409) { const e = new Error('SHA conflict'); e.isShaConflict = true; throw e; }
                 throw new Error((err.message || 'Push failed') + ' (HTTP ' + res.status + ')');
             }
             return (await res.json()).content.sha;
@@ -8540,8 +8541,55 @@
                 cachedLatestSha = null;
                 btn.innerHTML = '<i class="fa-solid fa-xmark fa-btn-icon"></i> Failed';
                 btn.style.background = '#e74c3c';
-                showGhToast('error', '\u2717 ' + e.message);
                 setTimeout(() => { btn.innerHTML = orig; btn.style.background = '#24292e'; btn.disabled = false; }, 6000);
+                if (e.isShaConflict) {
+                    showShaConflictBanner();
+                } else {
+                    showGhToast('error', '\u2717 ' + e.message);
+                }
+            }
+        }
+
+        function showShaConflictBanner() {
+            // Remove any existing banner
+            const existing = document.getElementById('shaConflictBanner');
+            if (existing) existing.remove();
+            const banner = document.createElement('div');
+            banner.id = 'shaConflictBanner';
+            banner.style.cssText = 'position:fixed;top:18px;left:50%;transform:translateX(-50%);z-index:99999;'
+                + 'background:#fff8e1;border:2px solid #f39c12;border-radius:10px;padding:14px 20px;'
+                + 'box-shadow:0 4px 20px rgba(0,0,0,0.2);max-width:480px;width:90%;';
+            banner.innerHTML = `
+                <div style="display:flex;align-items:flex-start;gap:12px;">
+                    <i class="fa-solid fa-triangle-exclamation" style="color:#f39c12;font-size:18px;margin-top:2px;flex-shrink:0;"></i>
+                    <div style="flex:1;">
+                        <div style="font-size:13px;font-weight:700;color:#7d5a00;margin-bottom:4px;">Your view is out of date</div>
+                        <div style="font-size:12px;color:#8a6d00;line-height:1.5;margin-bottom:10px;">Teachers have updated their schedules since you last synced. Sync to load the latest version, then save again.</div>
+                        <div style="display:flex;gap:8px;">
+                            <button onclick="shaConflictSync()" style="padding:6px 14px;background:#f39c12;color:white;border:none;border-radius:6px;font-size:12px;font-weight:700;cursor:pointer;">
+                                <i class="fa-solid fa-arrows-rotate" style="margin-right:5px;"></i>Sync Now
+                            </button>
+                            <button onclick="document.getElementById('shaConflictBanner').remove()" style="padding:6px 12px;background:transparent;color:#8a6d00;border:1px solid #f39c12;border-radius:6px;font-size:12px;cursor:pointer;">Dismiss</button>
+                        </div>
+                    </div>
+                </div>`;
+            document.body.appendChild(banner);
+        }
+
+        async function shaConflictSync() {
+            const banner = document.getElementById('shaConflictBanner');
+            if (banner) banner.querySelector('button').innerHTML = '<i class="fa-solid fa-spinner fa-spin" style="margin-right:5px;"></i>Syncing…';
+            try {
+                const fi = await workerFetchState();
+                applyStateObject(JSON.parse(fromBase64(fi.content)));
+                cachedLatestSha = fi.sha;
+                if (currentTab === 'TEACHERS') generateTeacherCards();
+                else renderCalendar(currentTab);
+                if (banner) banner.remove();
+                showGhToast('info', '\u2601 Synced — your view is now up to date. You can save again.');
+            } catch(e) {
+                if (banner) banner.remove();
+                showGhToast('error', '\u2717 Sync failed: ' + e.message);
             }
         }
 
