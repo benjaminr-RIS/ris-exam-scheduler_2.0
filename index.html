@@ -3040,6 +3040,7 @@
             modal.style.cssText = 'position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.6);display:flex;align-items:center;justify-content:center;z-index:10000;';
 
             const panel = document.createElement('div');
+            panel.id = 'examModalPanel';
             panel.style.cssText = 'background:white;padding:0;border-radius:16px;box-shadow:0 8px 32px rgba(0,0,0,0.3);width:96%;max-width:1200px;max-height:95vh;overflow:hidden;display:flex;flex-direction:column;';
 
             // Merge button helper
@@ -3556,42 +3557,56 @@
             const guests = Array.from(guestInputs).map(i => i.value.trim()).filter(v => v);
 
             // ── Guest double-booking check ────────────────────────────────────────
-            // Exact-match check: flag if any guest name appears in the same dateIdx+periodIdx
-            // across any OTHER calendar (excluding this slot itself).
+            // Exact-match check: flag if any guest name appears in a slot that overlaps
+            // the same block(s) in another calendar. Accounts for merged slots on either side.
             if (guests.length > 0) {
+                const NEXT_P = {0:9, 9:1, 1:2, 2:3, 3:4, 4:5, 5:6, 6:7, 7:8};
                 const { dateIdx, periodIdx } = parseSlotId(ctx.slotId);
-                const conflicts = []; // { name, calLabel }
+                // Periods covered by this slot (primary + absorbed if merged)
+                const thisMerged = ctx.data.slotMergeDown && ctx.data.slotMergeDown.has(ctx.slotId);
+                const thisPeriods = new Set([periodIdx]);
+                if (thisMerged && NEXT_P[periodIdx] !== undefined) thisPeriods.add(NEXT_P[periodIdx]);
+
+                const seenConflicts = new Set(); // dedupe "name|cal" pairs
+                const conflicts = [];
                 guests.forEach(name => {
                     Object.keys(examData).forEach(otherCal => {
-                        if (otherCal === ctx.examType) return; // skip same calendar
+                        if (otherCal === ctx.examType) return;
                         const od = examData[otherCal];
                         if (!od.slotGuestProctors) return;
-                        // Check every slot in that calendar matching same dateIdx+periodIdx
                         Object.keys(od.slotGuestProctors).forEach(sid => {
+                            if (!(od.slotGuestProctors[sid] || []).includes(name)) return;
                             const p = parseSlotId(sid);
-                            if (p.dateIdx !== dateIdx || p.periodIdx !== periodIdx) return;
-                            if ((od.slotGuestProctors[sid] || []).includes(name)) {
+                            if (p.dateIdx !== dateIdx) return;
+                            // Periods covered by the other slot
+                            const otherMerged = od.slotMergeDown && od.slotMergeDown.has(sid);
+                            const otherPeriods = new Set([p.periodIdx]);
+                            if (otherMerged && NEXT_P[p.periodIdx] !== undefined) otherPeriods.add(NEXT_P[p.periodIdx]);
+                            // Conflict if the two period sets overlap
+                            const overlaps = [...thisPeriods].some(tp => otherPeriods.has(tp));
+                            if (!overlaps) return;
+                            const key = `${name}|${otherCal}`;
+                            if (!seenConflicts.has(key)) {
+                                seenConflicts.add(key);
                                 conflicts.push({ name, cal: calLabel(otherCal) });
                             }
                         });
                     });
                 });
                 if (conflicts.length > 0) {
-                    const lines = conflicts.map(c => `• "${c.name}" is already assigned in ${c.cal}`).join('\n');
-                    // Show inline warning banner inside the modal
+                    const lines = conflicts.map(c => `• "${c.name}" is already assigned in ${c.cal}`).join('<br>');
                     let banner = document.getElementById('guestConflictBanner');
                     if (!banner) {
                         banner = document.createElement('div');
                         banner.id = 'guestConflictBanner';
-                        banner.style.cssText = 'margin:12px 0 0;padding:10px 14px;background:#fff3cd;border:1.5px solid #f0a500;border-radius:7px;font-size:13px;color:#7a4f00;white-space:pre-line;';
-                        // Insert above the Save button row
-                        const saveBtn = document.querySelector('#examModal button[onclick="saveExamSlot()"]') ||
-                                        document.querySelector('.exam-modal-footer');
-                        const modalPanel = document.querySelector('#examModal > div');
-                        if (modalPanel) modalPanel.appendChild(banner);
+                        // Insert as a strip between the modal header (first child) and the 3-col body
+                        const modalPanel = document.getElementById('examModalPanel');
+                        if (modalPanel && modalPanel.children[1]) {
+                            modalPanel.insertBefore(banner, modalPanel.children[1]);
+                        }
                     }
-                    banner.innerHTML = `<strong>⚠️ Guest double-booking detected</strong><br><span style="white-space:pre-line;">${lines}</span><br><small style="color:#a06010;">Remove the name(s) above before saving, or update the other calendar first.</small>`;
-                    banner.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+                    banner.style.cssText = 'padding:10px 20px;background:#fff3cd;border-bottom:2px solid #f0a500;font-size:13px;color:#7a4f00;flex-shrink:0;';
+                    banner.innerHTML = `<strong>⚠️ Guest double-booking — save blocked</strong><br>${lines}<br><small style="color:#a06010;">Remove the conflicting name(s) above to save.</small>`;
                     return; // abort save
                 }
             }
