@@ -3828,10 +3828,18 @@
         "cal-4-7-0",
         "cal-4-9-0"
       ],
-      "assignments": {},
+      "assignments": {
+        "cal-4-0-0": [
+          8
+        ]
+      },
       "specialAssignments": {},
       "manualAssignments": {},
-      "assignmentSources": {}
+      "assignmentSources": {
+        "cal-4-0-0": {
+          "8": "self-claimed"
+        }
+      }
     },
     "cal-5": {
       "startDate": "2026-05-05T00:00:00.000Z",
