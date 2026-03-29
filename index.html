@@ -4401,14 +4401,14 @@
                     const schedule = getScheduleForDate(date);
                     // BREAK (periodIdx 9) is out-of-band — not in the cycle schedule array
                     const isBreak = periodIdx === 9;
-                    // For no-school (?) days: schedule is null, fall back to getCycleBlockForSlot
+                    // For no-school (?) days: schedule is null; no-school takes priority over BREAK
                     const _rawDateKey = formatDateKey(date);
                     const isNoSchoolDay = RIS_CYCLE_CALENDAR[_rawDateKey] === '?';
                     let cycleBlock;
-                    if (isBreak) {
-                        cycleBlock = 'BREAK';
-                    } else if (isNoSchoolDay) {
+                    if (isNoSchoolDay) {
                         cycleBlock = '?';
+                    } else if (isBreak) {
+                        cycleBlock = 'BREAK';
                     } else {
                         if (!schedule) return;
                         cycleBlock = schedule[periodIdx];
