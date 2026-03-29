@@ -4071,10 +4071,22 @@
             eligibleTypes.forEach(function(et) {
                 const d = examData[et];
                 const typeName = typeLabels[et] || et;
+                // Build set of absorbed slot keys (periodIdx + 1 of each mergeDown primary)
+                const mergedAwayIds = new Set();
+                if (d.slotMergeDown) {
+                    d.slotMergeDown.forEach(function(sid) {
+                        const sp = sid.split('-');
+                        const mDateIdx   = parseInt(sp[sp.length-2]);
+                        const mPeriodIdx = parseInt(sp[sp.length-1]);
+                        mergedAwayIds.add(et + '-' + mDateIdx + '-' + (mPeriodIdx + 1));
+                    });
+                }
                 d.examSlots.forEach(function(slotId) {
                     const parts = slotId.split('-');
                     const dateIdx   = parseInt(parts[parts.length-2]);
                     const periodIdx = parseInt(parts[parts.length-1]);
+                    // Skip slots absorbed by a merge — they show as part of the parent merged slot
+                    if (mergedAwayIds.has(et + '-' + dateIdx + '-' + periodIdx)) return;
                     const date = d.dates[dateIdx];
                     if (!date) return;
                     const schedule = getScheduleForDate(date);
@@ -10082,4 +10094,3 @@
     </script>
 </body>
 </html>
-
