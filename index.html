@@ -4244,10 +4244,11 @@
                     _dateGroups[_dateGroups.length-1].slots.push(ae);
                 });
 
-                _dateGroups.forEach(function(grp) {
+                _dateGroups.forEach(function(grp, _dgi) {
                     // Day-load header spanning all columns
                     const _pills = buildDayLoadPills(teacher, grp.date, grp.slots);
                     const _colspan = (currentSession?.role === 'teacher' && currentSession.teacherId === teacher.id) ? 9 : 8;
+                    if (_dgi > 0) html += `<tr><td colspan="${_colspan}" style="padding:6px 0;background:transparent;"></td></tr>`;
                     html += `<tr style="background:#f0f4f8;border-top:2px solid #dde3ea;">
                         <td colspan="${_colspan}" style="padding:7px 10px;">
                             <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
@@ -6036,8 +6037,16 @@
                 // Rest in dark
                 doc.setTextColor(40, 40, 40);
                 doc.setFont(undefined, 'normal');
-                doc.text(dateStr,                     COL.date,     yPos);
-                doc.text(block,                       COL.block,    yPos);
+                var maxDateW2 = COL.block - COL.date - 1;
+                var dateDisp2 = dateStr;
+                while (doc.getTextWidth(dateDisp2) > maxDateW2 && dateDisp2.length > 4) dateDisp2 = dateDisp2.slice(0, -1);
+                if (dateDisp2 !== dateStr) dateDisp2 += '…';
+                doc.text(dateDisp2,                   COL.date,     yPos);
+                var maxBlockW2 = COL.exam - COL.block - 2;
+                var blockDisp2 = block;
+                while (doc.getTextWidth(blockDisp2) > maxBlockW2 && blockDisp2.length > 2) blockDisp2 = blockDisp2.slice(0, -1);
+                if (blockDisp2 !== block) blockDisp2 += '…';
+                doc.text(blockDisp2,                  COL.block,    yPos);
 
                 // Exam name — truncate if too long
                 const maxExamW = COL.students - COL.exam - 2;
@@ -7467,7 +7476,7 @@
 
             // ── Helper: draw table header row ───────────────────────────────
             // Columns: TYPE(14) DATE(26) BLOCK(22) EXAM(flex) ROOM(28) TIME(28)
-            var COL = { type: MARGIN, date: MARGIN+16, block: MARGIN+42, exam: MARGIN+64, room: MARGIN+140, time: MARGIN+168 };
+            var COL = { type: MARGIN+3, date: MARGIN+16, block: MARGIN+42, exam: MARGIN+64, room: MARGIN+140, time: MARGIN+168 };
 
             function drawTableHeader(yPos, showStatus) {
                 doc.setFontSize(7); doc.setTextColor(150,150,150); doc.setFont(undefined, 'bold');
@@ -7493,12 +7502,20 @@
                 while (doc.getTextWidth(tlDisp) > maxTypeW && tlDisp.length > 2) tlDisp = tlDisp.slice(0, -1);
                 if (tlDisp !== tl) tlDisp += '…';
                 doc.text(tlDisp, COL.type, yPos);
-                // Date
+                // Date — truncate to fit
                 doc.setFont(undefined, 'normal'); doc.setFontSize(8); doc.setTextColor(60,60,60);
-                doc.text(fmtDateLong(date), COL.date, yPos);
-                // Block
+                var maxDateW = COL.block - COL.date - 1;
+                var dateDisp = fmtDateLong(date);
+                while (doc.getTextWidth(dateDisp) > maxDateW && dateDisp.length > 4) dateDisp = dateDisp.slice(0, -1);
+                if (dateDisp !== fmtDateLong(date)) dateDisp += '…';
+                doc.text(dateDisp, COL.date, yPos);
+                // Block — truncate to fit
                 doc.setFont(undefined, 'bold'); doc.setTextColor(44,62,80);
-                doc.text(block, COL.block, yPos);
+                var maxBlockW = COL.exam - COL.block - 2;
+                var blockDisp = block;
+                while (doc.getTextWidth(blockDisp) > maxBlockW && blockDisp.length > 2) blockDisp = blockDisp.slice(0, -1);
+                if (blockDisp !== block) blockDisp += '…';
+                doc.text(blockDisp, COL.block, yPos);
                 // Exam name — truncate to fit
                 doc.setFont(undefined, 'normal'); doc.setTextColor(60,60,60);
                 var maxExW = COL.room - COL.exam - 2;
