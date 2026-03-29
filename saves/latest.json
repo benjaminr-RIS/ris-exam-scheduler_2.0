@@ -1672,7 +1672,10 @@
         "cal-1-6-7": []
       },
       "specialAssignments": {
-        "cal-1-6-7": []
+        "cal-1-6-7": [],
+        "cal-1-2-9": [
+          8
+        ]
       },
       "manualAssignments": {},
       "assignmentSources": {
