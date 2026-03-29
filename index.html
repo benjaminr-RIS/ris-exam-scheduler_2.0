@@ -1287,6 +1287,7 @@
                     currentSession = { role: 'teacher', teacherId: match.id, name: match.name, pin: val };
                     adminUnlocked = false;
                     updateLockUI();
+                    switchTab('TEACHER_SCHEDULES');
                     return;
                 }
             }
