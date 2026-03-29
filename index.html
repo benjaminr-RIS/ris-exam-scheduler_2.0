@@ -4100,14 +4100,17 @@
             eligibleTypes.forEach(function(et) {
                 const d = examData[et];
                 const typeName = typeLabels[et] || et;
-                // Build set of absorbed slot keys (periodIdx + 1 of each mergeDown primary)
+                // MERGE_NEXT: same map used by getMergeBlockLabel — handles BREAK(9)->D4(1) correctly
+                const _MERGE_NEXT = {0:9, 9:1, 1:2, 2:3, 3:4, 4:5, 5:6, 6:7, 7:8};
+                // Build set of absorbed slot IDs (the slot swallowed by the primary merge-down slot)
                 const mergedAwayIds = new Set();
                 if (d.slotMergeDown) {
                     d.slotMergeDown.forEach(function(sid) {
                         const sp = sid.split('-');
                         const mDateIdx   = parseInt(sp[sp.length-2]);
                         const mPeriodIdx = parseInt(sp[sp.length-1]);
-                        mergedAwayIds.add(et + '-' + mDateIdx + '-' + (mPeriodIdx + 1));
+                        const absorbedIdx = (mPeriodIdx in _MERGE_NEXT) ? _MERGE_NEXT[mPeriodIdx] : mPeriodIdx + 1;
+                        mergedAwayIds.add(et + '-' + mDateIdx + '-' + absorbedIdx);
                     });
                 }
                 d.examSlots.forEach(function(slotId) {
@@ -4120,20 +4123,28 @@
                     if (!date) return;
                     const schedule = getScheduleForDate(date);
                     if (!schedule) return;
-                    const cycleBlock = schedule[periodIdx];
+                    // BREAK (periodIdx 9) is out-of-band — not in the cycle schedule array
+                    const isBreak = periodIdx === 9;
+                    const cycleBlock = isBreak ? 'BREAK' : schedule[periodIdx];
                     if (!cycleBlock) return;
                     const isRegularBlock = /^[ABCD][12345]$/.test(cycleBlock);
                     const isLunch = cycleBlock === 'LUNCH';
                     const isFlex  = /^FLEX-/.test(cycleBlock);
                     const isAfter = cycleBlock === 'After School';
-                    const nextBlock = (d.slotMergeDown && d.slotMergeDown.has(slotId))
-                        ? getCycleBlockForSlot(parseInt(slotId.split('-')[slotId.startsWith('IB') ? 1 : 2]),
-                            parseInt(slotId.split('-')[slotId.startsWith('IB') ? 2 : 3]) + 1, et)
+                    // For merged slots, find the next block using MERGE_NEXT
+                    const isMerged = d.slotMergeDown && d.slotMergeDown.has(slotId);
+                    const nextBlock = isMerged
+                        ? getCycleBlockForSlot(dateIdx, (periodIdx in _MERGE_NEXT) ? _MERGE_NEXT[periodIdx] : periodIdx + 1, et)
                         : null;
                     const isNextRegular = nextBlock && /^[ABCD][12345]$/.test(nextBlock);
                     const isNextFlex    = nextBlock && /^FLEX-/.test(nextBlock);
-                    if ((isRegularBlock || isFlex) && !commitments[cycleBlock]) return;
-                    if (nextBlock && (isNextRegular || isNextFlex) && !commitments[nextBlock]) return;
+                    // For BREAK merged slots: availability check is on the absorbed block (e.g. D4)
+                    if (isBreak && isMerged) {
+                        if (isNextRegular && !commitments[nextBlock]) return;
+                    } else {
+                        if ((isRegularBlock || isFlex) && !commitments[cycleBlock]) return;
+                    }
+                    if (nextBlock && (isNextRegular || isNextFlex) && !isBreak && !commitments[nextBlock]) return;
                     const examNameVal = (d.slotExamNames && d.slotExamNames[slotId]) || '(unnamed)';
                     if (conflictSet.has(examNameVal)) return;
                     const cycleBlockLabel = getMergeBlockLabel(et, slotId, cycleBlock);
