@@ -227,7 +227,10 @@
             <div class="tab-divider"></div>
             <div class="tab-group-wrapper" id="admin-tab-group" style="display:none;margin-left:auto;">
                 <div class="tab-group-label">Management</div>
-                <div class="tab-group">
+                <div class="tab-group" style="display:flex;align-items:center;gap:6px;">
+                    <button onclick="adminStealthRefresh()" title="Fetch latest save from GitHub" style="padding:5px 10px;background:rgba(52,152,219,0.15);color:#2980b9;border:1px solid rgba(52,152,219,0.4);border-radius:6px;cursor:pointer;font-size:12px;font-weight:700;white-space:nowrap;display:flex;align-items:center;gap:5px;" id="admin-refresh-btn">
+                        <i class="fa-solid fa-arrows-rotate"></i> Sync
+                    </button>
                     <button class="tab" onclick="switchTab('TEACHERS'); openAdminTab();" id="tab-TEACHERS">Admin</button>
                 </div>
             </div>
@@ -3624,7 +3627,28 @@
             knownGuestProctors.sort((a, b) => a.localeCompare(b));
 
             ctx.data.slotProctorCount[ctx.slotId] = ctx.proctorCount;
-            
+
+            // ── Gender validation before save ──────────────────────────────
+            if (ctx._assignments) {
+                const _saveGenderReq = document.getElementById('examGenderReq')?.value || '';
+                const _isMF = _saveGenderReq === 'MF';
+                for (let _gi = 0; _gi < ctx._assignments.length; _gi++) {
+                    const _gid = ctx._assignments[_gi];
+                    if (!_gid) continue;
+                    const _gt = TEACHERS.find(t => t.id === _gid);
+                    if (!_gt) continue;
+                    let _reqFor = '';
+                    if (_isMF) _reqFor = _gi === 0 ? 'M' : _gi === 1 ? 'F' : '';
+                    else if (_saveGenderReq === 'M' || _saveGenderReq === 'F') _reqFor = _saveGenderReq;
+                    if (_reqFor && _gt.gender !== _reqFor) {
+                        const _slotLabel = _isMF ? (_gi === 0 ? 'Male Proctor' : 'Female Proctor') : 'Proctor ' + (_gi + 1);
+                        const _reqLabel  = _reqFor === 'M' ? 'male' : 'female';
+                        alert('Cannot save: ' + _gt.name + ' is not ' + _reqLabel + ' but is assigned to the ' + _slotLabel + ' slot. Please fix before saving.');
+                        return;
+                    }
+                }
+            }
+
             const assignments = [];
             const manualTeachers = [];
             // Read from _assignments array (new three-column picker) OR legacy proctor-N selects
@@ -7009,9 +7033,22 @@
             const container = document.getElementById('teacher-schedules-view');
             if (!container) return;
 
-            // ── Teacher session: show only their own card + claim controls ──
+            // ── Teacher session: fetch fresh state then render ──
             if (currentSession?.role === 'teacher') {
-                renderTeacherSelfView(container);
+                container.innerHTML = '<div style="padding:40px;text-align:center;color:#7f8c8d;"><i class="fa-solid fa-spinner fa-spin" style="font-size:22px;margin-bottom:10px;display:block;"></i>Loading your schedule…</div>';
+                (async () => {
+                    try {
+                        const res = await fetch(ghApiUrl(GH_LATEST) + '?ref=' + GH_BRANCH + '&t=' + Date.now(), { cache: 'no-store' });
+                        if (res.ok) {
+                            const fi = await res.json();
+                            applyStateObject(JSON.parse(fromBase64(fi.content)));
+                            cachedLatestSha = fi.sha;
+                        }
+                    } catch(e) {
+                        console.warn('[renderTeacherSchedules] fresh fetch failed, rendering from cache:', e.message);
+                    }
+                    renderTeacherSelfView(container);
+                })();
                 return;
             }
 
@@ -8262,6 +8299,28 @@
         // ── End teacher claim/unclaim ──────────────────────────────────────────────
 
         // ── Auto-load latest.json on page startup ──
+        async function adminStealthRefresh() {
+            const btn = document.getElementById('admin-refresh-btn');
+            if (btn) { btn.innerHTML = '<i class="fa-solid fa-arrows-rotate fa-spin"></i> Syncing…'; btn.disabled = true; }
+            try {
+                const res = await fetch(ghApiUrl(GH_LATEST) + '?ref=' + GH_BRANCH + '&t=' + Date.now(), { cache: 'no-store' });
+                if (res.ok) {
+                    const fi = await res.json();
+                    applyStateObject(JSON.parse(fromBase64(fi.content)));
+                    cachedLatestSha = fi.sha;
+                    if (currentTab === 'TEACHERS') generateTeacherCards();
+                    else renderCalendar(currentTab);
+                    showGhToast('info', '☁ Synced latest save from GitHub');
+                } else {
+                    showGhToast('warn', '⚠ Sync failed: GitHub returned ' + res.status);
+                }
+            } catch(e) {
+                showGhToast('warn', '⚠ Sync failed: ' + e.message);
+            } finally {
+                if (btn) { btn.innerHTML = '<i class="fa-solid fa-arrows-rotate"></i> Sync'; btn.disabled = false; }
+            }
+        }
+
         async function autoLoadFromGitHub() {
             try {
                 const res = await fetch(ghApiUrl(GH_LATEST) + '?ref=' + GH_BRANCH + '&t=' + Date.now(), { cache: 'no-store' });
