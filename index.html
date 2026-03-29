@@ -484,8 +484,8 @@
                         <h2 style="margin: 0 0 6px; font-size: 22px;"><i class="fa-solid fa-file-lines fa-btn-icon"></i> Teacher Schedules</h2>
                         <p style="margin: 0; opacity: 0.85; font-size: 14px;">Live view of all teacher proctor assignments. Regenerates from the latest scheduler data.</p>
                     </div>
-                    <button onclick="regenerateTeacherSchedulesView()" style="padding: 10px 20px; background: rgba(255,255,255,0.2); color: white; border: 1px solid rgba(255,255,255,0.4); border-radius: 8px; cursor: pointer; font-size: 13px; font-weight: 600; white-space: nowrap;">
-                        <i class="fa-solid fa-arrows-rotate fa-btn-icon"></i> Refresh
+                    <button onclick="teacherSyncBtn()" id="teacher-sync-btn" style="padding: 10px 20px; background: rgba(255,255,255,0.2); color: white; border: 1px solid rgba(255,255,255,0.4); border-radius: 8px; cursor: pointer; font-size: 13px; font-weight: 600; white-space: nowrap; display: flex; align-items: center; gap: 7px;">
+                        <i class="fa-solid fa-arrows-rotate"></i> Sync
                     </button>
                 </div>
                 <div id="teacher-schedules-view" style="background: white; border: 1px solid #ecf0f1; border-radius: 10px; padding: 24px; min-height: 200px;">
@@ -4027,7 +4027,11 @@
                 const data = examData[examType];
                 const allSlotIds = Array.from(data.examSlots || []);
                 allSlotIds.forEach(slotId => {
-                    const assigned = [...(data.assignments[slotId]||[]), ...(data.specialAssignments[slotId]||[])];
+                    const assigned = [...new Set([
+                        ...(data.assignments[slotId]||[]),
+                        ...(data.specialAssignments[slotId]||[]),
+                        ...(data.manualAssignments[slotId]||[]),
+                    ])];
                     if (!assigned.includes(teacher.id)) return;
                     const parts = slotId.split('-');
                     const dateIdx = parseInt(parts[parts.length-2]);
@@ -6931,20 +6935,19 @@
             startProgressBar();
 
             // Wait at least 2.8s before acting (so bar has time to animate)
-            const [res] = await Promise.all([
-                fetch(ghApiUrl(GH_LATEST) + '?ref=' + GH_BRANCH + '&t=' + Date.now(), { cache: 'no-store' })
-                    .catch(e => ({ ok: false, status: 0, _err: e })),
+            const [fi] = await Promise.all([
+                workerFetchState()
+                    .catch(e => ({ _err: e, status: e.status || 0 })),
                 new Promise(r => setTimeout(r, 2800))
             ]);
 
             // Success
-            if (res.ok) {
+            if (fi && fi.content) {
                 try {
-                    const fileInfo = await res.json();
-                    const state = JSON.parse(fromBase64(fileInfo.content));
+                    const state = JSON.parse(fromBase64(fi.content));
                     if (!state.version || !state.examData || !state.teachers) throw new Error('Invalid state file.');
                     applyStateObject(state);
-                    cachedLatestSha = fileInfo.sha;
+                    cachedLatestSha = fi.sha;
                     console.log('[Startup] Loaded. Teachers:', TEACHERS.length);
                 } catch(e) {
                     console.error('[Startup] Parse error:', e);
@@ -6961,7 +6964,7 @@
             }
 
             // 404 = fresh install, boot empty
-            if (res.status === 404) {
+            if (fi && fi.status === 404) {
                 await new Promise(r => setTimeout(r, 300));
                 initLockUI();
                 renderCalTabButtons();
@@ -7034,22 +7037,9 @@
             const container = document.getElementById('teacher-schedules-view');
             if (!container) return;
 
-            // ── Teacher session: fetch fresh state then render ──
+            // ── Teacher session: render synchronously from current state ──
             if (currentSession?.role === 'teacher') {
-                container.innerHTML = '<div style="padding:40px;text-align:center;color:#7f8c8d;"><i class="fa-solid fa-spinner fa-spin" style="font-size:22px;margin-bottom:10px;display:block;"></i>Loading your schedule…</div>';
-                (async () => {
-                    try {
-                        const res = await fetch(ghApiUrl(GH_LATEST) + '?ref=' + GH_BRANCH + '&t=' + Date.now(), { cache: 'no-store' });
-                        if (res.ok) {
-                            const fi = await res.json();
-                            applyStateObject(JSON.parse(fromBase64(fi.content)));
-                            cachedLatestSha = fi.sha;
-                        }
-                    } catch(e) {
-                        console.warn('[renderTeacherSchedules] fresh fetch failed, rendering from cache:', e.message);
-                    }
-                    renderTeacherSelfView(container);
-                })();
+                renderTeacherSelfView(container);
                 return;
             }
 
@@ -8211,12 +8201,9 @@
         async function stealthRefresh(msg) {
             showPageMask(msg || 'Updating schedule\u2026');
             try {
-                const res = await fetch(ghApiUrl(GH_LATEST) + '?ref=' + GH_BRANCH + '&t=' + Date.now(), { cache: 'no-store' });
-                if (res.ok) {
-                    const fi = await res.json();
-                    applyStateObject(JSON.parse(fromBase64(fi.content)));
-                    cachedLatestSha = fi.sha;
-                }
+                const fi = await workerFetchState();
+                applyStateObject(JSON.parse(fromBase64(fi.content)));
+                cachedLatestSha = fi.sha;
             } catch(e) {
                 console.warn('[stealthRefresh]', e);
             }
@@ -8228,6 +8215,21 @@
 
         // ── Teacher self-claim / unclaim via Cloudflare Worker ────────────────────
         const WORKER_URL = 'https://ris-scheduler-v2.benjaminr.workers.dev';
+
+        // Authenticated state fetch via Worker — avoids unauthenticated GitHub API rate limits
+        async function workerFetchState() {
+            const res = await fetch(WORKER_URL, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ action: 'load' })
+            });
+            if (!res.ok) {
+                const err = await res.json().catch(() => ({}));
+                throw Object.assign(new Error(err.error || 'Worker load failed'), { status: res.status });
+            }
+            const data = await res.json();
+            return data; // { ok, content (base64), sha }
+        }
 
         async function claimSlot(calKey, slotId) {
             if (!currentSession || currentSession.role !== 'teacher') return;
@@ -8247,6 +8249,13 @@
                     } else if (res.status === 403 && data.error && data.error.includes('not published')) {
                         currentSession = null; adminUnlocked = false; updateLockUI();
                         showPortalMessage('The portal is currently unavailable.', 'warning');
+                    } else if (res.status === 409 && data.genderConflict) {
+                        const isTeacherMale = TEACHERS.find(t => t.id === currentSession.teacherId)?.gender === 'M';
+                        const msg = isTeacherMale
+                            ? 'Sorry, we now only need female proctors for that exam slot. No assignment has been made. Refreshing\u2026'
+                            : 'Sorry, we now only need male proctors for that exam slot. No assignment has been made. Refreshing\u2026';
+                        showPortalMessage(msg, 'warning', 5000);
+                        await stealthRefresh('Refreshing schedule\u2026');
                     } else {
                         showPortalMessage('Error: ' + (data.error || 'Unknown error'), 'error');
                     }
@@ -8300,21 +8309,32 @@
         // ── End teacher claim/unclaim ──────────────────────────────────────────────
 
         // ── Auto-load latest.json on page startup ──
+        async function teacherSyncBtn() {
+            const btn = document.getElementById('teacher-sync-btn');
+            if (btn) { btn.innerHTML = '<i class="fa-solid fa-arrows-rotate fa-spin"></i> Syncing…'; btn.disabled = true; }
+            try {
+                const fi = await workerFetchState();
+                applyStateObject(JSON.parse(fromBase64(fi.content)));
+                cachedLatestSha = fi.sha;
+                regenerateTeacherSchedulesView();
+                showPortalMessage('Schedule synced ✓', 'success');
+            } catch(e) {
+                showPortalMessage('Sync failed: ' + e.message, 'error');
+            } finally {
+                if (btn) { btn.innerHTML = '<i class="fa-solid fa-arrows-rotate"></i> Sync'; btn.disabled = false; }
+            }
+        }
+
         async function adminStealthRefresh() {
             const btn = document.getElementById('admin-refresh-btn');
             if (btn) { btn.innerHTML = '<i class="fa-solid fa-arrows-rotate fa-spin"></i> Syncing…'; btn.disabled = true; }
             try {
-                const res = await fetch(ghApiUrl(GH_LATEST) + '?ref=' + GH_BRANCH + '&t=' + Date.now(), { cache: 'no-store' });
-                if (res.ok) {
-                    const fi = await res.json();
-                    applyStateObject(JSON.parse(fromBase64(fi.content)));
-                    cachedLatestSha = fi.sha;
-                    if (currentTab === 'TEACHERS') generateTeacherCards();
-                    else renderCalendar(currentTab);
-                    showGhToast('info', '☁ Synced latest save from GitHub');
-                } else {
-                    showGhToast('warn', '⚠ Sync failed: GitHub returned ' + res.status);
-                }
+                const fi = await workerFetchState();
+                applyStateObject(JSON.parse(fromBase64(fi.content)));
+                cachedLatestSha = fi.sha;
+                if (currentTab === 'TEACHERS') generateTeacherCards();
+                else renderCalendar(currentTab);
+                showGhToast('info', '☁ Synced latest save from GitHub');
             } catch(e) {
                 showGhToast('warn', '⚠ Sync failed: ' + e.message);
             } finally {
@@ -8324,15 +8344,13 @@
 
         async function autoLoadFromGitHub() {
             try {
-                const res = await fetch(ghApiUrl(GH_LATEST) + '?ref=' + GH_BRANCH + '&t=' + Date.now(), { cache: 'no-store' });
-                if (!res.ok) { console.log('[GH] No latest.json found, using defaults'); return; }
-                const fileInfo = await res.json();
-                const state = JSON.parse(fromBase64(fileInfo.content));
+                const fi = await workerFetchState();
+                const state = JSON.parse(fromBase64(fi.content));
                 if (!state.version || !state.examData || !state.teachers) {
                     console.warn('[GH] latest.json is not valid state, ignoring'); return;
                 }
                 applyStateObject(state);
-                cachedLatestSha = fileInfo.sha;
+                cachedLatestSha = fi.sha;
                 console.log('[GH] Auto-loaded latest.json, SHA:', cachedLatestSha);
                 if (currentTab === 'TEACHERS') generateTeacherCards();
                 else renderCalendar(currentTab);
@@ -8554,7 +8572,7 @@
             teacherExamConflicts = normalized;
         }
 
-        setTimeout(autoLoadFromGitHub, 300);
+        // autoLoadFromGitHub suppressed — startupLoad() handles initial fetch with splash screen
 
         // ═══════════════════════════════════════════════════════════════════════════
         //  CLIPBOARD SYSTEM — Copy (Cmd+C), Cut (Cmd+X), Paste (Cmd+V)
