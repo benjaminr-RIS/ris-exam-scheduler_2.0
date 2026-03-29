@@ -7710,102 +7710,122 @@
     "cal-1": {
       "lunch": true,
       "flex": true,
-      "after": false
+      "after": false,
+      "noschool": false
     },
     "cal-2": {
       "lunch": true,
       "flex": true,
-      "after": false
+      "after": false,
+      "noschool": false
     },
     "cal-3": {
       "lunch": true,
       "flex": true,
-      "after": false
+      "after": false,
+      "noschool": false
     },
     "cal-4": {
       "lunch": true,
       "flex": true,
-      "after": false
+      "after": false,
+      "noschool": false
     },
     "cal-5": {
       "lunch": true,
       "flex": true,
-      "after": false
+      "after": false,
+      "noschool": false
     },
     "cal-6": {
       "lunch": true,
       "flex": true,
-      "after": false
+      "after": false,
+      "noschool": false
     },
     "cal-7": {
       "lunch": true,
       "flex": true,
-      "after": false
+      "after": false,
+      "noschool": false
     },
     "cal-8": {
       "lunch": false,
       "flex": false,
-      "after": false
+      "after": false,
+      "noschool": false
     },
     "cal-9": {
       "lunch": false,
       "flex": false,
-      "after": false
+      "after": false,
+      "noschool": false
     },
     "cal-10": {
       "lunch": false,
       "flex": false,
-      "after": false
+      "after": false,
+      "noschool": false
     },
     "cal-11": {
       "lunch": false,
       "flex": false,
-      "after": false
+      "after": false,
+      "noschool": false
     },
     "cal-12": {
       "lunch": false,
       "flex": false,
-      "after": false
+      "after": false,
+      "noschool": false
     },
     "cal-13": {
       "lunch": false,
       "flex": false,
-      "after": false
+      "after": false,
+      "noschool": false
     },
     "cal-14": {
       "lunch": false,
       "flex": false,
-      "after": false
+      "after": false,
+      "noschool": false
     },
     "cal-15": {
       "lunch": false,
       "flex": false,
-      "after": false
+      "after": false,
+      "noschool": false
     },
     "cal-16": {
       "lunch": false,
       "flex": false,
-      "after": false
+      "after": false,
+      "noschool": false
     },
     "cal-17": {
       "lunch": false,
       "flex": false,
-      "after": false
+      "after": false,
+      "noschool": false
     },
     "cal-18": {
       "lunch": false,
       "flex": false,
-      "after": false
+      "after": false,
+      "noschool": false
     },
     "cal-19": {
       "lunch": false,
       "flex": false,
-      "after": false
+      "after": false,
+      "noschool": false
     },
     "cal-20": {
       "lunch": false,
       "flex": false,
-      "after": false
+      "after": false,
+      "noschool": false
     }
   },
   "bellSchedule": [
@@ -7903,7 +7923,7 @@
   "calendarDisplayNames": {
     "cal-1": "IB-1",
     "cal-2": "IB-2",
-    "cal-3": "IB Accommodation",
+    "cal-3": "IB-3",
     "cal-4": "AP-1",
     "cal-5": "AP-2",
     "cal-6": "AP-3",
@@ -7968,7 +7988,7 @@
     {
       "key": "cal-3",
       "program": "IB",
-      "displayName": "IB Accommodation",
+      "displayName": "IB-3",
       "color": "#8e44ad",
       "csvAliases": "ib accommodation,ib-accommodation,ib_special,ibaccommodation",
       "startDate": "2026-04-27",
