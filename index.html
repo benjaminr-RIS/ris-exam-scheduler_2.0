@@ -3317,26 +3317,27 @@
             } else {
                 const blockKey = ctx.cycleBlock;
 
-                // Split into free vs busy.
-                // FLEX slots have real FLEX-A/B/C/D commitment keys — check them explicitly.
-                // Only non-keyed specials (Lunch, After School, Break) treat everyone as free.
-                const isFlexSlot = blockKey && /^FLEX-/.test(blockKey);
-                const isUnkeyedSpecial = ctx.isSpecial && !isFlexSlot;
-                const freeCandidates = candidates.filter(t => {
+                // Split on '+' — merged slots like "BREAK+C3" or "LUNCH+D1" have two parts.
+                // Each keyed part (regular block or FLEX-x) must be present in commits.
+                // Unkeyed parts (Break, Lunch, After School) are ignored for availability.
+                const UNKEYED = /^(BREAK|LUNCH|After School)$/i;
+                const blockParts = blockKey ? blockKey.split('+') : [];
+                const keyedParts = blockParts.filter(p => !UNKEYED.test(p));
+
+                function isTeacherFreeForBlock(t) {
                     const commits = teacherBlockCommitments[t.id] || {};
-                    return isUnkeyedSpecial || (blockKey && !!commits[blockKey]);
-                });
-                const busyCandidates = candidates.filter(t => {
-                    const commits = teacherBlockCommitments[t.id] || {};
-                    return !(isUnkeyedSpecial || (blockKey && !!commits[blockKey]));
-                });
+                    if (keyedParts.length === 0) return true; // pure unkeyed special (Break alone etc.)
+                    return keyedParts.every(p => !!commits[p]);
+                }
+
+                const freeCandidates = candidates.filter(t => isTeacherFreeForBlock(t));
+                const busyCandidates = candidates.filter(t => !isTeacherFreeForBlock(t));
 
                 const buildRow = (t, dimmed) => {
                     const load = getTeacherLoadLabel(t);
                     const pills = buildDayLoadPills(t, date, slotsOnDate);
                     const isSelected = ctx._assignments[slotIndex] === t.id;
-                    const commits = teacherBlockCommitments[t.id] || {};
-                    const isFreeThisBlock = isUnkeyedSpecial || (blockKey && !!commits[blockKey]);
+                    const isFreeThisBlock = isTeacherFreeForBlock(t);
                     const blockStatus = isFreeThisBlock
                         ? '<span style="font-size:10px;color:#27ae60;font-weight:600;">✓ Free this block</span>'
                         : '<span style="font-size:10px;color:#e67e22;font-weight:600;">⚠ Teaching this block</span>';
