@@ -4040,13 +4040,15 @@
                     if (!date) return;
                     const cycleBlock = getMergeBlockLabel(examType, slotId,
                         getCycleBlockForSlot(dateIdx, periodIdx, examType));
+                    const _isSC = (data.assignmentSources?.[slotId]?.[teacher.id]) === 'self-claimed';
                     assignments.push({
-                        date, examType,
+                        date, examType, slotId, calKey: examType,
                         block: cycleBlock,
                         exam:  (data.slotExamNames  && data.slotExamNames[slotId])  || '(unnamed)',
                         room:  (data.slotRoom        && data.slotRoom[slotId])        || '',
                         start: (data.slotTimes       && data.slotTimes[slotId])       || '',
                         end:   (data.slotEndTimes    && data.slotEndTimes[slotId])    || '',
+                        isSelfClaimed: _isSC,
                     });
                 });
             });
@@ -4056,38 +4058,51 @@
             const required = teacher.required || 0;
             const barColor = assigned >= required ? '#27ae60' : assigned > 0 ? '#f39c12' : '#e74c3c';
 
-            let html = `<div style="font-size:11px;font-weight:700;color:#7f8c8d;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:10px;">Exam Proctoring Schedule</div>`;
+            // ── Confirmed sessions card ───────────────────────────────────
+            let html = `<div style="background:#f0faf4;border:2px solid #27ae60;border-radius:12px;overflow:hidden;margin-bottom:20px;">
+                <div style="background:#27ae60;padding:10px 16px;display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;">
+                    <div style="display:flex;align-items:center;gap:8px;">
+                        <i class="fa-solid fa-calendar-check" style="color:white;font-size:15px;"></i>
+                        <span style="font-size:13px;font-weight:800;color:white;letter-spacing:0.3px;">YOUR CONFIRMED SESSIONS</span>
+                        <span style="background:rgba(255,255,255,0.25);color:white;font-size:12px;font-weight:800;padding:2px 10px;border-radius:20px;">${assigned} / ${required}</span>
+                    </div>
+                    <div style="display:flex;gap:6px;">
+                        <button onclick="printTeacherSchedule(${teacher.id}, true)" style="padding:4px 10px;background:rgba(255,255,255,0.2);color:white;border:1px solid rgba(255,255,255,0.5);border-radius:5px;font-size:11px;font-weight:600;cursor:pointer;white-space:nowrap;">
+                            <i class="fa-solid fa-print" style="margin-right:4px;"></i>Print My Sessions</button>
+                        <button onclick="printTeacherSchedule(${teacher.id}, false)" style="padding:4px 10px;background:rgba(255,255,255,0.2);color:white;border:1px solid rgba(255,255,255,0.5);border-radius:5px;font-size:11px;font-weight:600;cursor:pointer;white-space:nowrap;">
+                            <i class="fa-solid fa-print" style="margin-right:4px;"></i>Print Full Schedule</button>
+                    </div>
+                </div>`;
 
             if (assignments.length === 0) {
-                html += `<div style="color:#bdc3c7;font-style:italic;font-size:13px;padding:20px 0;text-align:center;">No assignments yet.</div>`;
+                html += `<div style="padding:20px;text-align:center;color:#6b9e7a;font-style:italic;font-size:13px;">No sessions confirmed yet — claim an exam below.</div>`;
             } else {
-                html += `<table style="width:100%;border-collapse:collapse;font-size:12px;table-layout:auto;">
-                    <thead><tr style="background:#f0f3f7;">
-                        <th style="padding:5px 8px;text-align:left;color:#7f8c8d;font-size:11px;font-weight:700;border-bottom:1px solid #e0e4e8;">TYPE</th>
-                        <th style="padding:5px 8px;text-align:left;color:#7f8c8d;font-size:11px;font-weight:700;border-bottom:1px solid #e0e4e8;">DATE</th>
-                        <th style="padding:5px 8px;text-align:left;color:#7f8c8d;font-size:11px;font-weight:700;border-bottom:1px solid #e0e4e8;">BLOCK</th>
-                        <th style="padding:5px 8px;text-align:left;color:#7f8c8d;font-size:11px;font-weight:700;border-bottom:1px solid #e0e4e8;">EXAM</th>
-                        <th style="padding:5px 8px;text-align:left;color:#7f8c8d;font-size:11px;font-weight:700;border-bottom:1px solid #e0e4e8;">ROOM</th>
-                        <th style="padding:5px 8px;text-align:left;color:#7f8c8d;font-size:11px;font-weight:700;border-bottom:1px solid #e0e4e8;">TIME</th>
-                    </tr></thead><tbody>`;
+                html += `<div style="display:flex;flex-direction:column;gap:0;">`;
                 assignments.forEach((a, i) => {
-                    const bg  = i % 2 === 0 ? 'white' : '#fafbfc';
-                    const tc  = typeColors[a.examType] || '#555';
+                    const tc  = typeColors[a.examType] || '#27ae60';
                     const lbl = typeLabels[a.examType] || a.examType;
                     const time = a.start ? fmt12h(a.start) + (a.end ? '–' + fmt12h(a.end) : '') : '—';
-                    html += `<tr style="background:${bg};border-bottom:1px solid #f0f0f0;">
-                        <td style="padding:5px 8px;"><span style="background:${tc};color:white;padding:1px 5px;border-radius:3px;font-size:11px;font-weight:700;">${lbl}</span></td>
-                        <td style="padding:5px 8px;color:#555;white-space:nowrap;">${fmtDate(a.date)}</td>
-                        <td style="padding:5px 8px;font-weight:700;color:#2c3e50;white-space:nowrap;">${a.block}</td>
-                        <td style="padding:5px 8px;color:#555;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;" title="${a.exam}">${a.exam}</td>
-                        <td style="padding:5px 8px;color:#7f8c8d;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${a.room || '—'}</td>
-                        <td style="padding:5px 8px;color:#7f8c8d;white-space:nowrap;">${time}</td>
-                    </tr>`;
+                    const borderTop = i > 0 ? 'border-top:1px solid #c8e6d0;' : '';
+                    const locked = portalMeta.globalLock;
+                    const unclaimBtn = (a.isSelfClaimed && !locked && currentSession?.role === 'teacher')
+                        ? `<button onclick="unclaimSlot('${a.calKey}','${a.slotId}')"
+                            style="padding:4px 10px;background:white;border:1px solid #e74c3c;border-radius:5px;color:#e74c3c;font-size:11px;font-weight:600;cursor:pointer;white-space:nowrap;flex-shrink:0;">
+                            <i class="fa-solid fa-xmark" style="pointer-events:none;"></i> Unclaim</button>`
+                        : '';
+                    html += `<div style="padding:7px 14px;${borderTop}display:flex;align-items:center;gap:8px;">
+                        <div style="width:3px;align-self:stretch;background:${tc};border-radius:2px;flex-shrink:0;"></div>
+                        <span style="background:${tc};color:white;padding:1px 5px;border-radius:3px;font-size:10px;font-weight:700;flex-shrink:0;">${lbl}</span>
+                        <span style="font-size:11px;font-weight:700;color:#1a5c35;white-space:nowrap;flex-shrink:0;">${fmtDate(a.date)}</span>
+                        <span style="font-size:11px;font-weight:700;color:#2c3e50;white-space:nowrap;flex-shrink:0;">${a.block}</span>
+                        <span style="font-size:11px;color:#2c3e50;flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;" title="${a.exam}">${a.exam}</span>
+                        <span style="font-size:11px;color:#6b9e7a;white-space:nowrap;flex-shrink:0;">${a.room || '—'}</span>
+                        <span style="font-size:11px;color:#6b9e7a;white-space:nowrap;flex-shrink:0;">${time}</span>
+                        ${unclaimBtn}
+                    </div>`;
                 });
-                html += `</tbody></table>`;
+                html += `</div>`;
             }
-
-            html += `<div style="margin-top:10px;font-size:12px;font-weight:700;color:${barColor};">Total: ${assigned} / ${required} sessions</div>`;
+            html += `</div>`; // end confirmed sessions card
 
             // ── Available Exam Slots (conflict-filtered) ──────────────────────
             const commitments    = teacherBlockCommitments[teacher.id] || {};
@@ -4161,6 +4176,7 @@
                     availableExams.push({
                         date, periodIdx, examType: et, typeName, cycleBlock: cycleBlockLabel,
                         isLunch, isFlex, isAfter, isRegularBlock,
+                        genderReq: (d.slotGenderReq && d.slotGenderReq[slotId]) || '',
                         slotId, calKey: et,
                         exam:  examNameVal,
                         start: d.slotTimes    ? (d.slotTimes[slotId]    || '') : '',
@@ -4196,9 +4212,20 @@
                     if (dk !== lastDate) { dateGroups.push({ dateKey: dk, date: a.date, slots: [] }); lastDate = dk; }
                     dateGroups[dateGroups.length-1].slots.push(a);
                 });
-                html += `<table style="width:100%;border-collapse:collapse;font-size:12px;table-layout:auto;">
+                html += `<table style="width:100%;border-collapse:collapse;font-size:12px;table-layout:fixed;">
+                    <colgroup>
+                        <col style="width:44px;">
+                        <col style="width:72px;">
+                        <col style="width:110px;">
+                        <col style="width:70px;">
+                        <col style="width:90px;">
+                        <col style="min-width:0;">
+                        <col style="width:90px;">
+                        <col style="width:110px;">
+                        ${currentSession?.role === 'teacher' && currentSession.teacherId === teacher.id ? '<col style="width:95px;">' : ''}
+                    </colgroup>
                     <thead><tr style="background:#f0f3f7;">
-                        <th style="padding:4px 6px;text-align:center;color:#7f8c8d;font-size:11px;font-weight:700;border-bottom:1px solid #e0e4e8;width:44px;">FILL</th>
+                        <th style="padding:4px 6px;text-align:center;color:#7f8c8d;font-size:11px;font-weight:700;border-bottom:1px solid #e0e4e8;">FILL</th>
                         <th style="padding:4px 8px;text-align:left;color:#7f8c8d;font-size:11px;font-weight:700;border-bottom:1px solid #e0e4e8;">STATUS</th>
                         <th style="padding:4px 8px;text-align:left;color:#7f8c8d;font-size:11px;font-weight:700;border-bottom:1px solid #e0e4e8;">TYPE</th>
                         <th style="padding:4px 8px;text-align:left;color:#7f8c8d;font-size:11px;font-weight:700;border-bottom:1px solid #e0e4e8;">DATE</th>
@@ -4206,7 +4233,7 @@
                         <th style="padding:4px 8px;text-align:left;color:#7f8c8d;font-size:11px;font-weight:700;border-bottom:1px solid #e0e4e8;">EXAM</th>
                         <th style="padding:4px 8px;text-align:left;color:#7f8c8d;font-size:11px;font-weight:700;border-bottom:1px solid #e0e4e8;">ROOM</th>
                         <th style="padding:4px 8px;text-align:left;color:#7f8c8d;font-size:11px;font-weight:700;border-bottom:1px solid #e0e4e8;">TIME</th>
-                        ${currentSession?.role === 'teacher' && currentSession.teacherId === teacher.id ? '<th style="padding:4px 8px;border-bottom:1px solid #e0e4e8;width:100px;"></th>' : ''}
+                        ${currentSession?.role === 'teacher' && currentSession.teacherId === teacher.id ? '<th style="padding:4px 8px;border-bottom:1px solid #e0e4e8;"></th>' : ''}
                     </tr></thead><tbody>`;
                 // Group slots by date for day-load header
                 const _dateGroups = [];
@@ -4260,6 +4287,35 @@
                         let actionCell = '';
                         if (currentSession?.role === 'teacher' && currentSession.teacherId === teacher.id) {
                             const locked = portalMeta.globalLock;
+                            const _teacherGender = TEACHERS.find(t => t.id === currentSession.teacherId)?.gender || '';
+                            const _gr = ae.genderReq || '';
+                            // For MF slots: check if the teacher's gender position is already taken
+                            // Position 0 = male (first assigned), position 1 = female (second assigned)
+                            // We look at who is already assigned and count by gender
+                            let _genderBlocked = false;
+                            let _genderLabel = '';
+                            if (_gr && _gr !== 'MF') {
+                                // Single-gender slot
+                                _genderBlocked = _teacherGender !== _gr;
+                                _genderLabel = _gr === 'F' ? 'Females Only' : 'Males Only';
+                            } else if (_gr === 'MF' && !isFull) {
+                                // MF slot: check if the teacher's gender seat is already taken
+                                const _calD = examData[ae.calKey];
+                                const _assigned = [...new Set([
+                                    ...(_calD.assignments?.[ae.slotId] || []),
+                                    ...(_calD.specialAssignments?.[ae.slotId] || []),
+                                    ...(_calD.manualAssignments?.[ae.slotId] || []),
+                                ])].map(id => TEACHERS.find(t => t.id === id)).filter(Boolean);
+                                const _malesTaken  = _assigned.filter(t => t.gender === 'M').length;
+                                const _femalesTaken = _assigned.filter(t => t.gender === 'F').length;
+                                if (_teacherGender === 'M' && _malesTaken >= 1) {
+                                    _genderBlocked = true;
+                                    _genderLabel = 'Females Only';
+                                } else if (_teacherGender === 'F' && _femalesTaken >= 1) {
+                                    _genderBlocked = true;
+                                    _genderLabel = 'Males Only';
+                                }
+                            }
                             if (ae.alreadyAssigned) {
                                 if (ae.isSelfClaimed && !locked) {
                                     actionCell = `<td style="padding:4px 8px;">
@@ -4273,14 +4329,22 @@
                                             <i class="fa-solid fa-circle-check"></i> Assigned</span>
                                     </td>`;
                                 }
-                            } else if (!isFull) {
+                            } else if (isFull) {
+                                actionCell = `<td style="padding:4px 8px;">
+                                    <span style="padding:4px 10px;background:#f0f0f0;border:1px solid #ccc;border-radius:5px;color:#999;font-size:11px;font-weight:700;white-space:nowrap;display:inline-block;cursor:default;">
+                                        <i class="fa-solid fa-circle-check" style="pointer-events:none;"></i> Filled</span>
+                                </td>`;
+                            } else if (_genderBlocked) {
+                                actionCell = `<td style="padding:4px 8px;">
+                                    <span style="padding:4px 10px;background:#fdf4ff;border:1px solid #d8b4fe;border-radius:5px;color:#9333ea;font-size:11px;font-weight:700;white-space:nowrap;display:inline-block;cursor:default;">
+                                        ${_genderLabel}</span>
+                                </td>`;
+                            } else {
                                 actionCell = `<td style="padding:4px 8px;">
                                     <button id="claim-btn-${ae.slotId}" onclick="claimSlot('${ae.calKey}','${ae.slotId}')"
                                         style="padding:4px 10px;background:#eaf4fd;border:1px solid #3498db;border-radius:5px;color:#2980b9;font-size:11px;font-weight:700;cursor:pointer;white-space:nowrap;">
                                         <i class="fa-solid fa-plus" style="pointer-events:none;"></i> Claim</button>
                                 </td>`;
-                            } else {
-                                actionCell = `<td style="padding:4px 8px;"></td>`;
                             }
                         }
 
@@ -4297,7 +4361,7 @@
                             </td>
                             <td style="padding:4px 8px;font-size:11px;font-weight:700;color:#7f8c8d;">${ae.typeName}</td>
                             <td style="padding:4px 8px;color:#555;white-space:nowrap;font-size:11px;">${fmtDate(ae.date)}</td>
-                            <td style="padding:4px 8px;font-weight:${isAssigned?'800':'700'};color:#2c3e50;white-space:nowrap;">${ae.cycleBlock}</td>
+                            <td style="padding:4px 8px;font-weight:${isAssigned?'800':'700'};color:#2c3e50;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${ae.cycleBlock}</td>
                             <td style="padding:4px 8px;color:${isAssigned?'#2c3e50':'#555'};overflow:hidden;text-overflow:ellipsis;white-space:nowrap;" title="${ae.exam}">${ae.exam}</td>
                             <td style="padding:4px 8px;color:#7f8c8d;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${ae.room || '—'}</td>
                             <td style="padding:4px 8px;color:#7f8c8d;white-space:nowrap;">${time}</td>
@@ -5960,10 +6024,14 @@
             function drawExamRow(yPos, labelText, labelColor, dateStr, block, examName, students, room, startTime, endTime) {
                 doc.setFontSize(8);
 
-                // Label column (coloured)
+                // Label column (coloured) — truncate to fit column width
                 doc.setTextColor(labelColor[0], labelColor[1], labelColor[2]);
                 doc.setFont(undefined, 'bold');
-                doc.text(labelText, COL.label, yPos);
+                var maxLabelW = COL.date - COL.label - 1;
+                var labelDisp = labelText;
+                while (doc.getTextWidth(labelDisp) > maxLabelW && labelDisp.length > 2) labelDisp = labelDisp.slice(0, -1);
+                if (labelDisp !== labelText) labelDisp += '…';
+                doc.text(labelDisp, COL.label, yPos);
 
                 // Rest in dark
                 doc.setTextColor(40, 40, 40);
@@ -7242,7 +7310,7 @@
             });
         }
 
-        function printTeacherSchedule(teacherId) {
+        function printTeacherSchedule(teacherId, confirmedOnly) {
             const teacher = TEACHERS.find(function(t) { return t.id === teacherId; });
             if (!teacher) return;
 
@@ -7399,7 +7467,7 @@
 
             // ── Helper: draw table header row ───────────────────────────────
             // Columns: TYPE(14) DATE(26) BLOCK(22) EXAM(flex) ROOM(28) TIME(28)
-            var COL = { type: MARGIN, date: MARGIN+14, block: MARGIN+40, exam: MARGIN+62, room: MARGIN+152, time: MARGIN+174 };
+            var COL = { type: MARGIN, date: MARGIN+16, block: MARGIN+42, exam: MARGIN+64, room: MARGIN+140, time: MARGIN+168 };
 
             function drawTableHeader(yPos, showStatus) {
                 doc.setFontSize(7); doc.setTextColor(150,150,150); doc.setFont(undefined, 'bold');
@@ -7417,10 +7485,14 @@
             function drawRow(yPos, statusText, statusRGB, typeKey, date, block, exam, room, start, end, shade) {
                 if (shade) { doc.setFillColor(250,251,252); doc.rect(MARGIN, yPos - 3.5, PAGE_W, 6, 'F'); }
                 // (fill column removed from PDF)
-                // Type — plain bold grey text
+                // Type — plain bold grey text, truncate to fit column
                 var tl = typeLabels2[typeKey] || typeKey;
+                var maxTypeW = COL.date - COL.type - 1;
+                var tlDisp = tl;
                 doc.setFont(undefined, 'bold'); doc.setFontSize(7); doc.setTextColor(150,150,150);
-                doc.text(tl, COL.type, yPos);
+                while (doc.getTextWidth(tlDisp) > maxTypeW && tlDisp.length > 2) tlDisp = tlDisp.slice(0, -1);
+                if (tlDisp !== tl) tlDisp += '…';
+                doc.text(tlDisp, COL.type, yPos);
                 // Date
                 doc.setFont(undefined, 'normal'); doc.setFontSize(8); doc.setTextColor(60,60,60);
                 doc.text(fmtDateLong(date), COL.date, yPos);
@@ -7474,6 +7546,7 @@
             y += 12;
 
             // ── Section 2: All Available Exam Slots ─────────────────────────
+            if (!confirmedOnly) {
             if (y > 260) { addFooter(); doc.addPage(); globalPage++; y = 12; }
             doc.setFont(undefined, 'bold'); doc.setFontSize(11); doc.setTextColor(44,62,80);
             doc.text('All Available Exam Slots  (' + availableExams.length + ')', MARGIN, y); y += 2;
@@ -7564,7 +7637,8 @@
 
             addFooter();
             var safeName = teacher.name.replace(/[^a-z0-9]/gi, '_');
-            doc.save('RIS_Schedule_' + safeName + '.pdf');
+            } // end if (!confirmedOnly)
+            doc.save('RIS_Schedule_' + safeName + (confirmedOnly ? '_confirmed' : '') + '.pdf');
         }
 
                 function exportAvailabilityMatrixPDF() {
