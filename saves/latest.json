@@ -1668,7 +1668,11 @@
         "cal-1-5-7",
         "cal-1-6-7"
       ],
-      "assignments": {},
+      "assignments": {
+        "cal-1-2-1": [
+          1
+        ]
+      },
       "specialAssignments": {},
       "manualAssignments": {},
       "assignmentSources": {
@@ -1677,7 +1681,10 @@
           "1": "self-claimed",
           "8": "self-claimed"
         },
-        "cal-1-1-5": {}
+        "cal-1-1-5": {},
+        "cal-1-2-1": {
+          "1": "self-claimed"
+        }
       }
     },
     "cal-2": {
