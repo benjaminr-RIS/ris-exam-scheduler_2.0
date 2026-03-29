@@ -1670,7 +1670,10 @@
       ],
       "assignments": {
         "cal-1-3-2": [],
-        "cal-1-3-9": []
+        "cal-1-3-9": [],
+        "cal-1-1-2": [
+          8
+        ]
       },
       "specialAssignments": {
         "cal-1-3-9": [],
