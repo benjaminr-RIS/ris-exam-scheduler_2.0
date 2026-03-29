@@ -3554,6 +3554,52 @@
             if (!ctx.data.slotGuestProctors) ctx.data.slotGuestProctors = {};
             const guestInputs = document.querySelectorAll('#guestProctorList .guest-proctor-input');
             const guests = Array.from(guestInputs).map(i => i.value.trim()).filter(v => v);
+
+            // ── Guest double-booking check ────────────────────────────────────────
+            // Exact-match check: flag if any guest name appears in the same dateIdx+periodIdx
+            // across any OTHER calendar (excluding this slot itself).
+            if (guests.length > 0) {
+                const { dateIdx, periodIdx } = parseSlotId(ctx.slotId);
+                const conflicts = []; // { name, calLabel }
+                guests.forEach(name => {
+                    Object.keys(examData).forEach(otherCal => {
+                        if (otherCal === ctx.examType) return; // skip same calendar
+                        const od = examData[otherCal];
+                        if (!od.slotGuestProctors) return;
+                        // Check every slot in that calendar matching same dateIdx+periodIdx
+                        Object.keys(od.slotGuestProctors).forEach(sid => {
+                            const p = parseSlotId(sid);
+                            if (p.dateIdx !== dateIdx || p.periodIdx !== periodIdx) return;
+                            if ((od.slotGuestProctors[sid] || []).includes(name)) {
+                                conflicts.push({ name, cal: calLabel(otherCal) });
+                            }
+                        });
+                    });
+                });
+                if (conflicts.length > 0) {
+                    const lines = conflicts.map(c => `• "${c.name}" is already assigned in ${c.cal}`).join('\n');
+                    // Show inline warning banner inside the modal
+                    let banner = document.getElementById('guestConflictBanner');
+                    if (!banner) {
+                        banner = document.createElement('div');
+                        banner.id = 'guestConflictBanner';
+                        banner.style.cssText = 'margin:12px 0 0;padding:10px 14px;background:#fff3cd;border:1.5px solid #f0a500;border-radius:7px;font-size:13px;color:#7a4f00;white-space:pre-line;';
+                        // Insert above the Save button row
+                        const saveBtn = document.querySelector('#examModal button[onclick="saveExamSlot()"]') ||
+                                        document.querySelector('.exam-modal-footer');
+                        const modalPanel = document.querySelector('#examModal > div');
+                        if (modalPanel) modalPanel.appendChild(banner);
+                    }
+                    banner.innerHTML = `<strong>⚠️ Guest double-booking detected</strong><br><span style="white-space:pre-line;">${lines}</span><br><small style="color:#a06010;">Remove the name(s) above before saving, or update the other calendar first.</small>`;
+                    banner.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+                    return; // abort save
+                }
+            }
+            // Remove stale banner if no conflicts
+            const stale = document.getElementById('guestConflictBanner');
+            if (stale) stale.remove();
+            // ─────────────────────────────────────────────────────────────────────
+
             if (guests.length > 0) ctx.data.slotGuestProctors[ctx.slotId] = guests;
             else delete ctx.data.slotGuestProctors[ctx.slotId];
             // Merge any new names into the persistent guest proctor library
