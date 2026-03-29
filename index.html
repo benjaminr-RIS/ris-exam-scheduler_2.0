@@ -507,14 +507,29 @@
                             <span style="font-size:11px;font-weight:700;color:rgba(255,255,255,0.55);" id="dash-teachers-val">—</span>
                         </div>
                         <div class="admin-stat-row" style="display:flex;align-items:center;gap:8px;padding:6px 8px;border-radius:6px;margin-bottom:3px;">
-                            <span class="status-dot grey" id="dash-exams-dot"></span>
+                            <span class="status-dot grey" id="dash-examslots-dot"></span>
                             <span style="flex:1;font-size:12px;color:rgba(255,255,255,0.8);">Exam Slots</span>
-                            <span style="font-size:11px;font-weight:700;color:rgba(255,255,255,0.55);" id="dash-exams-val">—</span>
+                            <span style="font-size:11px;font-weight:700;color:rgba(255,255,255,0.55);" id="dash-examslots-val">—</span>
                         </div>
                         <div class="admin-stat-row" style="display:flex;align-items:center;gap:8px;padding:6px 8px;border-radius:6px;margin-bottom:3px;">
-                            <span class="status-dot grey" id="dash-coverage-dot"></span>
-                            <span style="flex:1;font-size:12px;color:rgba(255,255,255,0.8);">Coverage</span>
-                            <span style="font-size:11px;font-weight:700;color:rgba(255,255,255,0.55);" id="dash-coverage-val">—</span>
+                            <span class="status-dot grey" id="dash-examcov-dot"></span>
+                            <span style="flex:1;font-size:12px;color:rgba(255,255,255,0.8);">Exam Coverage</span>
+                            <span style="font-size:11px;font-weight:700;color:rgba(255,255,255,0.55);" id="dash-examcov-val">—</span>
+                        </div>
+                        <div class="admin-stat-row" style="display:flex;align-items:center;gap:8px;padding:6px 8px;border-radius:6px;margin-bottom:3px;">
+                            <span class="status-dot grey" id="dash-proctorslots-dot"></span>
+                            <span style="flex:1;font-size:12px;color:rgba(255,255,255,0.8);">Proctor Slots</span>
+                            <span style="font-size:11px;font-weight:700;color:rgba(255,255,255,0.55);" id="dash-proctorslots-val">—</span>
+                        </div>
+                        <div class="admin-stat-row" style="display:flex;align-items:center;gap:8px;padding:6px 8px;border-radius:6px;margin-bottom:3px;">
+                            <span class="status-dot grey" id="dash-proctorcov-dot"></span>
+                            <span style="flex:1;font-size:12px;color:rgba(255,255,255,0.8);">Proctor Coverage</span>
+                            <span style="font-size:11px;font-weight:700;color:rgba(255,255,255,0.55);" id="dash-proctorcov-val">—</span>
+                        </div>
+                        <div class="admin-stat-row" style="display:flex;align-items:center;gap:8px;padding:6px 8px;border-radius:6px;margin-bottom:3px;">
+                            <span class="status-dot grey" id="dash-efficiency-dot"></span>
+                            <span style="flex:1;font-size:12px;color:rgba(255,255,255,0.8);">Proctor Efficiency</span>
+                            <span style="font-size:11px;font-weight:700;color:rgba(255,255,255,0.55);" id="dash-efficiency-val">—</span>
                         </div>
                         <div class="admin-stat-row" style="display:flex;align-items:center;gap:8px;padding:6px 8px;border-radius:6px;margin-bottom:3px;">
                             <span class="status-dot grey" id="dash-save-dot"></span>
@@ -632,10 +647,10 @@
                                 <div style="font-size:13px;font-weight:600;color:#2c3e50;" id="teacherProfileCount">Loading…</div>
                                 <div style="display:flex;gap:8px;">
                                     <button onclick="exportAvailabilityMatrixPDF()" style="padding:7px 12px;background:#f0f2f4;color:#2c3e50;border:none;border-radius:5px;cursor:pointer;font-size:12px;font-weight:600;transition:background 0.15s;" onmouseover="this.style.background='#e2e6ea'" onmouseout="this.style.background='#f0f2f4'">
-                                        <i class="fa-solid fa-calendar-days fa-btn-icon"></i> Availability PDF
+                                        <i class="fa-solid fa-calendar-days fa-btn-icon"></i> Availability Reports
                                     </button>
                                     <button onclick="exportPDF()" style="padding:7px 12px;background:#f0f2f4;color:#2c3e50;border:none;border-radius:5px;cursor:pointer;font-size:12px;font-weight:600;transition:background 0.15s;" onmouseover="this.style.background='#e2e6ea'" onmouseout="this.style.background='#f0f2f4'">
-                                        <i class="fa-solid fa-file-pdf fa-btn-icon"></i> Proctor PDF
+                                        <i class="fa-solid fa-file-pdf fa-btn-icon"></i> Proctor Schedules
                                     </button>
                                 </div>
                             </div>
@@ -995,12 +1010,12 @@
                                     <button onclick="exportAvailabilityMatrixPDF()"
                                         style="width:100%;padding:10px 12px;background:#f0f2f4;color:#2c3e50;border:none;border-radius:6px;cursor:pointer;font-size:13px;font-weight:600;text-align:left;transition:background 0.15s;"
                                         onmouseover="this.style.background='#e2e6ea'" onmouseout="this.style.background='#f0f2f4'">
-                                        <i class="fa-solid fa-calendar-days fa-btn-icon"></i> Availability Report
+                                        <i class="fa-solid fa-calendar-days fa-btn-icon"></i> Availability Reports
                                     </button>
                                     <button onclick="exportPDF()"
                                         style="width:100%;padding:10px 12px;background:#f0f2f4;color:#2c3e50;border:none;border-radius:6px;cursor:pointer;font-size:13px;font-weight:600;text-align:left;transition:background 0.15s;"
                                         onmouseover="this.style.background='#e2e6ea'" onmouseout="this.style.background='#f0f2f4'">
-                                        <i class="fa-solid fa-file-pdf fa-btn-icon"></i> Proctor Schedule
+                                        <i class="fa-solid fa-file-pdf fa-btn-icon"></i> Proctor Schedules
                                     </button>
                                     <button onclick="exportTimetablePDF()"
                                         style="width:100%;padding:10px 12px;background:#f0f2f4;color:#2c3e50;border:none;border-radius:6px;cursor:pointer;font-size:13px;font-weight:600;text-align:left;transition:background 0.15s;"
@@ -1044,8 +1059,8 @@
                             <p style="font-size:13px;color:#7f8c8d;">Configure schedules and defaults that affect how the whole system works.</p>
                         </div>
 
-                        <!-- Two-card grid — clickable headers only -->
-                        <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:20px;align-items:start;">
+                        <!-- Three-card grid — one row -->
+                        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;margin-bottom:20px;align-items:start;">
 
                             <!-- Card 1: Bell Schedule -->
                             <div id="settingsBellCard" onclick="toggleSettingsCard('bell')"
@@ -1191,7 +1206,7 @@
     <script>
         // ─── PORTAL META ──────────────────────────────────────────────────────────
         // published: teachers can log in | globalLock: freeze unclaiming | adminPin: admin PIN
-        let portalMeta = { published: false, globalLock: false, adminPin: '2026AB' };
+        let portalMeta = { published: false, globalLock: false, adminPin: '2026ris' };
         // ──────────────────────────────────────────────────────────────────────────
 
         // ─── SESSION (not persisted — cleared on tab close) ───────────────────────
@@ -1239,7 +1254,7 @@
         // PIN validation helpers
         // Admin PIN: exactly 4 digits followed by exactly 2 alpha characters (case-insensitive)
         function isValidAdminPinFormat(pin) {
-            return /^[0-9]{4}[a-zA-Z]{2}$/.test(pin);
+            return /^[a-zA-Z0-9]{4,8}$/.test(pin);
         }
         // Teacher PIN: 4-8 alphanumeric characters (case-insensitive comparison)
         function isValidTeacherPinFormat(pin) {
@@ -1278,12 +1293,24 @@
         }
 
         function signOut() {
+            if (currentSession?.role === 'admin' && _unsavedChanges) {
+                if (!confirm('You have unsaved changes that haven\'t been pushed to GitHub.\n\nSign out anyway? Your local changes will be lost.')) return;
+            }
             currentSession = null;
             adminUnlocked = false;
-            updateLockUI();
-            // If on an admin-only tab, return to first calendar
-            if (currentTab === 'TEACHERS') switchTab(CALENDAR_KEYS[0]);
+            _unsavedChanges = false;
+            // Show loading screen and re-boot as guest
+            showLoadingScreen();
+            startupLoad();
         }
+
+        // Warn on tab/window close if admin has unsaved changes
+        window.addEventListener('beforeunload', function(e) {
+            if (currentSession?.role === 'admin' && _unsavedChanges) {
+                e.preventDefault();
+                e.returnValue = '';
+            }
+        });
 
         function updateLockUI() {
             const signInBtn   = document.getElementById('signInBtn');
@@ -2201,7 +2228,7 @@
         }
 
         function updateAdminDashboard() {
-            // Teachers
+            // ── Teachers ─────────────────────────────────────────────────────────
             const tCount = TEACHERS ? TEACHERS.length : 0;
             const tDot = document.getElementById('dash-teachers-dot');
             const tVal = document.getElementById('dash-teachers-val');
@@ -2210,43 +2237,90 @@
                 tDot.className = 'status-dot ' + (tCount === 0 ? 'red' : 'green');
             }
 
-            // Exam slots
-            let totalSlots = 0, assignedSlots = 0, neededSlots = 0;
+            // ── Build primary-slot sets (skip merge continuations) ───────────────
+            // Primary slots: the leading slot of each merged pair, or any unmerged slot.
+            // Continuation slots: the slot immediately after a slotMergeDown primary.
+            const MERGE_NEXT = {0:9,9:1,1:2,2:3,3:4,4:5,5:6,6:7,7:8};
+
+            let examSlotCount   = 0;  // unique logical exams (primary slots only)
+            let examFullyCovered = 0; // exam slots where ALL proctor seats are filled
+            let proctorSeats    = 0;  // sum of proctors_needed across primary slots
+            let proctorFilled   = 0;  // sum of filled seats across primary slots
+
             CALENDAR_KEYS.forEach(et => {
                 const d = examData[et];
                 if (!d || !d.examSlots) return;
+
+                // Build set of continuation slot IDs for this calendar
+                const continuations = new Set();
+                if (d.slotMergeDown) {
+                    d.slotMergeDown.forEach(primaryId => {
+                        const parts = primaryId.split('-');
+                        const pIdx = parseInt(parts[parts.length - 1]);
+                        const nextPIdx = (pIdx in MERGE_NEXT) ? MERGE_NEXT[pIdx] : pIdx + 1;
+                        const prefix = parts.slice(0, parts.length - 1).join('-');
+                        continuations.add(prefix + '-' + nextPIdx);
+                    });
+                }
+
                 d.examSlots.forEach(slotId => {
-                    totalSlots++;
+                    if (continuations.has(slotId)) return; // skip continuation
+
+                    examSlotCount++;
                     const needed = d.slotProctorCount[slotId] || 2;
-                    const isSpecialP = [3,5,7,8,9,10].includes(parseInt(slotId.split('-').pop()));
-                    const assigned = isSpecialP
+                    const pIdx = parseInt(slotId.split('-').pop());
+                    const isSpecial = [3,5,7,8,9,10].includes(pIdx);
+                    const assigned = isSpecial
                         ? (d.specialAssignments[slotId] || []).filter(Boolean).length
                         : (d.assignments[slotId] || []).filter(Boolean).length;
                     const guests = (d.slotGuestProctors?.[slotId] || []).length;
-                    neededSlots += needed;
-                    assignedSlots += Math.min(assigned + guests, needed);
+                    const filled = Math.min(assigned + guests, needed);
+
+                    proctorSeats += needed;
+                    proctorFilled += filled;
+                    if (filled >= needed) examFullyCovered++;
                 });
             });
-            const eDot = document.getElementById('dash-exams-dot');
-            const eVal = document.getElementById('dash-exams-val');
-            if (eDot && eVal) {
-                eVal.textContent = totalSlots + ' slots';
-                eDot.className = 'status-dot ' + (totalSlots === 0 ? 'red' : 'green');
+
+            // ── Proctor Efficiency: filled / total teacher required hours ────────
+            const totalRequired = TEACHERS
+                ? TEACHERS.filter(t => t.required > 0).reduce((s, t) => s + (t.required || 0), 0)
+                : 0;
+
+            function setDot(id, pct) {
+                const el = document.getElementById(id);
+                if (!el) return;
+                el.className = 'status-dot ' + (pct === 100 ? 'green' : pct >= 50 ? 'amber' : 'red');
+            }
+            function setVal(id, text) {
+                const el = document.getElementById(id);
+                if (el) el.textContent = text;
             }
 
-            // Coverage
-            const cDot = document.getElementById('dash-coverage-dot');
-            const cVal = document.getElementById('dash-coverage-val');
-            if (cDot && cVal) {
-                if (totalSlots === 0) {
-                    cVal.textContent = '—';
-                    cDot.className = 'status-dot grey';
-                } else {
-                    const pct = neededSlots > 0 ? Math.round(assignedSlots / neededSlots * 100) : 0;
-                    cVal.textContent = assignedSlots + '/' + neededSlots;
-                    cDot.className = 'status-dot ' + (pct === 100 ? 'green' : pct >= 50 ? 'amber' : 'red');
-                }
-            }
+            // 1. Exam Slots
+            setVal('dash-examslots-val', examSlotCount + ' slots');
+            const esDot = document.getElementById('dash-examslots-dot');
+            if (esDot) esDot.className = 'status-dot ' + (examSlotCount === 0 ? 'red' : 'green');
+
+            // 2. Exam Coverage
+            const ecPct = examSlotCount > 0 ? Math.round(examFullyCovered / examSlotCount * 100) : 0;
+            setVal('dash-examcov-val', examFullyCovered + '/' + examSlotCount);
+            setDot('dash-examcov-dot', ecPct);
+
+            // 3. Proctor Slots
+            setVal('dash-proctorslots-val', proctorSeats + ' seats');
+            const psDot = document.getElementById('dash-proctorslots-dot');
+            if (psDot) psDot.className = 'status-dot ' + (proctorSeats === 0 ? 'red' : 'green');
+
+            // 4. Proctor Coverage
+            const pcPct = proctorSeats > 0 ? Math.round(proctorFilled / proctorSeats * 100) : 0;
+            setVal('dash-proctorcov-val', proctorFilled + '/' + proctorSeats);
+            setDot('dash-proctorcov-dot', pcPct);
+
+            // 5. Proctor Efficiency
+            const effPct = totalRequired > 0 ? Math.round(proctorFilled / totalRequired * 100) : 0;
+            setVal('dash-efficiency-val', proctorFilled + '/' + totalRequired);
+            setDot('dash-efficiency-dot', effPct);
 
             // Last saved — check localStorage for last GitHub save time
             const saveDot = document.getElementById('dash-save-dot');
@@ -2345,6 +2419,7 @@
         
         let teacherBlockCommitments = {};
         let teacherExamConflicts = {}; // { teacherId: Set of exam name strings }
+        let knownGuestProctors = []; // library of guest proctor names across all slots
         let nextTeacherId = 1;
         const COLORS = ['#e74c3c', '#3498db', '#2ecc71', '#f39c12', '#9b59b6', '#1abc9c'];
         TEACHERS.forEach(t => teacherBlockCommitments[t.id] = {});
@@ -2759,6 +2834,7 @@
             const mergedBlock  = blockParts[1] || null;
             const available = [];
             const unavailable = [];
+            const conflicted = [];   // exam conflict of interest — disabled, always last
             const genderFiltered = [];
 
             // Always include the currently-assigned teacher even if outside program/gender filter
@@ -2770,51 +2846,57 @@
             }
 
             teacherList.forEach(t => {
-                // Exam conflict of interest check
+                // Exam conflict of interest: route to disabled group immediately, before all other checks
                 const hasExamConflict = examName && (teacherExamConflicts[String(t.id)] || new Set()).has(examName);
+                if (hasExamConflict) {
+                    conflicted.push({ t, assigned: getTotalAssignedHours(t.id) });
+                    return;
+                }
                 // If gender requirement set and teacher doesn't match, put in genderFiltered
                 // 'MF' means 1 of each — show all teachers, no filtering
                 if (genderReq && genderReq !== 'MF' && t.gender !== genderReq) {
-                    genderFiltered.push({ t, assigned: getTotalAssignedHours(t.id), full: false, reason: 'gender', hasExamConflict });
+                    genderFiltered.push({ t, assigned: getTotalAssignedHours(t.id), full: false, reason: 'gender' });
                     return;
                 }
                 const assigned = getTotalAssignedHours(t.id);
                 const full = assigned >= t.required;
-                if (isSpecial) {
-                    // Special slots: any eligible teacher is "available"
-                    available.push({ t, assigned, full, hasCommitment: true, hasExamConflict });
+                const commits = teacherBlockCommitments[t.id] || {};
+                // FLEX slots (FLEX-A/B/C/D) have real commitments — check them like regular blocks.
+                // Only truly unkeyed specials (Lunch, After School, Break) bypass the commitment check.
+                const isFlexBlock = /^FLEX-/.test(primaryBlock);
+                if (isSpecial && !isFlexBlock) {
+                    // Lunch / After School / Break: any eligible teacher is "available"
+                    available.push({ t, assigned, full });
                 } else {
-                    const commits = teacherBlockCommitments[t.id] || {};
                     const hasPrimary = !!(commits[primaryBlock]);
                     const hasMerged  = !mergedBlock || !(/^[ABCD][12345]$/.test(mergedBlock) || /^FLEX-/.test(mergedBlock)) || !!(commits[mergedBlock]);
                     const hasCommitment = hasPrimary && hasMerged;
                     if (hasCommitment) {
-                        available.push({ t, assigned, full, hasCommitment: true, hasExamConflict });
+                        available.push({ t, assigned, full });
                     } else {
-                        unavailable.push({ t, assigned, full, hasCommitment: false, hasExamConflict });
+                        unavailable.push({ t, assigned, full });
                     }
                 }
             });
 
-            function makeOption(t, assigned, full, hasCommitment, hasExamConflict) {
+            function makeOption(t, assigned, full) {
                 let status = full ? ' — FULL' : ' — Available';
                 const outOfProgram = !eligibleIds.has(t.id) ? ' ⚠ cross-program' : '';
-                const conflictFlag = hasExamConflict ? ' 🚫 conflict of interest' : '';
-                return `<option value="${t.id}" ${selectedId === t.id ? 'selected' : ''}>${t.name} (${assigned}/${t.required})${status}${outOfProgram}${conflictFlag}</option>`;
+                return `<option value="${t.id}" ${selectedId === t.id ? 'selected' : ''}>${t.name} (${assigned}/${t.required})${status}${outOfProgram}</option>`;
             }
 
             let html = '';
             if (available.length > 0) {
                 html += `<optgroup label="✓ Available this block">`;
-                available.forEach(({ t, assigned, full, hasExamConflict }) => {
-                    html += makeOption(t, assigned, full, true, hasExamConflict);
+                available.forEach(({ t, assigned, full }) => {
+                    html += makeOption(t, assigned, full);
                 });
                 html += `</optgroup>`;
             }
             if (unavailable.length > 0) {
                 html += `<optgroup label="✗ Not available this block">`;
-                unavailable.forEach(({ t, assigned, full, hasExamConflict }) => {
-                    html += makeOption(t, assigned, full, false, hasExamConflict);
+                unavailable.forEach(({ t, assigned, full }) => {
+                    html += makeOption(t, assigned, full);
                 });
                 html += `</optgroup>`;
             }
@@ -2824,6 +2906,13 @@
                 genderFiltered.forEach(({ t, assigned }) => {
                     // disabled so they cannot be manually selected when a gender req is set
                     html += `<option value="${t.id}" disabled ${selectedId === t.id ? 'selected' : ''} style="color:#bdc3c7;">${t.name} (${assigned}/${t.required}) — wrong gender</option>`;
+                });
+                html += `</optgroup>`;
+            }
+            if (conflicted.length > 0) {
+                html += `<optgroup label="🚫 Conflict of interest (cannot assign)">`;
+                conflicted.forEach(({ t, assigned }) => {
+                    html += `<option value="${t.id}" disabled style="color:#bdc3c7;">${t.name} (${assigned}/${t.required}) — conflict of interest</option>`;
                 });
                 html += `</optgroup>`;
             }
@@ -2841,312 +2930,531 @@
             const isSpecial = period === 3 || period === 5 || period === 7 || period === 8 || period === 9 || period === 10;
             const isWednesday = date && date.getDay() === 3;
             const periodLabels = [0,1,2,3,4,5,6,7,8,9,10].map(i => getPeriodLabel(i));
-            
+
             const examName = data.slotExamNames[slotId] || '';
             const proctorCount = data.slotProctorCount[slotId] || 2;
-            const currentAssignments = isSpecial ? 
-                (data.specialAssignments[slotId] || []) : 
+            const currentAssignments = isSpecial ?
+                (data.specialAssignments[slotId] || []) :
                 (data.assignments[slotId] || []);
             const notes = data.slotNotes ? data.slotNotes[slotId] || '' : '';
-            
+            const genderReq = data.slotGenderReq ? (data.slotGenderReq[slotId] || '') : '';
+
             const eligibleTeachers = TEACHERS.filter(t => {
-                if (calIsIB(examType)) {
-                    return t.program === 'IB' || t.program === 'Both';
-                } else {
-                    return t.program === 'AP' || t.program === 'Both';
-                }
+                if (calIsIB(examType)) return t.program === 'IB' || t.program === 'Both';
+                else return t.program === 'AP' || t.program === 'Both';
             });
-            
-            const modal = document.createElement('div');
-            modal.style.cssText = `position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.6); 
-                                   display: flex; align-items: center; justify-content: center; z-index: 10000;`;
-            
-            const panel = document.createElement('div');
-            panel.style.cssText = `background: white; padding: 0; border-radius: 16px; box-shadow: 0 8px 32px rgba(0,0,0,0.3); 
-                                   max-width: 1050px; width: 96%; max-height: 95vh; overflow-y: auto;`;
-            
-            let teacherDropdowns = '';
-            for (let i = 0; i < proctorCount; i++) {
-                const assignedId = currentAssignments[i] || '';
-                const genderReq = data.slotGenderReq ? (data.slotGenderReq[slotId] || '') : '';
-                const options = buildTeacherOptions(eligibleTeachers, cycleBlock, isSpecial, assignedId, genderReq, examName);
-                teacherDropdowns += `
-                    <div style="margin-bottom: 10px;">
-                        <label style="display: block; font-size: 13px; font-weight: 600; color: #2c3e50; margin-bottom: 5px;">
-                            Proctor ${i + 1}:
-                        </label>
-                        <select id="proctor-${i}" style="width: 100%; padding: 10px; border: 2px solid #ddd; border-radius: 6px; font-size: 13px;">
-                            <option value="">-- Select Teacher --</option>
-                            ${options}
-                        </select>
-                    </div>
-                `;
-            }
-            
-            // Build copy-from options: all named exam slots across all types
-            // Slot ID formats:
-            //   IB_1 / IB_2 / IB_SPECIAL  →  TYPE-dateIdx-periodIdx  → dateIdx = parts[1]
-            //   AP-1 / AP-2 …    →  AP-subtype-dateIdx-periodIdx → dateIdx = parts[2]
+
+            // Build copy-from options
             const isCurrentIB = calIsIB(examType);
-            const copyOptionsIB = [];
-            const copyOptionsAP = [];
+            const copyOptionsIB = [], copyOptionsAP = [];
             Object.keys(examData).forEach(function(et) {
                 const d = examData[et];
                 const isEtIB = calIsIB(et);
                 d.examSlots.forEach(function(sid) {
-                    if (sid === slotId) return; // skip self
+                    if (sid === slotId) return;
                     const name = d.slotExamNames[sid];
-                    if (!name) return; // only named exams
+                    if (!name) return;
                     const sparts = sid.split('-');
-                    // cal-N-dateIdx-periodIdx: dateIdx always at [2], periodIdx at [3]
-                    const dateIdx   = parseInt(sparts[2]);
-                    const periodIdx = parseInt(sparts[3]);
-                    const sDate = d.dates[dateIdx];
+                    const sdIdx = parseInt(sparts[2]), spIdx = parseInt(sparts[3]);
+                    const sDate = d.dates[sdIdx];
                     if (!sDate) return;
-                    const sBlock = getCycleBlockForSlot(dateIdx, periodIdx, et);
+                    const sBlock = getCycleBlockForSlot(sdIdx, spIdx, et);
                     const entry = {
                         sid, et, sDate, sBlock, name,
-                        startTime:    d.slotTimes     ? (d.slotTimes[sid]     || '') : '',
-                        endTime:      d.slotEndTimes  ? (d.slotEndTimes[sid]  || '') : '',
-                        room:         d.slotRoom      ? (d.slotRoom[sid]      || '') : '',
-                        students:     d.slotStudents  ? (d.slotStudents[sid]  || '') : '',
-                        notes:        d.slotNotes     ? (d.slotNotes[sid]     || '') : '',
-                        genderReq:    d.slotGenderReq ? (d.slotGenderReq[sid] || '') : '',
+                        startTime: d.slotTimes?.[sid] || '',
+                        endTime: d.slotEndTimes?.[sid] || '',
+                        room: d.slotRoom?.[sid] || '',
+                        students: d.slotStudents?.[sid] || '',
+                        notes: d.slotNotes?.[sid] || '',
+                        genderReq: d.slotGenderReq?.[sid] || '',
                         proctorCount: d.slotProctorCount[sid] || 2
                     };
-                    if (isEtIB) copyOptionsIB.push(entry);
-                    else        copyOptionsAP.push(entry);
+                    if (isEtIB) copyOptionsIB.push(entry); else copyOptionsAP.push(entry);
                 });
             });
-            // Sort each group by date ascending
-            const dateAsc = function(a, b) { return a.sDate - b.sDate; };
-            copyOptionsIB.sort(dateAsc);
-            copyOptionsAP.sort(dateAsc);
-            // Current program's group goes first
-            const primaryGroup   = isCurrentIB ? copyOptionsIB : copyOptionsAP;
-            const secondaryGroup = isCurrentIB ? copyOptionsAP  : copyOptionsIB;
-            const primaryLabel   = isCurrentIB ? ibGroupLabel() : apGroupLabel();
+            const dateAsc = (a, b) => a.sDate - b.sDate;
+            copyOptionsIB.sort(dateAsc); copyOptionsAP.sort(dateAsc);
+            const primaryGroup = isCurrentIB ? copyOptionsIB : copyOptionsAP;
+            const secondaryGroup = isCurrentIB ? copyOptionsAP : copyOptionsIB;
+            const primaryLabel = isCurrentIB ? ibGroupLabel() : apGroupLabel();
             const secondaryLabel = isCurrentIB ? apGroupLabel() : ibGroupLabel();
 
             function buildCopyOptions(group, label) {
                 if (group.length === 0) return '';
                 const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-                // Build a specific header listing the actual exam types in this group
-                const etypes = [...new Set(group.map(function(o){ return o.et; }))].join(', ');
+                const etypes = [...new Set(group.map(o => o.et))].join(', ');
                 const header = '<option disabled>── ' + etypes + ' Exams ──</option>';
-                const rows = group.map(function(o) {
+                const rows = group.map(o => {
                     const dateLabel = months[o.sDate.getMonth()] + ' ' + o.sDate.getDate();
-                    const typeTag   = o.et !== examType ? ' [' + o.et + ']' : '';
-                    function _fmt(t) {
-                        if (!t) return '';
-                        var p = t.split(':'), h = parseInt(p[0]), m = p[1];
-                        return (h % 12 || 12) + ':' + m + (h >= 12 ? 'PM' : 'AM');
-                    }
-                    const timeParts = o.startTime ? _fmt(o.startTime) + (o.endTime ? '–' + _fmt(o.endTime) : '') : '';
-                    const timeTag   = timeParts ? '  (' + timeParts + ')' : '';
-                    return '<option value="' + o.sid + '|' + o.et + '">' +
-                        dateLabel + '  ' + o.sBlock + '  —  ' + o.name + typeTag + timeTag + '</option>';
+                    const typeTag = o.et !== examType ? ' [' + o.et + ']' : '';
+                    function _fmt(t) { if (!t) return ''; var p=t.split(':'),h=parseInt(p[0]),m=p[1]; return (h%12||12)+':'+m+(h>=12?'PM':'AM'); }
+                    const timeTag = o.startTime ? '  (' + _fmt(o.startTime) + (o.endTime ? '–'+_fmt(o.endTime) : '') + ')' : '';
+                    return '<option value="' + o.sid + '|' + o.et + '">' + dateLabel + '  ' + o.sBlock + '  —  ' + o.name + typeTag + timeTag + '</option>';
                 }).join('');
                 return header + rows;
             }
-
-            // Combine all options for lookup
             const allCopyOptions = primaryGroup.concat(secondaryGroup);
             window._copyExamData = {};
-            allCopyOptions.forEach(function(o) { window._copyExamData[o.sid + '|' + o.et] = o; });
+            allCopyOptions.forEach(o => { window._copyExamData[o.sid + '|' + o.et] = o; });
 
             const copyBanner = allCopyOptions.length > 0 ? `
-                <div style="padding: 12px 24px; background: #f0f4ff; border-bottom: 1px solid #dce4f7; display: flex; align-items: center; gap: 10px;">
-                    <span style="font-size: 13px; font-weight: 600; color: #5563a8; white-space: nowrap;"><i class="fa-solid fa-copy" style="margin-right:5px;"></i> Copy from:</span>
+                <div style="padding:12px 24px;background:#f0f4ff;border-bottom:1px solid #dce4f7;display:flex;align-items:center;gap:10px;">
+                    <span style="font-size:13px;font-weight:600;color:#5563a8;white-space:nowrap;"><i class="fa-solid fa-copy" style="margin-right:5px;"></i> Copy from:</span>
                     <select id="copyFromSelect" onchange="applyCopyFromExam()"
-                        style="flex: 1; padding: 7px 10px; border: 1.5px solid #b0bcef; border-radius: 7px;
-                               font-size: 13px; background: white; color: #2c3e50; cursor: pointer;">
+                        style="flex:1;padding:7px 10px;border:1.5px solid #b0bcef;border-radius:7px;font-size:13px;background:white;color:#2c3e50;cursor:pointer;">
                         <option value="">— select an exam to copy its details —</option>
                         ${buildCopyOptions(primaryGroup, primaryLabel)}
                         ${buildCopyOptions(secondaryGroup, secondaryLabel)}
                     </select>
                 </div>` : '';
 
+            const modal = document.createElement('div');
+            modal.style.cssText = 'position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.6);display:flex;align-items:center;justify-content:center;z-index:10000;';
+
+            const panel = document.createElement('div');
+            panel.style.cssText = 'background:white;padding:0;border-radius:16px;box-shadow:0 8px 32px rgba(0,0,0,0.3);width:96%;max-width:1200px;max-height:95vh;overflow:hidden;display:flex;flex-direction:column;';
+
+            // Merge button helper
+            const flexLabel = getCycleBlockForSlot(parseInt(dateIdx), 5, examType) || 'FLEX';
+            const mergeTargetLabel = {0:getPeriodLabel(9),9:getPeriodLabel(1),1:getPeriodLabel(2),2:getPeriodLabel(3),3:getPeriodLabel(4),4:getPeriodLabel(5),5:getPeriodLabel(6),6:getPeriodLabel(7),7:getPeriodLabel(8)};
+            const canMerge = period in mergeTargetLabel;
+            const isMerged = data.slotMergeDown && data.slotMergeDown.has(slotId);
+            const mergeBtnHtml = canMerge
+                ? `<button id="mergeBtn" onclick="toggleMergeDown()" style="padding:8px 14px;background:${isMerged?'#8e44ad':'#ecf0f1'};color:${isMerged?'white':'#7f8c8d'};border:none;border-radius:8px;cursor:pointer;font-size:12px;font-weight:600;">↕ ${isMerged?'Unmerge':'Merge with '+mergeTargetLabel[period]}</button>`
+                : '';
+
             panel.innerHTML = `
-                <div style="padding: 16px 24px; border-bottom: 1px solid #ecf0f1; display: flex; align-items: center; justify-content: space-between; gap: 16px;">
+                <!-- Header -->
+                <div style="padding:16px 24px;border-bottom:1px solid #ecf0f1;display:flex;align-items:center;justify-content:space-between;gap:16px;flex-shrink:0;">
                     <div>
-                        <h3 style="margin: 0; color: #2c3e50; font-size: 18px; font-weight: 600;">
-                            ${EXAM_TYPE_NAMES[examType]} — ${formatDateLong(date)}
-                        </h3>
-                        <div style="margin-top: 4px; color: #7f8c8d; font-size: 13px;">${cycleBlock}</div>
+                        <h3 style="margin:0;color:#2c3e50;font-size:18px;font-weight:600;">${EXAM_TYPE_NAMES[examType]} — ${formatDateLong(date)}</h3>
+                        <div style="margin-top:4px;color:#7f8c8d;font-size:13px;">${cycleBlock}</div>
                     </div>
-                    <div style="display: flex; gap: 8px; flex-shrink: 0; align-items: center;">
-                        <button onclick="deleteExamSlot()" style="padding: 8px 16px; background: #e74c3c; color: white; border: none; border-radius: 8px; cursor: pointer; font-size: 13px; font-weight: 600;">Delete</button>
-                        ${(() => {
-                            // Period indices: 0=P1,9=Break,1=P2,2=P3,3=LUNCH,4=P4,5=FLEX-X,6=P5,7=After School,8=After School(cont.)
-                            // For P4 (index 4), next is FLEX-X — look up dynamically from the cycle calendar
-                            const flexLabel = getCycleBlockForSlot(parseInt(dateIdx), 5, examType) || 'FLEX';
-                            const mergeTargetLabel = {0:getPeriodLabel(9), 9:getPeriodLabel(1), 1:getPeriodLabel(2), 2:getPeriodLabel(3), 3:getPeriodLabel(4), 4:getPeriodLabel(5), 5:getPeriodLabel(6), 6:getPeriodLabel(7), 7:getPeriodLabel(8)};
-                            const canMerge = period in mergeTargetLabel;
-                            if (!canMerge) return '';
-                            const isMerged = data.slotMergeDown && data.slotMergeDown.has(slotId);
-                            return '<button id="mergeBtn" onclick="toggleMergeDown()" style="padding: 8px 14px; background: ' + (isMerged ? '#8e44ad' : '#ecf0f1') + '; color: ' + (isMerged ? 'white' : '#7f8c8d') + '; border: none; border-radius: 8px; cursor: pointer; font-size: 12px; font-weight: 600;" title="Merge this slot visually with the period below it">↕ ' + (isMerged ? 'Unmerge' : 'Merge with ' + mergeTargetLabel[period]) + '</button>';
-                        })()}
-                        <button onclick="closeExamModal(true)" style="padding: 8px 16px; background: #95a5a6; color: white; border: none; border-radius: 8px; cursor: pointer; font-size: 13px; font-weight: 600;">Cancel</button>
-                        <button onclick="saveExamSlot()" style="padding: 8px 16px; background: #3498db; color: white; border: none; border-radius: 8px; cursor: pointer; font-size: 13px; font-weight: 600;">Save</button>
+                    <div style="display:flex;gap:8px;flex-shrink:0;align-items:center;">
+                        <button onclick="deleteExamSlot()" style="padding:8px 16px;background:#e74c3c;color:white;border:none;border-radius:8px;cursor:pointer;font-size:13px;font-weight:600;">Delete</button>
+                        ${mergeBtnHtml}
+                        <button onclick="closeExamModal(true)" style="padding:8px 16px;background:#95a5a6;color:white;border:none;border-radius:8px;cursor:pointer;font-size:13px;font-weight:600;">Cancel</button>
+                        <button onclick="saveExamSlot()" style="padding:8px 16px;background:#3498db;color:white;border:none;border-radius:8px;cursor:pointer;font-size:13px;font-weight:600;">Save</button>
                     </div>
                 </div>
                 ${copyBanner}
-                <div style="padding: 20px 24px;">
-                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 15px;">
-                        <!-- Column 1: Exam Name, Start Time, End Time, Room, Students -->
-                        <div style="display: flex; flex-direction: column; gap: 13px;">
+                <!-- Three-column body -->
+                <div style="display:flex;flex:1;overflow:hidden;min-height:0;">
+                    <!-- Col 1: Exam details -->
+                    <div id="examModalCol1" style="width:28%;min-width:220px;padding:20px;border-right:1px solid #ecf0f1;overflow-y:auto;display:flex;flex-direction:column;gap:12px;transition:width 0.3s ease;">
+                        <div>
+                            <label style="display:block;font-size:12px;font-weight:700;color:#7f8c8d;text-transform:uppercase;letter-spacing:.5px;margin-bottom:5px;">Exam Name</label>
+                            <input type="text" id="examName" value="${examName}" placeholder="e.g., IB MAI HL P1"
+                                style="width:100%;padding:9px 10px;border:2px solid #ddd;border-radius:6px;font-size:13px;box-sizing:border-box;">
+                        </div>
+                        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
                             <div>
-                                <label style="display: block; font-size: 13px; font-weight: 600; color: #2c3e50; margin-bottom: 5px;">Exam Name:</label>
-                                <input type="text" id="examName" value="${examName}" placeholder="e.g., IB MAI HL P1"
-                                       style="width: 100%; padding: 10px; border: 2px solid #ddd; border-radius: 6px; font-size: 13px;">
+                                <label style="display:block;font-size:12px;font-weight:700;color:#7f8c8d;text-transform:uppercase;letter-spacing:.5px;margin-bottom:5px;">Start</label>
+                                <input type="time" id="examTime" value="${(() => { const s=data.slotTimes?.[slotId]||''; if(s) return s; return ['07:45','08:45','09:55','10:55','11:35','12:45','13:35','15:00','16:00'][period]||''; })()}"
+                                    style="width:100%;padding:9px 6px;border:2px solid #ddd;border-radius:6px;font-size:13px;box-sizing:border-box;">
                             </div>
                             <div>
-                                <label style="display: block; font-size: 13px; font-weight: 600; color: #2c3e50; margin-bottom: 5px;">Start Time:</label>
-                                <input type="time" id="examTime" value="${(() => {
-                                    const saved = data.slotTimes ? data.slotTimes[slotId] || '' : '';
-                                    if (saved) return saved;
-                                    const defaults = ['07:45','08:45','09:55','10:55','11:35','12:45','13:35','15:00','16:00'];
-                                    return defaults[period] || '';
-                                })()}"
-                                       style="width: 100%; padding: 10px; border: 2px solid #ddd; border-radius: 6px; font-size: 13px;">
-                            </div>
-                            <div>
-                                <label style="display: block; font-size: 13px; font-weight: 600; color: #2c3e50; margin-bottom: 5px;">End Time:</label>
-                                <input type="time" id="examEndTime" value="${(() => {
-                                    const saved = data.slotEndTimes ? data.slotEndTimes[slotId] || '' : '';
-                                    if (saved) return saved;
-                                    const defaults = ['08:45','09:55','10:55','11:35','12:45','13:35','15:00','16:00','16:30'];
-                                    return defaults[period] || '';
-                                })()}"
-                                       style="width: 100%; padding: 10px; border: 2px solid #ddd; border-radius: 6px; font-size: 13px;">
-                            </div>
-                            <div>
-                                <label style="display: block; font-size: 13px; font-weight: 600; color: #2c3e50; margin-bottom: 5px;">Room:</label>
-                                <input type="text" id="examRoom" value="${data.slotRoom ? data.slotRoom[slotId] || '' : ''}" placeholder="e.g., A101"
-                                       style="width: 100%; padding: 10px; border: 2px solid #ddd; border-radius: 6px; font-size: 13px;">
-                            </div>
-                            <div>
-                                <label style="display: block; font-size: 13px; font-weight: 600; color: #2c3e50; margin-bottom: 5px;">Students:</label>
-                                <input type="number" id="examStudents" value="${data.slotStudents ? data.slotStudents[slotId] || '' : ''}" placeholder="e.g., 24" min="1"
-                                       style="width: 100%; padding: 10px; border: 2px solid #ddd; border-radius: 6px; font-size: 13px;">
+                                <label style="display:block;font-size:12px;font-weight:700;color:#7f8c8d;text-transform:uppercase;letter-spacing:.5px;margin-bottom:5px;">End</label>
+                                <input type="time" id="examEndTime" value="${(() => { const s=data.slotEndTimes?.[slotId]||''; if(s) return s; return ['08:45','09:55','10:55','11:35','12:45','13:35','15:00','16:00','16:30'][period]||''; })()}"
+                                    style="width:100%;padding:9px 6px;border:2px solid #ddd;border-radius:6px;font-size:13px;box-sizing:border-box;">
                             </div>
                         </div>
-
-                        <!-- Column 2: Proctors count, Gender Requirement, Assign Teachers -->
-                        <div style="display: flex; flex-direction: column; gap: 13px;">
-                            <div>
-                                <label style="display: block; font-size: 13px; font-weight: 600; color: #2c3e50; margin-bottom: 5px;">Proctors:</label>
-                                <div style="display: flex; gap: 10px; align-items: center;">
-                                    <button onclick="adjustProctorCountModal(-1)" style="padding: 8px 16px; background: #95a5a6; color: white; border: none; border-radius: 6px; cursor: pointer; font-size: 18px;">−</button>
-                                    <span id="proctorCountDisplay" style="font-size: 18px; font-weight: 600; min-width: 40px; text-align: center;">${proctorCount}</span>
-                                    <button onclick="adjustProctorCountModal(1)" style="padding: 8px 16px; background: #95a5a6; color: white; border: none; border-radius: 6px; cursor: pointer; font-size: 18px;">+</button>
-                                </div>
-                            </div>
-                            <div>
-                                <label style="display: block; font-size: 13px; font-weight: 600; color: #2c3e50; margin-bottom: 5px;">Gender Requirement:</label>
-                                <select id="examGenderReq" style="width: 100%; padding: 10px; border: 2px solid #ddd; border-radius: 6px; font-size: 13px;">
-                                    <option value="" ${!(data.slotGenderReq && data.slotGenderReq[slotId]) ? 'selected' : ''}>No requirement</option>
-                                    <option value="M" ${data.slotGenderReq && data.slotGenderReq[slotId] === 'M' ? 'selected' : ''}>Must be Male (♂)</option>
-                                    <option value="F" ${data.slotGenderReq && data.slotGenderReq[slotId] === 'F' ? 'selected' : ''}>Must be Female (♀)</option>
-                                    <option value="MF" ${data.slotGenderReq && data.slotGenderReq[slotId] === 'MF' ? 'selected' : ''}>1 of each (♂ + ♀)</option>
-                                </select>
-                            </div>
-                            <div id="teacherDropdowns" style="flex: 1;">
-                                <label style="display: block; font-size: 13px; font-weight: 600; color: #2c3e50; margin-bottom: 8px;">Assign Teachers:</label>
-                                ${teacherDropdowns}
-                            </div>
-                            <!-- Guest Proctors -->
-                            <div>
-                                <label style="display:block;font-size:13px;font-weight:600;color:#2c3e50;margin-bottom:8px;">
-                                    Guest Proctors
-                                    <span style="font-size:11px;font-weight:400;color:#7f8c8d;margin-left:4px;">(secretary, admin, volunteer…)</span>
-                                </label>
-                                <div id="guestProctorList" style="display:flex;flex-direction:column;gap:6px;margin-bottom:6px;">
-                                    ${(function() {
-                                        const guests = data.slotGuestProctors ? (data.slotGuestProctors[slotId] || []) : [];
-                                        if (guests.length === 0) return '';
-                                        return guests.map((g, i) => `
-                                            <div style="display:flex;gap:6px;align-items:center;">
-                                                <input type="text" class="guest-proctor-input" value="${g.replace(/"/g,'&quot;')}"
-                                                    placeholder="Full name"
-                                                    style="flex:1;padding:8px 10px;border:2px solid #ddd;border-radius:6px;font-size:13px;">
-                                                <button onclick="this.parentElement.remove()" style="padding:6px 10px;background:#e74c3c;color:white;border:none;border-radius:6px;cursor:pointer;font-size:14px;flex-shrink:0;">✕</button>
-                                            </div>`).join('');
-                                    })()}
-                                </div>
-                                <button onclick="addGuestProctorRow()" style="padding:6px 12px;background:#f0f4ff;color:#3498db;border:1px solid #3498db;border-radius:6px;cursor:pointer;font-size:12px;font-weight:600;">+ Add Guest</button>
-                            </div>
+                        <div>
+                            <label style="display:block;font-size:12px;font-weight:700;color:#7f8c8d;text-transform:uppercase;letter-spacing:.5px;margin-bottom:5px;">Room</label>
+                            <input type="text" id="examRoom" value="${data.slotRoom?.[slotId]||''}" placeholder="e.g., A101"
+                                style="width:100%;padding:9px 10px;border:2px solid #ddd;border-radius:6px;font-size:13px;box-sizing:border-box;">
+                        </div>
+                        <div>
+                            <label style="display:block;font-size:12px;font-weight:700;color:#7f8c8d;text-transform:uppercase;letter-spacing:.5px;margin-bottom:5px;">Students</label>
+                            <input type="number" id="examStudents" value="${data.slotStudents?.[slotId]||''}" placeholder="e.g., 24" min="1"
+                                style="width:100%;padding:9px 10px;border:2px solid #ddd;border-radius:6px;font-size:13px;box-sizing:border-box;">
+                        </div>
+                        <div style="flex:1;">
+                            <label style="display:block;font-size:12px;font-weight:700;color:#7f8c8d;text-transform:uppercase;letter-spacing:.5px;margin-bottom:5px;">Notes</label>
+                            <textarea id="examNotes" placeholder="e.g., Calculator required" rows="6"
+                                style="width:100%;padding:9px 10px;border:2px solid #ddd;border-radius:6px;font-size:13px;resize:vertical;box-sizing:border-box;">${notes}</textarea>
                         </div>
                     </div>
 
-                    <!-- Notes: full width at bottom -->
-                    <div>
-                        <label style="display: block; font-size: 13px; font-weight: 600; color: #2c3e50; margin-bottom: 5px;">Notes:</label>
-                        <textarea id="examNotes" placeholder="e.g., Calculator required" rows="8"
-                                  style="width: 100%; padding: 10px; border: 2px solid #ddd; border-radius: 6px; font-size: 13px; resize: vertical;">${notes}</textarea>
+                    <!-- Col 2: Proctor config -->
+                    <div id="examModalCol2" style="width:32%;min-width:240px;padding:20px;border-right:1px solid #ecf0f1;overflow-y:auto;display:flex;flex-direction:column;gap:14px;transition:width 0.3s ease;">
+                        <div>
+                            <label style="display:block;font-size:12px;font-weight:700;color:#7f8c8d;text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px;">Proctors Needed</label>
+                            <div style="display:flex;gap:8px;align-items:center;">
+                                <button onclick="adjustProctorCountModal(-1)" style="padding:7px 14px;background:#95a5a6;color:white;border:none;border-radius:6px;cursor:pointer;font-size:16px;">−</button>
+                                <span id="proctorCountDisplay" style="font-size:18px;font-weight:600;min-width:32px;text-align:center;">${proctorCount}</span>
+                                <button onclick="adjustProctorCountModal(1)" style="padding:7px 14px;background:#95a5a6;color:white;border:none;border-radius:6px;cursor:pointer;font-size:16px;">+</button>
+                            </div>
+                        </div>
+                        <div>
+                            <label style="display:block;font-size:12px;font-weight:700;color:#7f8c8d;text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px;">Gender Requirement</label>
+                            <select id="examGenderReq" onchange="refreshProctorSlots()" style="width:100%;padding:9px 10px;border:2px solid #ddd;border-radius:6px;font-size:13px;">
+                                <option value="" ${!genderReq?'selected':''}>No requirement</option>
+                                <option value="M" ${genderReq==='M'?'selected':''}>Must be Male (♂)</option>
+                                <option value="F" ${genderReq==='F'?'selected':''}>Must be Female (♀)</option>
+                                <option value="MF" ${genderReq==='MF'?'selected':''}>1 of each (♂ + ♀)</option>
+                            </select>
+                        </div>
+                        <div id="proctorSlotsContainer">
+                            <!-- Rendered by renderProctorSlots() -->
+                        </div>
+                        <div>
+                            <label style="display:block;font-size:12px;font-weight:700;color:#7f8c8d;text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px;">Guest Proctors <span style="font-weight:400;font-style:italic;color:#95a5a6;text-transform:none;letter-spacing:0;">(secretary, admin, volunteer…)</span></label>
+                            <datalist id="guestProctorSuggestions">
+                                ${knownGuestProctors.map(n => `<option value="${n.replace(/"/g,'&quot;')}"></option>`).join('')}
+                            </datalist>
+                            <div id="guestProctorList" style="display:flex;flex-direction:column;gap:6px;margin-bottom:6px;">
+                                ${(function() {
+                                    const guests = data.slotGuestProctors?.[slotId] || [];
+                                    return guests.map((g,i) => `
+                                        <div style="display:flex;gap:6px;align-items:center;">
+                                            <input type="text" class="guest-proctor-input" list="guestProctorSuggestions" value="${g.replace(/"/g,'&quot;')}" placeholder="Full name"
+                                                style="flex:1;padding:8px 10px;border:2px solid #ddd;border-radius:6px;font-size:13px;">
+                                            <button onclick="this.parentElement.remove()" style="padding:6px 10px;background:#e74c3c;color:white;border:none;border-radius:6px;cursor:pointer;font-size:14px;flex-shrink:0;">✕</button>
+                                        </div>`).join('');
+                                })()}
+                            </div>
+                            <button onclick="addGuestProctorRow()" style="padding:6px 12px;background:#f0f4ff;color:#3498db;border:1px solid #3498db;border-radius:6px;cursor:pointer;font-size:12px;font-weight:600;">+ Add Guest</button>
+                        </div>
                     </div>
-                </div>
-                
 
-            `;
-            
+                    <!-- Col 3: Teacher picker (hidden until triggered) -->
+                    <div id="examModalCol3" style="width:0;overflow:hidden;transition:width 0.3s ease;flex-shrink:0;border-left:0px solid #ecf0f1;">
+                        <div id="examModalCol3Inner" style="width:420px;height:100%;display:flex;flex-direction:column;overflow:hidden;">
+                            <div style="padding:14px 16px;background:#f8f9fa;border-bottom:1px solid #e0e4e8;display:flex;align-items:center;justify-content:space-between;flex-shrink:0;">
+                                <div>
+                                    <div style="font-size:13px;font-weight:700;color:#2c3e50;" id="pickerTitle">Select Teacher</div>
+                                    <div style="font-size:11px;color:#7f8c8d;margin-top:2px;" id="pickerSubtitle"></div>
+                                </div>
+                                <button onclick="closeTeacherPicker()" style="padding:5px 10px;background:#e0e4e8;border:none;border-radius:6px;cursor:pointer;font-size:13px;color:#555;">✕</button>
+                            </div>
+                            <div id="teacherPickerList" style="flex:1;overflow-y:auto;padding:10px 12px;display:flex;flex-direction:column;gap:6px;">
+                            </div>
+                        </div>
+                    </div>
+                </div>`;
+
             modal.appendChild(panel);
             document.body.appendChild(modal);
-            
-            // Snapshot merge-related state so backdrop/cancel can revert toggleMergeDown mutations
+
             const _mergeSnapshot = {
-                hasMerge:    data.slotMergeDown ? data.slotMergeDown.has(slotId) : false,
-                endTime:     data.slotEndTimes  ? (data.slotEndTimes[slotId]  || '') : '',
-                preMergeEnd: data._preMergeEndTime ? (data._preMergeEndTime[slotId] || '') : undefined,
+                hasMerge: data.slotMergeDown ? data.slotMergeDown.has(slotId) : false,
+                endTime: data.slotEndTimes?.[slotId] || '',
+                preMergeEnd: data._preMergeEndTime?.[slotId],
             };
-            window.currentExamModal = { modal, examType, slotId, data, proctorCount, isSpecial, _mergeSnapshot };
+
+            // _assignments: array of teacher ids (or null for empty), indexed by slot
+            const _assignments = Array.from({ length: proctorCount }, (_, i) => currentAssignments[i] || null);
+
+            window.currentExamModal = {
+                modal, examType, slotId, data, proctorCount, isSpecial, _mergeSnapshot,
+                _assignments, eligibleTeachers, date, dateIdx, periodIdx, cycleBlock,
+                _activePickerSlot: null,
+            };
+
             modal.onclick = (e) => { if (e.target === modal) closeExamModal(true); };
+
+            // Initial render of proctor slots
+            renderProctorSlots();
         }
+
+        // ── Render proctor slot buttons in Column 2 ────────────────────────────────
+        function renderProctorSlots() {
+            const ctx = window.currentExamModal;
+            const container = document.getElementById('proctorSlotsContainer');
+            if (!container || !ctx) return;
+
+            const genderReq = document.getElementById('examGenderReq')?.value || '';
+            const isMF = genderReq === 'MF';
+
+            let html = '<div style="display:flex;flex-direction:column;gap:8px;">';
+
+            for (let i = 0; i < ctx.proctorCount; i++) {
+                const assignedId = ctx._assignments[i] || null;
+                const teacher = assignedId ? TEACHERS.find(t => t.id === assignedId) : null;
+
+                // Determine label and gender filter for this slot
+                let slotLabel, slotGender;
+                if (isMF) {
+                    slotLabel = i === 0 ? '♂ Male Proctor' : i === 1 ? '♀ Female Proctor' : 'Proctor ' + (i+1);
+                    slotGender = i === 0 ? 'M' : i === 1 ? 'F' : '';
+                } else {
+                    slotLabel = ctx.proctorCount > 1 ? 'Proctor ' + (i+1) : 'Proctor';
+                    slotGender = genderReq === 'M' ? 'M' : genderReq === 'F' ? 'F' : '';
+                }
+
+                const load = teacher ? getTeacherLoadLabel(teacher) : null;
+                const isActive = ctx._activePickerSlot === i;
+                const borderColor = isActive ? '#3498db' : teacher ? '#27ae60' : '#ddd';
+                const bgColor = isActive ? '#eaf4fd' : teacher ? '#f0faf4' : '#fafbfc';
+
+                html += `<div style="border:2px solid ${borderColor};border-radius:8px;background:${bgColor};padding:10px 12px;transition:all 0.15s;">
+                    <div style="font-size:11px;font-weight:700;color:#7f8c8d;text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px;">${slotLabel}</div>
+                    <div style="display:flex;align-items:center;gap:8px;">
+                        <div style="flex:1;min-width:0;">
+                            ${teacher
+                                ? `<div style="font-size:13px;font-weight:700;color:#2c3e50;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${teacher.name}</div>
+                                   <div style="font-size:11px;color:${load.color};font-weight:600;margin-top:2px;">${load.text}</div>`
+                                : `<div style="font-size:13px;color:#b2bec3;font-style:italic;">Not assigned</div>`
+                            }
+                        </div>
+                        <div style="display:flex;gap:4px;flex-shrink:0;">
+                            <button onclick="openTeacherPicker(${i})"
+                                style="padding:5px 10px;background:${isActive?'#3498db':'#ecf0f1'};color:${isActive?'white':'#555'};border:none;border-radius:5px;cursor:pointer;font-size:11px;font-weight:600;">
+                                ${teacher ? '<i class="fa-solid fa-pen-to-square"></i>' : '<i class="fa-solid fa-plus"></i> Assign'}
+                            </button>
+                            ${teacher ? `<button onclick="clearProctorSlot(${i})"
+                                style="padding:5px 8px;background:#fdf0f0;color:#e74c3c;border:1px solid #f5c6c6;border-radius:5px;cursor:pointer;font-size:11px;">✕</button>` : ''}
+                        </div>
+                    </div>
+                </div>`;
+            }
+            html += '</div>';
+            container.innerHTML = html;
+        }
+
+        function getTeacherLoadLabel(teacher) {
+            const assigned = getTotalAssignedHours(teacher.id);
+            const required = teacher.required || 0;
+            const text = assigned + '/' + required + ' sessions';
+            const pct = required > 0 ? assigned / required : 0;
+            const color = pct >= 1 ? '#e74c3c' : pct >= 0.75 ? '#f39c12' : '#27ae60';
+            return { text, color };
+        }
+
+        function refreshProctorSlots() {
+            renderProctorSlots();
+            // Re-open picker for active slot if any with new gender filter
+            const ctx = window.currentExamModal;
+            if (ctx && ctx._activePickerSlot !== null) {
+                openTeacherPicker(ctx._activePickerSlot);
+            }
+        }
+
+        function clearProctorSlot(slotIndex) {
+            const ctx = window.currentExamModal;
+            if (!ctx) return;
+            ctx._assignments[slotIndex] = null;
+            if (ctx._activePickerSlot === slotIndex) closeTeacherPicker();
+            renderProctorSlots();
+        }
+
+        function openTeacherPicker(slotIndex) {
+            const ctx = window.currentExamModal;
+            if (!ctx) return;
+
+            ctx._activePickerSlot = slotIndex;
+            renderProctorSlots(); // update active highlight
+
+            const genderReq = document.getElementById('examGenderReq')?.value || '';
+            const isMF = genderReq === 'MF';
+
+            // Determine gender filter for this slot
+            let filterGender = '';
+            if (isMF) filterGender = slotIndex === 0 ? 'M' : slotIndex === 1 ? 'F' : '';
+            else if (genderReq === 'M') filterGender = 'M';
+            else if (genderReq === 'F') filterGender = 'F';
+
+            const slotLabel = isMF
+                ? (slotIndex === 0 ? 'Male Proctor' : slotIndex === 1 ? 'Female Proctor' : 'Proctor ' + (slotIndex+1))
+                : (ctx.proctorCount > 1 ? 'Proctor ' + (slotIndex+1) : 'Proctor');
+
+            document.getElementById('pickerTitle').textContent = 'Selecting: ' + slotLabel;
+            document.getElementById('pickerSubtitle').textContent = filterGender
+                ? 'Filtered to ' + (filterGender === 'M' ? 'male' : 'female') + ' teachers'
+                : 'All eligible teachers';
+
+            // Filter teachers
+            const alreadyAssigned = new Set(ctx._assignments.filter((id, i) => id && i !== slotIndex));
+            const examNameVal = (ctx.data.slotExamNames || {})[ctx.slotId] || '';
+
+            const candidates = ctx.eligibleTeachers.filter(t => {
+                if (filterGender && t.gender !== filterGender) return false;
+                if (alreadyAssigned.has(t.id)) return false;
+                // Hard block: exam conflict of interest — shown separately at bottom, not selectable
+                if (examNameVal && (teacherExamConflicts[String(t.id)] || new Set()).has(examNameVal)) return false;
+                return true;
+            });
+
+            // Conflicted candidates: same gender filter, shown dimmed at very bottom, no Select button
+            const conflictedCandidates = examNameVal ? ctx.eligibleTeachers.filter(t => {
+                if (filterGender && t.gender !== filterGender) return false;
+                if (alreadyAssigned.has(t.id)) return false;
+                return (teacherExamConflicts[String(t.id)] || new Set()).has(examNameVal);
+            }) : [];
+
+            // Sort: not-at-limit first, then by load %
+            candidates.sort((a, b) => {
+                const aFull = getTotalAssignedHours(a.id) >= (a.required||1);
+                const bFull = getTotalAssignedHours(b.id) >= (b.required||1);
+                if (aFull !== bFull) return aFull ? 1 : -1;
+                const aPct = getTotalAssignedHours(a.id) / Math.max(1, a.required||1);
+                const bPct = getTotalAssignedHours(b.id) / Math.max(1, b.required||1);
+                return aPct - bPct;
+            });
+
+            // Build teacher rows
+            const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+            const dayNames = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+            const date = ctx.date;
+
+            // Get all exam slots on this date for the pills helper
+            const slotsOnDate = [];
+            Object.keys(examData).forEach(et => {
+                const d = examData[et];
+                d.examSlots.forEach(sid => {
+                    const {dateIdx: di} = parseSlotId(sid);
+                    const slotDate = d.dates[di];
+                    if (slotDate && formatDateKey(slotDate) === formatDateKey(date)) slotsOnDate.push({et, sid});
+                });
+            });
+
+            const list = document.getElementById('teacherPickerList');
+            if (!list) return;
+
+            if (candidates.length === 0) {
+                list.innerHTML = '<div style="color:#b2bec3;font-style:italic;font-size:13px;padding:20px 8px;text-align:center;">No eligible teachers available.</div>';
+            } else {
+                const blockKey = ctx.cycleBlock;
+
+                // Split into free vs busy.
+                // FLEX slots have real FLEX-A/B/C/D commitment keys — check them explicitly.
+                // Only non-keyed specials (Lunch, After School, Break) treat everyone as free.
+                const isFlexSlot = blockKey && /^FLEX-/.test(blockKey);
+                const isUnkeyedSpecial = ctx.isSpecial && !isFlexSlot;
+                const freeCandidates = candidates.filter(t => {
+                    const commits = teacherBlockCommitments[t.id] || {};
+                    return isUnkeyedSpecial || (blockKey && !!commits[blockKey]);
+                });
+                const busyCandidates = candidates.filter(t => {
+                    const commits = teacherBlockCommitments[t.id] || {};
+                    return !(isUnkeyedSpecial || (blockKey && !!commits[blockKey]));
+                });
+
+                const buildRow = (t, dimmed) => {
+                    const load = getTeacherLoadLabel(t);
+                    const pills = buildDayLoadPills(t, date, slotsOnDate);
+                    const isSelected = ctx._assignments[slotIndex] === t.id;
+                    const commits = teacherBlockCommitments[t.id] || {};
+                    const isFreeThisBlock = isUnkeyedSpecial || (blockKey && !!commits[blockKey]);
+                    const blockStatus = isFreeThisBlock
+                        ? '<span style="font-size:10px;color:#27ae60;font-weight:600;">✓ Free this block</span>'
+                        : '<span style="font-size:10px;color:#e67e22;font-weight:600;">⚠ Teaching this block</span>';
+                    const wrapStyle = dimmed
+                        ? `border:2px solid ${isSelected?'#3498db':'#e8ecf0'};border-radius:8px;padding:10px 12px;background:${isSelected?'#eaf4fd':'#fafafa'};opacity:0.6;transition:all 0.15s;`
+                        : `border:2px solid ${isSelected?'#3498db':'#e8ecf0'};border-radius:8px;padding:10px 12px;background:${isSelected?'#eaf4fd':'white'};transition:all 0.15s;`;
+                    return `<div style="${wrapStyle}">
+                        <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;">
+                            <div style="flex:1;min-width:0;">
+                                <div style="font-size:13px;font-weight:700;color:#2c3e50;">${t.name}
+                                    <span style="font-size:11px;font-weight:400;color:#95a5a6;margin-left:4px;">${t.gender === 'M' ? '♂' : '♀'} · ${t.program}</span>
+                                </div>
+                                <div style="display:flex;align-items:center;gap:8px;margin-top:2px;">
+                                    <span style="font-size:11px;font-weight:700;color:${load.color};">${load.text}</span>
+                                    ${blockStatus}
+                                </div>
+                            </div>
+                            <button onclick="selectTeacherForSlot(${t.id}, ${slotIndex})"
+                                style="padding:6px 12px;background:${isSelected?'#27ae60':'#3498db'};color:white;border:none;border-radius:6px;cursor:pointer;font-size:12px;font-weight:700;flex-shrink:0;white-space:nowrap;">
+                                ${isSelected ? '✓ Selected' : 'Select'}
+                            </button>
+                        </div>
+                        <div style="font-size:11px;">${pills}</div>
+                    </div>`;
+                };
+
+                let html = freeCandidates.map(t => buildRow(t, false)).join('');
+
+                if (busyCandidates.length > 0) {
+                    if (freeCandidates.length > 0) {
+                        html += `<div style="display:flex;align-items:center;gap:8px;margin:10px 0 8px;">
+                            <div style="flex:1;height:1px;background:#e8ecf0;"></div>
+                            <span style="font-size:10px;font-weight:700;color:#b2bec3;text-transform:uppercase;letter-spacing:0.5px;white-space:nowrap;">Teaching this block</span>
+                            <div style="flex:1;height:1px;background:#e8ecf0;"></div>
+                        </div>`;
+                    }
+                    html += busyCandidates.map(t => buildRow(t, true)).join('');
+                }
+
+                if (conflictedCandidates.length > 0) {
+                    const hasPrevious = freeCandidates.length > 0 || busyCandidates.length > 0;
+                    html += `<div style="display:flex;align-items:center;gap:8px;margin:${hasPrevious ? '10px' : '0'} 0 8px;">
+                        <div style="flex:1;height:1px;background:#fde8e8;"></div>
+                        <span style="font-size:10px;font-weight:700;color:#e74c3c;text-transform:uppercase;letter-spacing:0.5px;white-space:nowrap;">Exam Conflict</span>
+                        <div style="flex:1;height:1px;background:#fde8e8;"></div>
+                    </div>`;
+                    html += conflictedCandidates.map(t => {
+                        const load = getTeacherLoadLabel(t);
+                        const pills = buildDayLoadPills(t, date, slotsOnDate);
+                        return `<div style="border:2px solid #fde8e8;border-radius:8px;padding:10px 12px;background:#fff8f8;opacity:0.65;">
+                            <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;">
+                                <div style="flex:1;min-width:0;">
+                                    <div style="font-size:13px;font-weight:700;color:#2c3e50;">${t.name}
+                                        <span style="font-size:11px;font-weight:400;color:#95a5a6;margin-left:4px;">${t.gender === 'M' ? '♂' : '♀'} · ${t.program}</span>
+                                    </div>
+                                    <div style="display:flex;align-items:center;gap:8px;margin-top:2px;">
+                                        <span style="font-size:11px;font-weight:700;color:${load.color}">${load.text}</span>
+                                        <span style="font-size:10px;color:#e74c3c;font-weight:700;">🚫 Exam conflict</span>
+                                    </div>
+                                </div>
+                                <div style="padding:6px 12px;background:#f5c6c6;color:#a94442;border-radius:6px;font-size:11px;font-weight:700;flex-shrink:0;">Cannot assign</div>
+                            </div>
+                            <div style="font-size:11px;">${pills}</div>
+                        </div>`;
+                    }).join('');
+                }
+
+                list.innerHTML = html;
+            }
+
+            // Slide open col3
+            const col3 = document.getElementById('examModalCol3');
+            const col1 = document.getElementById('examModalCol1');
+            const col2 = document.getElementById('examModalCol2');
+            if (col3) {
+                col3.style.width = '420px';
+                col3.style.borderLeftWidth = '1px';
+            }
+            if (col1) col1.style.width = '26%';
+            if (col2) col2.style.width = '30%';
+        }
+
+        function closeTeacherPicker() {
+            const ctx = window.currentExamModal;
+            if (ctx) ctx._activePickerSlot = null;
+            const col3 = document.getElementById('examModalCol3');
+            const col1 = document.getElementById('examModalCol1');
+            const col2 = document.getElementById('examModalCol2');
+            if (col3) { col3.style.width = '0'; col3.style.borderLeftWidth = '0px'; }
+            if (col1) col1.style.width = '28%';
+            if (col2) col2.style.width = '32%';
+            renderProctorSlots();
+        }
+
+        function selectTeacherForSlot(teacherId, slotIndex) {
+            const ctx = window.currentExamModal;
+            if (!ctx) return;
+            ctx._assignments[slotIndex] = teacherId;
+            closeTeacherPicker();
+            renderProctorSlots();
+        }
+            
+
         
         function adjustProctorCountModal(delta) {
             const ctx = window.currentExamModal;
+            if (!ctx) return;
+            const oldCount = ctx.proctorCount;
             ctx.proctorCount = Math.max(1, Math.min(10, ctx.proctorCount + delta));
             document.getElementById('proctorCountDisplay').textContent = ctx.proctorCount;
-            
-            const container = document.getElementById('teacherDropdowns');
-            const label = container.querySelector('label');
-            
-            const eligibleTeachers = TEACHERS.filter(t => {
-                if (calIsIB(ctx.examType)) {
-                    return t.program === 'IB' || t.program === 'Both';
-                } else {
-                    return t.program === 'AP' || t.program === 'Both';
-                }
-            });
-            
-            const { dateIdx: _di2, periodIdx: _pi2 } = parseSlotId(ctx.slotId);
-            const dateIdx = _di2, periodIdx = _pi2;
-            const cycleBlock = getMergeBlockLabel(ctx.examType, ctx.slotId, getCycleBlockForSlot(dateIdx, periodIdx, ctx.examType));
-            const currentAssignments = ctx.isSpecial ? 
-                (ctx.data.specialAssignments[ctx.slotId] || []) : 
-                (ctx.data.assignments[ctx.slotId] || []);
-            
-            let dropdowns = '';
-            for (let i = 0; i < ctx.proctorCount; i++) {
-                const assignedId = currentAssignments[i] || '';
-                const genderReqAdj = ctx.data.slotGenderReq ? (ctx.data.slotGenderReq[ctx.slotId] || '') : '';
-                const ctxExamName = (ctx.data.slotExamNames || {})[ctx.slotId] || '';
-                const options = buildTeacherOptions(eligibleTeachers, cycleBlock, ctx.isSpecial, assignedId, genderReqAdj, ctxExamName);
-                dropdowns += `
-                    <div style="margin-bottom: 10px;">
-                        <label style="display: block; font-size: 13px; font-weight: 600; color: #2c3e50; margin-bottom: 5px;">Proctor ${i + 1}:</label>
-                        <select id="proctor-${i}" style="width: 100%; padding: 10px; border: 2px solid #ddd; border-radius: 6px; font-size: 13px;">
-                            <option value="">-- Select Teacher --</option>
-                            ${options}
-                        </select>
-                    </div>
-                `;
+            // Grow or shrink _assignments array
+            while (ctx._assignments.length < ctx.proctorCount) ctx._assignments.push(null);
+            if (ctx._assignments.length > ctx.proctorCount) ctx._assignments.length = ctx.proctorCount;
+            // Close picker if its slot was removed
+            if (ctx._activePickerSlot !== null && ctx._activePickerSlot >= ctx.proctorCount) {
+                closeTeacherPicker();
             }
-            
-            container.innerHTML = '';
-            container.appendChild(label);
-            container.innerHTML += dropdowns;
+            renderProctorSlots();
         }
         
         function addGuestProctorRow() {
@@ -3154,7 +3462,7 @@
             if (!list) return;
             const row = document.createElement('div');
             row.style.cssText = 'display:flex;gap:6px;align-items:center;';
-            row.innerHTML = `<input type="text" class="guest-proctor-input" placeholder="Full name"
+            row.innerHTML = `<input type="text" class="guest-proctor-input" list="guestProctorSuggestions" placeholder="Full name"
                 style="flex:1;padding:8px 10px;border:2px solid #ddd;border-radius:6px;font-size:13px;">
                 <button onclick="this.parentElement.remove()" style="padding:6px 10px;background:#e74c3c;color:white;border:none;border-radius:6px;cursor:pointer;font-size:14px;flex-shrink:0;">✕</button>`;
             list.appendChild(row);
@@ -3206,17 +3514,29 @@
             const guests = Array.from(guestInputs).map(i => i.value.trim()).filter(v => v);
             if (guests.length > 0) ctx.data.slotGuestProctors[ctx.slotId] = guests;
             else delete ctx.data.slotGuestProctors[ctx.slotId];
+            // Merge any new names into the persistent guest proctor library
+            guests.forEach(name => {
+                if (name && !knownGuestProctors.includes(name)) knownGuestProctors.push(name);
+            });
+            knownGuestProctors.sort((a, b) => a.localeCompare(b));
 
             ctx.data.slotProctorCount[ctx.slotId] = ctx.proctorCount;
             
             const assignments = [];
             const manualTeachers = [];
-            for (let i = 0; i < ctx.proctorCount; i++) {
-                const select = document.getElementById(`proctor-${i}`);
-                if (select && select.value) {
-                    const teacherId = parseInt(select.value);
-                    assignments.push(teacherId);
-                    manualTeachers.push(teacherId);
+            // Read from _assignments array (new three-column picker) OR legacy proctor-N selects
+            if (ctx._assignments) {
+                ctx._assignments.forEach(id => {
+                    if (id) { assignments.push(id); manualTeachers.push(id); }
+                });
+            } else {
+                for (let i = 0; i < ctx.proctorCount; i++) {
+                    const select = document.getElementById(`proctor-${i}`);
+                    if (select && select.value) {
+                        const teacherId = parseInt(select.value);
+                        assignments.push(teacherId);
+                        manualTeachers.push(teacherId);
+                    }
                 }
             }
             
@@ -3396,39 +3716,16 @@
             const genderEl = document.getElementById('examGenderReq');
             if (genderEl) genderEl.value = o.genderReq;
 
-            // Copy proctorCount from source exam
+            // Copy proctorCount from source exam and reset assignments
             if (o.proctorCount && window.currentExamModal) {
                 const ctx = window.currentExamModal;
                 const targetCount = o.proctorCount;
-                if (targetCount !== ctx.proctorCount) {
-                    ctx.proctorCount = targetCount;
-                    document.getElementById('proctorCountDisplay').textContent = targetCount;
-                    // Rebuild teacher dropdowns for new count
-                    const container = document.getElementById('teacherDropdowns');
-                    const label = container.querySelector('label');
-                    const cycleBlock = getMergeBlockLabel(ctx.examType, ctx.slotId, getCycleBlockForSlot(
-                        parseSlotId(ctx.slotId).dateIdx,
-                        parseSlotId(ctx.slotId).periodIdx,
-                        ctx.examType
-                    ));
-                    const eligibleTeachers = TEACHERS.filter(function(t) {
-                        if (calIsIB(ctx.examType)) {
-                            return t.program === 'IB' || t.program === 'Both';
-                        } else {
-                            return t.program === 'AP' || t.program === 'Both';
-                        }
-                    });
-                    let dropdowns = '';
-                    const genderReqVal = document.getElementById('examGenderReq') ? document.getElementById('examGenderReq').value : '';
-                    const genderCtxExamName = (ctx.data.slotExamNames || {})[ctx.slotId] || '';
-                    for (let i = 0; i < targetCount; i++) {
-                        const opts = buildTeacherOptions(eligibleTeachers, cycleBlock, ctx.isSpecial, '', genderReqVal, genderCtxExamName);
-                        dropdowns += '<div style="margin-bottom: 10px;"><label style="display: block; font-size: 13px; font-weight: 600; color: #2c3e50; margin-bottom: 5px;">Proctor ' + (i + 1) + ':</label><select id="proctor-' + i + '" style="width: 100%; padding: 10px; border: 2px solid #ddd; border-radius: 6px; font-size: 13px;"><option value="">-- Select Teacher --</option>' + opts + '</select></div>';
-                    }
-                    container.innerHTML = '';
-                    container.appendChild(label);
-                    container.innerHTML += dropdowns;
-                }
+                ctx.proctorCount = targetCount;
+                document.getElementById('proctorCountDisplay').textContent = targetCount;
+                // Reset _assignments to empty for new count
+                ctx._assignments = Array.from({ length: targetCount }, () => null);
+                closeTeacherPicker();
+                renderProctorSlots();
             }
 
             // Flash the banner green briefly to confirm
@@ -4385,18 +4682,18 @@
                     <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;">
                         <div style="flex-shrink:0;">
                             <div style="font-size:13px;font-weight:700;color:#2c3e50;margin-bottom:2px;">Admin PIN</div>
-                            <div style="font-size:11px;color:#95a5a6;">4 digits + 2 letters (e.g. 2026AB)</div>
+                            <div style="font-size:11px;color:#95a5a6;">4–8 alphanumeric characters (same format as teachers)</div>
                         </div>
-                        <input type="password" id="adminPinInput" value="${portalMeta.adminPin}" maxlength="6"
-                            placeholder="2026AB"
+                        <input type="password" id="adminPinInput" value="${portalMeta.adminPin}" maxlength="8"
+                            placeholder="e.g. Admin24X"
                             style="width:110px;padding:6px 10px;border:1px solid #ddd;border-radius:6px;font-size:15px;letter-spacing:2px;text-align:center;font-family:monospace;"
-                            oninput="this.value=this.value.replace(/[^a-zA-Z0-9]/g,'').slice(0,6)">
+                            oninput="this.value=this.value.replace(/[^a-zA-Z0-9]/g,'').slice(0,8)">
                         <button onclick="togglePinVisibility('adminPinInput', this)"
                             style="padding:4px 8px;border:1px solid #ddd;border-radius:5px;background:#f8f9fa;color:#7f8c8d;font-size:11px;cursor:pointer;">
                             <i class="fa-solid fa-eye"></i>
                         </button>
                         <span id="adminPinValidation" style="font-size:11px;color:${isValidAdminPinFormat(portalMeta.adminPin)?'#27ae60':'#e74c3c'};">
-                            ${isValidAdminPinFormat(portalMeta.adminPin) ? '✓ Valid format' : '⚠ Must be 4 digits + 2 letters'}
+                            ${isValidAdminPinFormat(portalMeta.adminPin) ? '✓ Valid format' : '⚠ Must be 4–8 alphanumeric characters'}
                         </span>
                     </div>
                 </div>
@@ -4448,7 +4745,7 @@
             if (adminPinEl) {
                 const ap = adminPinEl.value.trim();
                 if (ap && !isValidAdminPinFormat(ap)) {
-                    showPortalMessage('Admin PIN must be 4 digits + 2 letters (e.g. 2026AB)', 'error');
+                    showPortalMessage('Admin PIN must be 4–8 alphanumeric characters', 'error');
                     return;
                 }
                 if (ap) portalMeta.adminPin = ap;
@@ -4474,9 +4771,37 @@
                 return;
             }
 
-            // Push to GitHub using admin's session token
+            // Animate the save button while pushing to GitHub
+            const btn = document.querySelector('[onclick="savePortalPins()"]');
+            const origHtml = btn ? btn.innerHTML : '';
+            const origBg   = btn ? btn.style.background : '';
+            if (btn) {
+                btn.disabled = true;
+                btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin fa-btn-icon"></i> Saving\u2026';
+                btn.style.background = '#e67e22';
+            }
             githubSaveJSON().then(() => {
                 renderPortalSettings(); // refresh validation badges
+                // githubSaveJSON manages its own button (ghJsonBtn) — restore ours separately
+                if (btn) {
+                    btn.disabled = false;
+                    btn.innerHTML = '<i class="fa-solid fa-check fa-btn-icon"></i> Saved!';
+                    btn.style.background = '#27ae60';
+                    setTimeout(() => {
+                        btn.innerHTML = origHtml;
+                        btn.style.background = origBg || '#f39c12';
+                    }, 2500);
+                }
+            }).catch(() => {
+                if (btn) {
+                    btn.disabled = false;
+                    btn.innerHTML = '<i class="fa-solid fa-xmark fa-btn-icon"></i> Failed';
+                    btn.style.background = '#e74c3c';
+                    setTimeout(() => {
+                        btn.innerHTML = origHtml;
+                        btn.style.background = origBg || '#f39c12';
+                    }, 3000);
+                }
             });
         }
         // ── End Portal Access Settings ─────────────────────────────────────────────
@@ -5253,10 +5578,10 @@
             const PAGE_W = 277;
             let globalPage = 1;
 
-            function addFooter() {
+            function addFooter(sectionLabel) {
                 doc.setFontSize(8);
                 doc.setTextColor(180, 180, 180);
-                doc.text('Page ' + globalPage, PAGE_W, 200, { align: 'right' });
+                doc.text((sectionLabel ? sectionLabel + '   ' : '') + 'Page ' + globalPage, PAGE_W, 200, { align: 'right' });
             }
 
             function fmt12h(t) {
@@ -5268,230 +5593,169 @@
                 return h + ':' + m + ampm;
             }
 
-            // Teacher lookup
             const teacherById = {};
             TEACHERS.forEach(function(t) { teacherById[t.id] = t; });
-
-            // Collect all exam slots across all types, sorted by date then period
-            const allExams = [];
-            Object.keys(examData).forEach(function(examType) {
-                const data = examData[examType];
-                const typeName = EXAM_TYPE_NAMES[examType];
-                data.examSlots.forEach(function(slotId) {
-                    const parts = slotId.split('-');
-                    const dateIdx = parseInt(parts[parts.length - 2]);
-                    const periodIdx = parseInt(parts[parts.length - 1]);
-                    const date = data.dates[dateIdx];
-                    if (!date) return;
-                    const cycleBlock = getMergeBlockLabel(examType, slotId, getCycleBlockForSlot(dateIdx, periodIdx, examType));
-                    allExams.push({
-                        date, dateIdx, periodIdx, examType, typeName, slotId,
-                        exam:       data.slotExamNames[slotId]  || '(unnamed)',
-                        startTime:  data.slotTimes     ? (data.slotTimes[slotId]     || '') : '',
-                        endTime:    data.slotEndTimes  ? (data.slotEndTimes[slotId]  || '') : '',
-                        room:       data.slotRoom      ? (data.slotRoom[slotId]      || '') : '',
-                        students:   data.slotStudents  ? (data.slotStudents[slotId]  || '') : '',
-                        notes:      data.slotNotes     ? (data.slotNotes[slotId]     || '') : '',
-                        genderReq:  data.slotGenderReq ? (data.slotGenderReq[slotId] || '') : '',
-                        cycleBlock
-                    });
-                });
-            });
-
-            // Sort by date, then period, then exam type
-            const typeOrder = Object.fromEntries(CALENDAR_KEYS.map((k,i)=>[k,i]));
-            sortExamRows(allExams);
-
-            // Group by date (no merging — one row per slot)
-            const byDate = {};
-            allExams.forEach(function(e) {
-                // Attach teacher names
-                const data = examData[e.examType];
-                const assignedIds = (data.assignments && data.assignments[e.slotId]) || [];
-                e.males = []; e.females = [];
-                assignedIds.forEach(function(id) {
-                    const t = teacherById[id];
-                    if (!t) return;
-                    const name = t.name.replace(/^Mr\.\s*/i, '').replace(/^Ms\.\s*/i, '').replace(/^Mrs\.\s*/i, '');
-                    if (t.gender === 'M') e.males.push(name);
-                    else e.females.push(name);
-                });
-                const dk = formatDateKey(e.date);
-                if (!byDate[dk]) byDate[dk] = { date: e.date, exams: [] };
-                byDate[dk].exams.push(e);
-            });
-
-            // ── Title page header ─────────────────────────────────────────
-            doc.setFont(undefined, 'bold');
-            doc.setFontSize(18);
-            doc.setTextColor(44, 62, 80);
-            doc.text('RIS Exam Timetable 2026', 10, 18);
-            doc.setFont(undefined, 'normal');
-            doc.setFontSize(10);
-            doc.setTextColor(127, 140, 141);
-            doc.text('IB: Apr 27 – May 20   |   AP: May 4 – May 23', 10, 25);
-            doc.setDrawColor(44, 62, 80);
-            doc.setLineWidth(0.5);
-            doc.line(10, 28, PAGE_W, 28);
-
-            let y = 35;
-
-            // Columns: TYPE | BLOCK | EXAM | ROOM | STUD | GDR | START | END | M | F
-            const C = { type: 10, block: 24, exam: 42, room: 114, stud: 136, gdr: 146, start: 154, end: 170, male: 184, female: 207, notes: 228 };
-            const NOTES_W = 277 - 228 - 2; // ~47mm for notes column
-
-            function drawDateHeader(dateObj) {
-                if (y > 190) { addFooter(); doc.addPage(); globalPage++; y = 12; }
-                const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-                const days = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
-                const dayStr = days[dateObj.getDay()];
-                const dateStr = months[dateObj.getMonth()] + ' ' + dateObj.getDate();
-                const dk = formatDateKey(dateObj);
-                const block = RIS_CYCLE_CALENDAR[dk] || '';
-
-                doc.setFillColor(44, 62, 80);
-                doc.rect(10, y - 4, PAGE_W, 8, 'F');
-                doc.setFont(undefined, 'bold');
-                doc.setFontSize(9);
-                doc.setTextColor(255, 255, 255);
-                doc.text(dayStr + ', ' + dateStr + (block && block !== '?' ? '  ·  ' + block : ''), 12, y + 0.5);
-                y += 8;
-            }
-
-            function drawColHeaders() {
-                doc.setFontSize(7);
-                doc.setTextColor(150, 150, 150);
-                doc.setFont(undefined, 'normal');
-                doc.text('TYPE',  C.type,   y);
-                doc.text('BLOCK', C.block,  y);
-                doc.text('EXAM',  C.exam,   y);
-                doc.text('ROOM',  C.room,   y);
-                doc.text('STUD',  C.stud,   y);
-                doc.text('GDR',   C.gdr,    y);
-                doc.text('START', C.start,  y);
-                doc.text('END',   C.end,    y);
-                doc.text('M',     C.male,   y);
-                doc.text('F',     C.female, y);
-                doc.text('NOTES', C.notes,  y);
-                doc.setDrawColor(220, 220, 220);
-                doc.line(10, y + 1, PAGE_W, y + 1);
-                y += 5;
-            }
-
-            function truncate(str, maxW) {
-                let t = str;
-                while (doc.getTextWidth(t) > maxW && t.length > 2) t = t.slice(0, -1);
-                return t === str ? str : t + '…';
-            }
 
             const typeColors = Object.fromEntries(
                 CALENDAR_META.map((m, i) => [m.key, [
                     [39,174,96],[39,130,180],[52,152,219],
                     [155,89,182],[180,70,150],[200,100,80],[80,140,200]
                 ][i] || [128,128,128]])
-                .concat([['AP*',[192,57,43]]])
             );
-            // typeShort: maps display name -> internal key (for PDF colour lookup)
-            const typeShort = Object.fromEntries(
-                CALENDAR_KEYS.map(k => [calLabel(k), k])
-                .concat([['AP*','AP*']])
-            );
+            const typeShort = Object.fromEntries(CALENDAR_KEYS.map(k => [calLabel(k), k]));
 
-            // Render each date group — one row per slot
-            const dateKeys = Object.keys(byDate).sort();
-            dateKeys.forEach(function(dk) {
-                const group = byDate[dk];
-                drawDateHeader(group.date);
-                drawColHeaders();
+            const C = { type: 10, block: 24, exam: 42, room: 114, stud: 136, gdr: 146, start: 154, end: 170, male: 184, female: 207, notes: 228 };
+            const NOTES_W = PAGE_W - 228 - 2;
 
-                let rowIdx = 0;
-                group.exams.forEach(function(e) {
-                    if (y > 185) { addFooter(); doc.addPage(); globalPage++; y = 12; drawColHeaders(); rowIdx = 0; }
+            function truncate(str, maxW) {
+                let t = str;
+                while (doc.getTextWidth(t) > maxW && t.length > 2) t = t.slice(0, -1);
+                return t === str ? str : t + '\u2026';
+            }
 
-                    doc.setFontSize(8);
-                    doc.setFont(undefined, 'normal');
+            function drawColHeaders(y) {
+                doc.setFontSize(7); doc.setTextColor(150,150,150); doc.setFont(undefined,'normal');
+                doc.text('TYPE',C.type,y); doc.text('BLOCK',C.block,y); doc.text('EXAM',C.exam,y);
+                doc.text('ROOM',C.room,y); doc.text('STUD',C.stud,y); doc.text('GDR',C.gdr,y);
+                doc.text('START',C.start,y); doc.text('END',C.end,y);
+                doc.text('M',C.male,y); doc.text('F',C.female,y); doc.text('NOTES',C.notes,y);
+                doc.setDrawColor(220,220,220); doc.line(10,y+1,PAGE_W,y+1);
+                return y + 5;
+            }
 
-                    const short = typeShort[e.typeName] || e.typeName;
-                    const col = typeColors[short] || [80, 80, 80];
+            function drawDateHeader(dateObj, y) {
+                const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+                const days = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+                const dk = formatDateKey(dateObj);
+                const block = RIS_CYCLE_CALENDAR[dk] || '';
+                doc.setFillColor(44,62,80);
+                doc.rect(10, y-4, PAGE_W, 8, 'F');
+                doc.setFont(undefined,'bold'); doc.setFontSize(9); doc.setTextColor(255,255,255);
+                doc.text(days[dateObj.getDay()] + ', ' + months[dateObj.getMonth()] + ' ' + dateObj.getDate() + (block && block !== '?' ? '  \u00b7  ' + block : ''), 12, y+0.5);
+                return y + 8;
+            }
 
-                    // Pre-calculate row height so we can draw background first
-                    const noteLines = e.notes ? e.notes.split('\n').map(function(l){ return l.trim(); }).filter(Boolean) : [];
-                    const rowH = Math.max(6, noteLines.length * 3.8 + 2.5);
-
-                    // Alternating background
-                    if (rowIdx % 2 === 1) {
-                        doc.setFillColor(247, 249, 252);
-                        doc.rect(10, y - 4, PAGE_W, rowH, 'F');
-                    }
-                    rowIdx++;
-
-                    // TYPE
-                    doc.setFont(undefined, 'bold');
-                    doc.setTextColor(col[0], col[1], col[2]);
-                    doc.text(short, C.type, y);
-
-                    // BLOCK
-                    doc.setFont(undefined, 'normal');
-                    doc.setFontSize(7);
-                    doc.setTextColor(150, 150, 150);
-                    doc.text(e.cycleBlock || '', C.block, y);
-
-                    doc.setFontSize(8);
-
-                    // EXAM
-                    doc.setTextColor(40, 40, 40);
-                    doc.text(truncate(e.exam, C.room - C.exam - 2), C.exam, y);
-
-                    // ROOM
-                    doc.setTextColor(100, 100, 100);
-                    doc.text(truncate(e.room || '-', C.stud - C.room - 2), C.room, y);
-
-                    // STUD
-                    doc.setTextColor(80, 80, 80);
-                    doc.text(e.students ? String(e.students) : '-', C.stud, y);
-
-                    // GDR (gender requirement)
-                    if (e.genderReq && e.genderReq !== 'MF') {
-                        const gdrColor = e.genderReq === 'M' ? [52,152,219] : [192,57,43];
-                        doc.setTextColor(gdrColor[0], gdrColor[1], gdrColor[2]);
-                        doc.setFont(undefined, 'bold');
-                        doc.text(e.genderReq, C.gdr, y);
-                        doc.setFont(undefined, 'normal');
-                    } else if (e.genderReq === 'MF') {
-                        doc.setTextColor(120, 120, 120);
-                        doc.text('M+F', C.gdr, y);
-                    }
-
-                    // START / END
-                    doc.setTextColor(40, 40, 40);
-                    doc.text(fmt12h(e.startTime), C.start, y);
-                    doc.text(fmt12h(e.endTime),   C.end,   y);
-
-                    // M proctors (blue)
-                    doc.setFontSize(7);
-                    doc.setTextColor(52, 152, 219);
-                    doc.text(truncate(e.males.join(', ') || '-', C.notes - C.male - 2), C.male, y);
-
-                    // F proctors (red)
-                    doc.setTextColor(192, 57, 43);
-                    doc.text(truncate(e.females.join(', ') || '-', C.notes - C.female - 2), C.female, y);
-
-                    // NOTES column — each line on its own row
-                    if (noteLines.length > 0) {
-                        doc.setFontSize(6.5); doc.setFont(undefined, 'normal'); doc.setTextColor(100, 100, 100);
-                        noteLines.forEach(function(line, li) {
-                            doc.text(truncate(line, NOTES_W), C.notes, y + li * 3.8);
+            // Build exam list filtered by program
+            function buildExamList(programFilter) {
+                const allExams = [];
+                Object.keys(examData).forEach(function(examType) {
+                    const meta = calMeta(examType);
+                    if (programFilter === 'IB' && meta && meta.program !== 'IB') return;
+                    if (programFilter === 'AP' && meta && meta.program !== 'AP') return;
+                    const data = examData[examType];
+                    data.examSlots.forEach(function(slotId) {
+                        const parts = slotId.split('-');
+                        const dateIdx = parseInt(parts[parts.length-2]);
+                        const periodIdx = parseInt(parts[parts.length-1]);
+                        const date = data.dates[dateIdx];
+                        if (!date) return;
+                        const cycleBlock = getMergeBlockLabel(examType, slotId, getCycleBlockForSlot(dateIdx, periodIdx, examType));
+                        const assignedIds = (data.assignments && data.assignments[slotId]) || [];
+                        const males = [], females = [];
+                        assignedIds.forEach(function(id) {
+                            const t = teacherById[id];
+                            if (!t) return;
+                            const name = t.name.replace(/^(Mr\.|Ms\.|Mrs\.)\s*/i,'');
+                            (t.gender === 'M' ? males : females).push(name);
                         });
-                        doc.setFont(undefined, 'normal');
-                    }
-
-                    y += rowH;
+                        allExams.push({
+                            date, dateIdx, periodIdx, examType, slotId, males, females,
+                            typeName: calLabel(examType),
+                            exam:      data.slotExamNames[slotId]  || '(unnamed)',
+                            startTime: data.slotTimes     ? (data.slotTimes[slotId]     || '') : '',
+                            endTime:   data.slotEndTimes  ? (data.slotEndTimes[slotId]  || '') : '',
+                            room:      data.slotRoom      ? (data.slotRoom[slotId]      || '') : '',
+                            students:  data.slotStudents  ? (data.slotStudents[slotId]  || '') : '',
+                            notes:     data.slotNotes     ? (data.slotNotes[slotId]     || '') : '',
+                            genderReq: data.slotGenderReq ? (data.slotGenderReq[slotId] || '') : '',
+                            cycleBlock,
+                        });
+                    });
                 });
+                sortExamRows(allExams);
+                const byDate = {};
+                allExams.forEach(function(e) {
+                    const dk = formatDateKey(e.date);
+                    if (!byDate[dk]) byDate[dk] = { date: e.date, exams: [] };
+                    byDate[dk].exams.push(e);
+                });
+                return byDate;
+            }
 
-                y += 4;
-            });
+            function renderSection(programFilter, sectionTitle, subtitle, isFirst) {
+                if (!isFirst) { doc.addPage(); globalPage++; }
 
-            addFooter();
+                // Section title page header
+                doc.setFont(undefined,'bold'); doc.setFontSize(18); doc.setTextColor(44,62,80);
+                doc.text(sectionTitle, 10, 18);
+                doc.setFont(undefined,'normal'); doc.setFontSize(10); doc.setTextColor(127,140,141);
+                doc.text(subtitle, 10, 25);
+                doc.setDrawColor(44,62,80); doc.setLineWidth(0.5); doc.line(10,28,PAGE_W,28);
+
+                let y = 35;
+                const byDate = buildExamList(programFilter);
+                const dateKeys = Object.keys(byDate).sort();
+
+                dateKeys.forEach(function(dk) {
+                    const group = byDate[dk];
+                    if (y > 185) { addFooter(programFilter || 'Full'); doc.addPage(); globalPage++; y = 12; }
+                    y = drawDateHeader(group.date, y);
+                    y = drawColHeaders(y);
+
+                    let rowIdx = 0;
+                    group.exams.forEach(function(e) {
+                        if (y > 185) { addFooter(programFilter || 'Full'); doc.addPage(); globalPage++; y = 12; y = drawColHeaders(y); rowIdx = 0; }
+
+                        doc.setFontSize(8); doc.setFont(undefined,'normal');
+                        const short = typeShort[e.typeName] || e.typeName;
+                        const col = typeColors[short] || [80,80,80];
+                        const noteLines = e.notes ? e.notes.split('\n').map(l=>l.trim()).filter(Boolean) : [];
+                        const rowH = Math.max(6, noteLines.length * 3.8 + 2.5);
+
+                        if (rowIdx % 2 === 1) { doc.setFillColor(247,249,252); doc.rect(10, y-4, PAGE_W, rowH, 'F'); }
+                        rowIdx++;
+
+                        doc.setFont(undefined,'bold'); doc.setTextColor(col[0],col[1],col[2]);
+                        doc.text(short, C.type, y);
+                        doc.setFont(undefined,'normal'); doc.setFontSize(7); doc.setTextColor(150,150,150);
+                        doc.text(e.cycleBlock || '', C.block, y);
+                        doc.setFontSize(8); doc.setTextColor(40,40,40);
+                        doc.text(truncate(e.exam, C.room-C.exam-2), C.exam, y);
+                        doc.setTextColor(100,100,100);
+                        doc.text(truncate(e.room || '-', C.stud-C.room-2), C.room, y);
+                        doc.setTextColor(80,80,80);
+                        doc.text(e.students ? String(e.students) : '-', C.stud, y);
+                        if (e.genderReq && e.genderReq !== 'MF') {
+                            const gc = e.genderReq === 'M' ? [52,152,219] : [192,57,43];
+                            doc.setTextColor(gc[0],gc[1],gc[2]); doc.setFont(undefined,'bold');
+                            doc.text(e.genderReq, C.gdr, y); doc.setFont(undefined,'normal');
+                        } else if (e.genderReq === 'MF') {
+                            doc.setTextColor(120,120,120); doc.text('M+F', C.gdr, y);
+                        }
+                        doc.setTextColor(40,40,40);
+                        doc.text(fmt12h(e.startTime), C.start, y);
+                        doc.text(fmt12h(e.endTime), C.end, y);
+                        doc.setFontSize(7);
+                        doc.setTextColor(52,152,219);
+                        doc.text(truncate(e.males.join(', ') || '-', C.notes-C.male-2), C.male, y);
+                        doc.setTextColor(192,57,43);
+                        doc.text(truncate(e.females.join(', ') || '-', C.notes-C.female-2), C.female, y);
+                        if (noteLines.length > 0) {
+                            doc.setFontSize(6.5); doc.setFont(undefined,'normal'); doc.setTextColor(100,100,100);
+                            noteLines.forEach(function(line, li) { doc.text(truncate(line, NOTES_W), C.notes, y+li*3.8); });
+                        }
+                        y += rowH;
+                    });
+                    y += 4;
+                });
+                addFooter(programFilter || 'Full');
+            }
+
+            // Render three sections: Full → IB only → AP only
+            renderSection(null, 'RIS Exam Timetable 2026 — Full', 'IB: Apr 27 \u2013 May 20   |   AP: May 4 \u2013 May 23', true);
+            renderSection('IB',  'RIS Exam Timetable 2026 — IB', 'IB: Apr 27 \u2013 May 20', false);
+            renderSection('AP',  'RIS Exam Timetable 2026 — AP', 'AP: May 4 \u2013 May 23', false);
+
             doc.save('RIS-Exam-Timetable-2026.pdf');
         }
 
@@ -5906,6 +6170,7 @@
                     examData[t].assignments = {};
                     examData[t].specialAssignments = {};
                     examData[t].manualAssignments = {};
+                    examData[t].slotGuestProctors = {};
                 });
                 autoSave();
                 const examTabs = CALENDAR_KEYS;
@@ -5964,11 +6229,27 @@
             input.click();
         }
         
+        let _unsavedChanges = false;
+
         function autoSave() {
             try {
                 const state = buildStateObject();
                 localStorage.setItem('risScheduler', JSON.stringify(state));
+                _unsavedChanges = true;
+                updateUnsavedIndicator();
             } catch (e) { console.error('Save failed:', e); }
+        }
+
+        function updateUnsavedIndicator() {
+            const btn = document.getElementById('ghJsonBtn');
+            if (!btn) return;
+            if (_unsavedChanges) {
+                btn.style.boxShadow = '0 0 0 3px rgba(243,156,18,0.5)';
+                btn.title = 'Unsaved changes — click to save to GitHub';
+            } else {
+                btn.style.boxShadow = '';
+                btn.title = '';
+            }
         }
         
         // ─── MY AVAILABILITY TAB ───────────────────────────────────────────────────
@@ -7513,6 +7794,7 @@
                     s.teacherExamConflicts[id] = Array.from(conflicts);
                 }
             });
+            s.knownGuestProctors = knownGuestProctors.slice();
             s.schedulerSettings = schedulerSettings;
             s.bellSchedule = BELL_SCHEDULE;
             s.bellPeriodMap = {...BELL_TO_PERIOD_IDX};
@@ -7616,6 +7898,9 @@
                     teacherBlockCommitments[id][block] = new Date(state.teacherBlockCommitments[id][block]);
                 });
             });
+            // Restore guest proctor library
+            knownGuestProctors = Array.isArray(state.knownGuestProctors) ? state.knownGuestProctors.slice() : [];
+
             // Deserialize exam conflicts: Array -> Set (always string keys)
             teacherExamConflicts = {};
             if (state.teacherExamConflicts) {
@@ -7665,7 +7950,7 @@
             });
             // Restore portal meta (published, globalLock, adminPin)
             if (state.meta) {
-                portalMeta = Object.assign({ published: false, globalLock: false, adminPin: '2026AB' }, state.meta);
+                portalMeta = Object.assign({ published: false, globalLock: false, adminPin: '2026ris' }, state.meta);
             }
             // Sync scheduler toggles for any calendar NOT present in the saved state
             // (i.e. new calendars with no saved settings yet). Calendars that have
@@ -7735,13 +8020,52 @@
             el._timer = setTimeout(() => { el.style.opacity = '0'; }, 3500);
         }
 
+        // ── Page mask — blocks interaction during claim/unclaim writes ─────────────
+        function showPageMask(msg) {
+            let el = document.getElementById('teacherPageMask');
+            if (!el) {
+                el = document.createElement('div');
+                el.id = 'teacherPageMask';
+                el.style.cssText = 'position:fixed;inset:0;z-index:99990;background:rgba(28,40,51,0.55);backdrop-filter:blur(2px);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;';
+                document.body.appendChild(el);
+            }
+            el.innerHTML = `
+                <div style="background:white;border-radius:14px;padding:28px 40px;text-align:center;box-shadow:0 8px 32px rgba(0,0,0,0.3);min-width:220px;">
+                    <i class="fa-solid fa-spinner fa-spin" style="font-size:28px;color:#3498db;margin-bottom:12px;display:block;"></i>
+                    <div style="font-size:14px;font-weight:700;color:#2c3e50;">${msg || 'Saving\u2026'}</div>
+                </div>`;
+            el.style.display = 'flex';
+        }
+        function hidePageMask() {
+            const el = document.getElementById('teacherPageMask');
+            if (el) el.style.display = 'none';
+        }
+
+        // ── Stealth refresh — re-fetches state and re-renders without page reload ──
+        async function stealthRefresh(msg) {
+            showPageMask(msg || 'Updating schedule\u2026');
+            try {
+                const res = await fetch(ghApiUrl(GH_LATEST) + '?ref=' + GH_BRANCH + '&t=' + Date.now(), { cache: 'no-store' });
+                if (res.ok) {
+                    const fi = await res.json();
+                    applyStateObject(JSON.parse(fromBase64(fi.content)));
+                    cachedLatestSha = fi.sha;
+                }
+            } catch(e) {
+                console.warn('[stealthRefresh]', e);
+            }
+            if (currentTab !== 'TEACHER_SCHEDULES') switchTab('TEACHER_SCHEDULES');
+            renderTeacherSchedules();
+            hidePageMask();
+        }
+        // ── End page mask / stealth refresh ───────────────────────────────────────
+
         // ── Teacher self-claim / unclaim via Cloudflare Worker ────────────────────
         const WORKER_URL = 'https://ris-scheduler-v2.benjaminr.workers.dev';
 
         async function claimSlot(calKey, slotId) {
             if (!currentSession || currentSession.role !== 'teacher') return;
-            const btn = document.getElementById('claim-btn-' + slotId);
-            if (btn) { btn.disabled = true; btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i>'; }
+            showPageMask('Claiming slot\u2026');
             try {
                 const res = await fetch(WORKER_URL, {
                     method: 'POST',
@@ -7750,40 +8074,31 @@
                 });
                 const data = await res.json();
                 if (!res.ok) {
+                    hidePageMask();
                     if (res.status === 409 && data.conflict) {
-                        showPortalMessage('That slot was just updated. Reloading…', 'info');
-                        setTimeout(() => { cachedLatestSha = null; location.reload(); }, 1800);
+                        showPortalMessage('That slot was just updated. Refreshing\u2026', 'info');
+                        await stealthRefresh('Refreshing schedule\u2026');
                     } else if (res.status === 403 && data.error && data.error.includes('not published')) {
                         currentSession = null; adminUnlocked = false; updateLockUI();
                         showPortalMessage('The portal is currently unavailable.', 'warning');
                     } else {
                         showPortalMessage('Error: ' + (data.error || 'Unknown error'), 'error');
-                        if (btn) { btn.disabled = false; btn.innerHTML = '<i class="fa-solid fa-plus"></i> Claim'; }
                     }
                     return;
                 }
                 cachedLatestSha = data.newSha;
-                const freshRes = await fetch(ghApiUrl(GH_LATEST) + '?ref=' + GH_BRANCH + '&t=' + Date.now(), { cache: 'no-store' });
-                if (freshRes.ok) {
-                    const fi = await freshRes.json();
-                    const savedTab = currentTab;
-                    applyStateObject(JSON.parse(fromBase64(fi.content)));
-                    cachedLatestSha = fi.sha;
-                    if (savedTab === 'TEACHER_SCHEDULES') switchTab('TEACHER_SCHEDULES');
-                }
-                renderTeacherSchedules();
+                await stealthRefresh('Updating your schedule\u2026');
                 showPortalMessage('Slot claimed! \u2713', 'success');
             } catch(e) {
                 console.error('[Claim]', e);
+                hidePageMask();
                 showPortalMessage('Error: ' + e.message, 'error');
-                if (btn) { btn.disabled = false; btn.innerHTML = '<i class="fa-solid fa-plus"></i> Claim'; }
             }
         }
 
         async function unclaimSlot(calKey, slotId) {
             if (!currentSession || currentSession.role !== 'teacher') return;
-            const btn = document.getElementById('unclaim-btn-' + slotId);
-            if (btn) { btn.disabled = true; btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i>'; }
+            showPageMask('Unclaiming slot\u2026');
             try {
                 const res = await fetch(WORKER_URL, {
                     method: 'POST',
@@ -7792,36 +8107,28 @@
                 });
                 const data = await res.json();
                 if (!res.ok) {
+                    hidePageMask();
                     if (res.status === 409 && data.conflict) {
-                        showPortalMessage('Schedule was updated. Reloading…', 'info');
-                        setTimeout(() => { cachedLatestSha = null; location.reload(); }, 1800);
+                        showPortalMessage('Schedule was updated. Refreshing\u2026', 'info');
+                        await stealthRefresh('Refreshing schedule\u2026');
                     } else if (res.status === 403 && data.locked) {
                         showPortalMessage('The schedule has been locked. Unclaiming is no longer available.', 'warning');
-                        cachedLatestSha = null; location.reload();
+                        await stealthRefresh('Refreshing schedule\u2026');
                     } else if (res.status === 403 && data.error && data.error.includes('not published')) {
                         currentSession = null; adminUnlocked = false; updateLockUI();
                         showPortalMessage('The portal is currently unavailable.', 'warning');
                     } else {
                         showPortalMessage('Error: ' + (data.error || 'Unknown error'), 'error');
-                        if (btn) { btn.disabled = false; btn.innerHTML = '<i class="fa-solid fa-xmark"></i> Unclaim'; }
                     }
                     return;
                 }
                 cachedLatestSha = data.newSha;
-                const freshRes = await fetch(ghApiUrl(GH_LATEST) + '?ref=' + GH_BRANCH + '&t=' + Date.now(), { cache: 'no-store' });
-                if (freshRes.ok) {
-                    const fi = await freshRes.json();
-                    const savedTab = currentTab;
-                    applyStateObject(JSON.parse(fromBase64(fi.content)));
-                    cachedLatestSha = fi.sha;
-                    if (savedTab === 'TEACHER_SCHEDULES') switchTab('TEACHER_SCHEDULES');
-                }
-                renderTeacherSchedules();
+                await stealthRefresh('Updating your schedule\u2026');
                 showPortalMessage('Slot unclaimed.', 'info');
             } catch(e) {
                 console.error('[Unclaim]', e);
+                hidePageMask();
                 showPortalMessage('Error: ' + e.message, 'error');
-                if (btn) { btn.disabled = false; btn.innerHTML = '<i class="fa-solid fa-xmark"></i> Unclaim'; }
             }
         }
         // ── End teacher claim/unclaim ──────────────────────────────────────────────
@@ -7933,6 +8240,8 @@
 
                 btn.innerHTML = '<i class="fa-solid fa-check fa-btn-icon"></i> Saved!';
                 btn.style.background = '#27ae60';
+                _unsavedChanges = false;
+                updateUnsavedIndicator();
                 showGhToast('success', '\u2713 Saved \u2014 ' + tsFriendly + ' ICT');
                 setTimeout(() => { btn.innerHTML = orig; btn.style.background = '#24292e'; btn.disabled = false; }, 3000);
             } catch(e) {
@@ -9670,3 +9979,4 @@
     </script>
 </body>
 </html>
+
