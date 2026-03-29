@@ -5715,7 +5715,7 @@
       "gender": "M",
       "program": "Both",
       "color": "#3498db",
-      "pin": ""
+      "pin": "1234"
     },
     {
       "id": 30,
@@ -7718,6 +7718,7 @@
       "AP Human Geography ÃÂ· FD"
     ]
   },
+  "knownGuestProctors": [],
   "schedulerSettings": {
     "cal-1": {
       "lunch": true,
@@ -8169,7 +8170,7 @@
   "meta": {
     "published": true,
     "globalLock": false,
-    "adminPin": "2026RI",
+    "adminPin": "2026RIS",
     "writeToken": "Z2l0aHViX3BhdF8xMUI3Q1hQSUEwczBLMXRSZk9sQVVjX1RHcXlVRlc1WGlrcWNKQkRyQk1pc0x3YjFIaTZKU0ZWN2IwcjFtUDRzWjM1TlVGNkZLTHJaNG92UVRV"
   }
 }
