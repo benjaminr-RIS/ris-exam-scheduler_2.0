@@ -2140,28 +2140,50 @@
         // Returns an HTML string of colored pills showing a teacher's schedule for a date.
         // salmon/red = teaching (busy block), blue = proctoring, gold = flex,
         // purple = lunch, grey = after school, light grey = free
-        function buildDayLoadPills(teacher, date, examSlotsOnDate) {
+        // Returns the set of cycle block keys this teacher is already assigned to on the given date.
+        // Reads live in-memory examData so unsaved (pending) assignments are reflected immediately.
+        function getTeacherDayAssignedBlocks(teacherId, examSlotsOnDate) {
+            const assignedBlocks = new Set();
+            (examSlotsOnDate || []).forEach(({et, sid}) => {
+                const d = examData[et];
+                if (!d) return;
+                const pIdx = parseInt(parseSlotId(sid).periodIdx);
+                const isSpecialSlot = [3,5,7,8,9,10].includes(pIdx);
+                const assignedArr = isSpecialSlot
+                    ? (d.specialAssignments[sid] || [])
+                    : (d.assignments[sid] || []);
+                if (!assignedArr.includes(teacherId)) return;
+                const raw = getCycleBlockForSlot(parseSlotId(sid).dateIdx, pIdx, et);
+                const merged = getMergeBlockLabel(et, sid, raw);
+                (merged || raw || '').split('+').forEach(p => { if (p) assignedBlocks.add(p); });
+            });
+            return assignedBlocks;
+        }
+
+        function buildDayLoadPills(teacher, date, examSlotsOnDate, highlightBlock) {
             const schedule = getScheduleForDate(date);
             if (!schedule) return '<span style="font-size:11px;color:#b2bec3;font-style:italic;">No cycle data</span>';
 
             const commitments = teacherBlockCommitments[teacher.id] || {};
+            const assignedTodayBlocks = getTeacherDayAssignedBlocks(teacher.id, examSlotsOnDate);
+
+            // Keyed parts of the slot currently being picked — for bold outline highlight
+            const UNKEYED = /^(BREAK|LUNCH|After School)$/i;
+            const highlightParts = new Set(
+                (highlightBlock || '').split('+').filter(p => p && !UNKEYED.test(p))
+            );
 
             function formatLabel(b) {
                 if (b === 'LUNCH') return 'Lunch';
                 if (b === 'After School') return 'After';
-                if (/^FLEX-/.test(b)) return 'Flex-' + b[5]; // FLEX-C → Flex-C
-                return b; // A1, B3, etc.
+                if (/^FLEX-/.test(b)) return 'Flex-' + b[5];
+                return b;
             }
 
             function getPillClass(block) {
                 if (block === 'LUNCH') return 'lunch';
                 if (block === 'After School') return 'after';
-                if (/^FLEX-/.test(block)) {
-                    // Salmon if NOT marked available (teacher unavailable for flex)
-                    return commitments[block] ? 'flex' : 'busy';
-                }
-                // Regular block: salmon = teaching/unavailable (no commitment set)
-                // grey = free (commitment present = available to proctor)
+                if (/^FLEX-/.test(block)) return commitments[block] ? 'flex' : 'busy';
                 return commitments[block] ? 'free' : 'busy';
             }
 
@@ -2175,14 +2197,20 @@
             const pills = deduped.map(block => {
                 const cls   = getPillClass(block);
                 const label = formatLabel(block);
-                const title = cls === 'busy' ? 'Teaching / not available to proctor' : 'Available to proctor';
-                return `<span class="dl-pill ${cls}" title="${block} — ${title}">${label}</span>`;
+                const isTarget = highlightParts.has(block);
+                const isBooked = assignedTodayBlocks.has(block);
+                const extraStyle = isTarget
+                    ? 'outline:2px solid #1a1a1a;outline-offset:1px;font-weight:800;'
+                    : isBooked ? 'outline:2px solid #e67e22;outline-offset:1px;' : '';
+                const titleText = (cls === 'busy' ? 'Teaching / not available to proctor' : 'Available to proctor')
+                    + (isTarget ? ' ← this exam' : isBooked ? ' (already assigned today)' : '');
+                return `<span class="dl-pill ${cls}" style="${extraStyle}" title="${block} — ${titleText}">${label}</span>`;
             });
 
-            // Count free regular blocks: commitment present = available to proctor
+            // Free blocks: has commitment AND not already assigned today
             const freeCount = deduped.filter(b => {
                 if (b === 'LUNCH' || b === 'After School' || /^FLEX-/.test(b)) return false;
-                return !!commitments[b];
+                return !!commitments[b] && !assignedTodayBlocks.has(b);
             }).length;
 
             return `<div style="display:flex;flex-wrap:wrap;gap:3px;align-items:center;">
@@ -3283,16 +3311,6 @@
                 return (teacherExamConflicts[String(t.id)] || new Set()).has(examNameVal);
             }) : [];
 
-            // Sort: not-at-limit first, then by load %
-            candidates.sort((a, b) => {
-                const aFull = getTotalAssignedHours(a.id) >= (a.required||1);
-                const bFull = getTotalAssignedHours(b.id) >= (b.required||1);
-                if (aFull !== bFull) return aFull ? 1 : -1;
-                const aPct = getTotalAssignedHours(a.id) / Math.max(1, a.required||1);
-                const bPct = getTotalAssignedHours(b.id) / Math.max(1, b.required||1);
-                return aPct - bPct;
-            });
-
             // Build teacher rows
             const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
             const dayNames = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
@@ -3307,6 +3325,29 @@
                     const slotDate = d.dates[di];
                     if (slotDate && formatDateKey(slotDate) === formatDateKey(date)) slotsOnDate.push({et, sid});
                 });
+            });
+
+            // Sort: not-at-limit first, then most free blocks remaining today, then by overall load %
+            candidates.sort((a, b) => {
+                const aFull = getTotalAssignedHours(a.id) >= (a.required||1);
+                const bFull = getTotalAssignedHours(b.id) >= (b.required||1);
+                if (aFull !== bFull) return aFull ? 1 : -1;
+                const aFree = (function() {
+                    const sch = getScheduleForDate(date) || [];
+                    const commits = teacherBlockCommitments[a.id] || {};
+                    const booked = getTeacherDayAssignedBlocks(a.id, slotsOnDate);
+                    return sch.filter(b => !/^(LUNCH|After School)$/.test(b) && !/^FLEX-/.test(b) && commits[b] && !booked.has(b)).length;
+                })();
+                const bFree = (function() {
+                    const sch = getScheduleForDate(date) || [];
+                    const commits = teacherBlockCommitments[b.id] || {};
+                    const booked = getTeacherDayAssignedBlocks(b.id, slotsOnDate);
+                    return sch.filter(bl => !/^(LUNCH|After School)$/.test(bl) && !/^FLEX-/.test(bl) && commits[bl] && !booked.has(bl)).length;
+                })();
+                if (bFree !== aFree) return bFree - aFree;
+                const aPct = getTotalAssignedHours(a.id) / Math.max(1, a.required||1);
+                const bPct = getTotalAssignedHours(b.id) / Math.max(1, b.required||1);
+                return aPct - bPct;
             });
 
             const list = document.getElementById('teacherPickerList');
@@ -3335,7 +3376,7 @@
 
                 const buildRow = (t, dimmed) => {
                     const load = getTeacherLoadLabel(t);
-                    const pills = buildDayLoadPills(t, date, slotsOnDate);
+                    const pills = buildDayLoadPills(t, date, slotsOnDate, blockKey);
                     const isSelected = ctx._assignments[slotIndex] === t.id;
                     const isFreeThisBlock = isTeacherFreeForBlock(t);
                     const blockStatus = isFreeThisBlock
@@ -3386,7 +3427,7 @@
                     </div>`;
                     html += conflictedCandidates.map(t => {
                         const load = getTeacherLoadLabel(t);
-                        const pills = buildDayLoadPills(t, date, slotsOnDate);
+                        const pills = buildDayLoadPills(t, date, slotsOnDate, blockKey);
                         return `<div style="border:2px solid #fde8e8;border-radius:8px;padding:10px 12px;background:#fff8f8;opacity:0.65;">
                             <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;">
                                 <div style="flex:1;min-width:0;">
