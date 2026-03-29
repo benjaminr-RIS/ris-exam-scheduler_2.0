@@ -7673,7 +7673,9 @@
       "AP Human Geography ÃÂ· FD"
     ]
   },
-  "knownGuestProctors": [],
+  "knownGuestProctors": [
+    "Kate"
+  ],
   "schedulerSettings": {
     "cal-1": {
       "lunch": true,
