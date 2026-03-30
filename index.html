@@ -51,13 +51,13 @@
         .week-section { margin-bottom: 6px; }
         .week-title { font-weight: 600; color: #2c3e50; margin-bottom: 3px; padding: 2px 8px; 
                       background: #ecf0f1; border-radius: 4px; font-size: 13px; }
-        .week-calendar { display: grid; grid-template-columns: 60px repeat(5, 1fr); gap: 0; 
+        .week-calendar { display: grid; grid-template-columns: 60px repeat(5, 1fr); gap: 2px; 
                          background: white; padding: 1px; border-radius: 4px; grid-auto-flow: row; }
-        .day-header { padding: 3px 4px; background: #34495e; color: white; text-align: center; 
+        .day-header { padding: 3px 4px; background: #34495e; color: white; text-align: center; border-radius: 4px; 
                       font-weight: 600; font-size: 12px; margin: 1px; line-height: 1.2; }
-        .time-label { padding: 2px 2px; background: #34495e; color: white; text-align: center; 
+        .time-label { padding: 2px 2px; background: #34495e; color: white; text-align: center; border-radius: 4px; 
                       font-weight: 600; font-size: 11px; display: flex; align-items: center; justify-content: center; margin: 1px; }
-        .time-slot { padding: 2px 5px; background: white; min-height: 38px; cursor: pointer; transition: all 0.2s;
+        .time-slot { padding: 2px 5px; background: #f8f7f5; min-height: 38px; cursor: pointer; border-radius: 4px; transition: all 0.2s;
                      display: flex; flex-direction: column; align-items: center; justify-content: flex-start; 
                      font-size: 13px; color: #2c3e50; margin: 1px; position: relative; overflow: visible; }
         .time-slot:hover { transform: scale(1.02); box-shadow: 0 2px 8px rgba(0,0,0,0.15); z-index: 10; }
@@ -105,6 +105,7 @@
         .dl-pill.flex.unavail { background:#f87171;color:white; }
         .dl-pill.lunch  { background:#e8edf2;color:#94a3b8; }
         .dl-pill.after  { background:#e8edf2;color:#94a3b8; }
+        .dl-pill.claimed{ background:#27ae60;color:white; }
         .exam-mode-card:hover { border-color:#3498db !important; transform:translateY(-2px); box-shadow:0 4px 16px rgba(52,152,219,0.15); }
         .exam-mode-card.active  { border-color:#3498db !important; background:#f0f8ff !important; box-shadow:0 0 0 3px rgba(52,152,219,0.12); }
         .exam-mode-card.active .exam-mode-title { color:#2980b9; }
@@ -230,6 +231,9 @@
                 <div class="tab-group" style="display:flex;align-items:center;gap:6px;">
                     <button onclick="adminStealthRefresh()" title="Fetch latest save from GitHub" style="padding:5px 10px;background:rgba(52,152,219,0.15);color:#2980b9;border:1px solid rgba(52,152,219,0.4);border-radius:6px;cursor:pointer;font-size:12px;font-weight:700;white-space:nowrap;display:flex;align-items:center;gap:5px;" id="admin-refresh-btn">
                         <i class="fa-solid fa-arrows-rotate"></i> Sync
+                    </button>
+                    <button onclick="githubSaveJSON()" title="Save to GitHub" id="ghJsonBtn-nav" style="padding:5px 10px;background:rgba(39,174,96,0.15);color:#27ae60;border:1px solid rgba(39,174,96,0.4);border-radius:6px;cursor:pointer;font-size:12px;font-weight:700;white-space:nowrap;display:flex;align-items:center;gap:5px;">
+                        <i class="fa-solid fa-cloud-arrow-up"></i> Save
                     </button>
                     <button class="tab" onclick="switchTab('TEACHERS'); openAdminTab();" id="tab-TEACHERS">Admin</button>
                 </div>
@@ -1020,10 +1024,20 @@
                                         onmouseover="this.style.background='#e2e6ea'" onmouseout="this.style.background='#f0f2f4'">
                                         <i class="fa-solid fa-file-pdf fa-btn-icon"></i> Proctor Schedules
                                     </button>
-                                    <button onclick="exportTimetablePDF()"
+                                    <button onclick="exportTimetablePDF('Full')"
                                         style="width:100%;padding:10px 12px;background:#f0f2f4;color:#2c3e50;border:none;border-radius:6px;cursor:pointer;font-size:13px;font-weight:600;text-align:left;transition:background 0.15s;"
                                         onmouseover="this.style.background='#e2e6ea'" onmouseout="this.style.background='#f0f2f4'">
-                                        <i class="fa-solid fa-table-list fa-btn-icon"></i> Exam Timetable
+                                        <i class="fa-solid fa-table-list fa-btn-icon"></i> Timetable — Full
+                                    </button>
+                                    <button onclick="exportTimetablePDF('IB')"
+                                        style="width:100%;padding:10px 12px;background:#f0f2f4;color:#2c3e50;border:none;border-radius:6px;cursor:pointer;font-size:13px;font-weight:600;text-align:left;transition:background 0.15s;"
+                                        onmouseover="this.style.background='#e2e6ea'" onmouseout="this.style.background='#f0f2f4'">
+                                        <i class="fa-solid fa-table-list fa-btn-icon"></i> Timetable — IB
+                                    </button>
+                                    <button onclick="exportTimetablePDF('AP')"
+                                        style="width:100%;padding:10px 12px;background:#f0f2f4;color:#2c3e50;border:none;border-radius:6px;cursor:pointer;font-size:13px;font-weight:600;text-align:left;transition:background 0.15s;"
+                                        onmouseover="this.style.background='#e2e6ea'" onmouseout="this.style.background='#f0f2f4'">
+                                        <i class="fa-solid fa-table-list fa-btn-icon"></i> Timetable — AP
                                     </button>
                                     <button onclick="exportExamSlotsCSV('IB')"
                                         style="width:100%;padding:10px 12px;background:#f0f2f4;color:#2c3e50;border:none;border-radius:6px;cursor:pointer;font-size:13px;font-weight:600;text-align:left;transition:background 0.15s;"
@@ -2473,15 +2487,17 @@
             });
 
             const pills = deduped.map(block => {
-                const cls   = getPillClass(block);
+                const isBooked = assignedTodayBlocks.has(block);
+                const cls   = isBooked ? 'claimed' : getPillClass(block);
                 const label = formatLabel(block);
                 const isTarget = highlightParts.has(block);
-                const isBooked = assignedTodayBlocks.has(block);
                 const extraStyle = isTarget
                     ? 'outline:2px solid #1a1a1a;outline-offset:1px;font-weight:800;'
-                    : isBooked ? 'outline:2px solid #e67e22;outline-offset:1px;' : '';
-                const titleText = (cls === 'busy' ? 'Teaching / not available to proctor' : 'Available to proctor')
-                    + (isTarget ? ' ← this exam' : isBooked ? ' (already assigned today)' : '');
+                    : '';
+                const titleText = isBooked
+                    ? 'Assigned to proctor this block'
+                    : (cls === 'busy' ? 'Teaching / not available to proctor' : 'Available to proctor')
+                    + (isTarget ? ' ← this exam' : '');
                 return `<span class="dl-pill ${cls}" style="${extraStyle}" title="${block} — ${titleText}">${label}</span>`;
             });
 
@@ -2546,8 +2562,6 @@
             // ── Build primary-slot sets (skip merge continuations) ───────────────
             // Primary slots: the leading slot of each merged pair, or any unmerged slot.
             // Continuation slots: the slot immediately after a slotMergeDown primary.
-            const MERGE_NEXT = {0:9,9:1,1:2,2:3,3:4,4:5,5:6,6:7,7:8};
-
             let examSlotCount   = 0;  // unique logical exams (primary slots only)
             let examFullyCovered = 0; // exam slots where ALL proctor seats are filled
             let proctorSeats    = 0;  // sum of proctors_needed across primary slots
@@ -2563,7 +2577,7 @@
                     d.slotMergeDown.forEach(primaryId => {
                         const parts = primaryId.split('-');
                         const pIdx = parseInt(parts[parts.length - 1]);
-                        const nextPIdx = (pIdx in MERGE_NEXT) ? MERGE_NEXT[pIdx] : pIdx + 1;
+                        const nextPIdx = getNextPeriodIdx(pIdx) ?? (pIdx + 1);
                         const prefix = parts.slice(0, parts.length - 1).join('-');
                         continuations.add(prefix + '-' + nextPIdx);
                     });
@@ -2900,18 +2914,10 @@
                 const mergedAway = new Set();
                 // NEXT_PERIOD_IN_SEQ: maps periodIdx → next periodIdx in visual order (for merge spans)
                 // Derived from bell schedule order so it always matches what's actually rendered
-                const NEXT_PERIOD_IN_SEQ = (() => {
-                    const toMins = t => { const [h,m] = t.split(':').map(Number); return h*60+m; };
-                    const sorted = BELL_SCHEDULE.slice().sort((a,b) => toMins(a.start) - toMins(b.start));
-                    const idxSeq = sorted.map(b => BELL_TO_PERIOD_IDX[b.id]).filter(v => v !== undefined);
-                    const map = {};
-                    for (let i = 0; i < idxSeq.length - 1; i++) map[idxSeq[i]] = idxSeq[i+1];
-                    return map;
-                })();
                 if (data.slotMergeDown) {
                     data.slotMergeDown.forEach(sid => {
                         const { dateIdx: dateIdxPart, periodIdx: periodIdxPart } = parseSlotId(sid);
-                        const absorbedPeriod = NEXT_PERIOD_IN_SEQ[periodIdxPart];
+                        const absorbedPeriod = getNextPeriodIdx(parseInt(periodIdxPart));
                         if (absorbedPeriod !== undefined) {
                             mergedAway.add(`${examType}-${dateIdxPart}-${absorbedPeriod}`);
                         }
@@ -2947,8 +2953,7 @@
 
                         const isMerged = data.slotMergeDown && data.slotMergeDown.has(slotId);
                         const cycleBlock = getCycleBlockForSlot(dateIndex, period, examType);
-                        const NEXT_P = {0:9, 9:1, 1:2, 2:3, 3:4, 4:5, 5:6, 6:7, 7:8};
-                        const nextCycleBlock = (period in NEXT_P) ? getCycleBlockForSlot(dateIndex, NEXT_P[period], examType) : '';
+                        const nextCycleBlock = getCycleBlockForSlot(dateIndex, getNextPeriodIdx(period) ?? -1, examType) || '';
                         const isSpecial = period === 3 || period === 5 || period === 7 || period === 8 || period === 9 || period === 10;
 
                         const isExam = data.examSlots.has(slotId);
@@ -2982,7 +2987,7 @@
                         const isNoSchool = !cycleBlock || cycleBlock === '?';
                         const isBreakPeriod = period === 9; // period 9 = Break (BRK, out-of-band)
                         // When merged, check absorbed slot for exam — exam styling wins over break styling
-                        const absorbedSlotId = isMerged ? `${examType}-${dateIndex}-${NEXT_P[period]}` : null;
+                        const absorbedSlotId = isMerged ? `${examType}-${dateIndex}-${getNextPeriodIdx(period)}` : null;
                         const absorbedHasExam = absorbedSlotId ? data.examSlots.has(absorbedSlotId) : false;
                         const effectiveIsExam = isExam || absorbedHasExam;
                         const wedSplitBg = ''; // After School no longer gets special purple background
@@ -2993,7 +2998,7 @@
                                       data-slotid="${slotId}"
                                       title="${effectiveIsExam ? 'Click to select · Double-click to edit' : 'Double-click to add exam'}"
                                       class="time-slot ${effectiveIsExam ? 'exam-slot' : ''}"
-                                      style="${spanStyle} ${mergedPadding} background: ${isNoSchool && !effectiveIsExam ? '#f8f9fa' : (wedSplitBg && !effectiveIsExam ? wedSplitBg : bgColor)}; color: ${isNoSchool && !effectiveIsExam ? '#bdc3c7' : textColor}; ${wedSplitBorder}">`;
+                                      style="${spanStyle} ${mergedPadding} background: ${isNoSchool && !effectiveIsExam ? '#f8f7f5' : (wedSplitBg && !effectiveIsExam ? wedSplitBg : bgColor)}; color: ${isNoSchool && !effectiveIsExam ? '#bdc3c7' : textColor}; ${wedSplitBorder}">`;
                         
                         if (isExam) {
                             const room = data.slotRoom ? data.slotRoom[slotId] || '' : '';
@@ -3826,12 +3831,12 @@
             // Exact-match check: flag if any guest name appears in a slot that overlaps
             // the same block(s) in another calendar. Accounts for merged slots on either side.
             if (guests.length > 0) {
-                const NEXT_P = {0:9, 9:1, 1:2, 2:3, 3:4, 4:5, 5:6, 6:7, 7:8};
                 const { dateIdx, periodIdx } = parseSlotId(ctx.slotId);
                 // Periods covered by this slot (primary + absorbed if merged)
                 const thisMerged = ctx.data.slotMergeDown && ctx.data.slotMergeDown.has(ctx.slotId);
                 const thisPeriods = new Set([periodIdx]);
-                if (thisMerged && NEXT_P[periodIdx] !== undefined) thisPeriods.add(NEXT_P[periodIdx]);
+                const _nextForThis = getNextPeriodIdx(parseInt(periodIdx));
+                if (thisMerged && _nextForThis !== undefined) thisPeriods.add(_nextForThis);
 
                 const seenConflicts = new Set(); // dedupe "name|cal" pairs
                 const conflicts = [];
@@ -3847,7 +3852,7 @@
                             // Periods covered by the other slot
                             const otherMerged = od.slotMergeDown && od.slotMergeDown.has(sid);
                             const otherPeriods = new Set([p.periodIdx]);
-                            if (otherMerged && NEXT_P[p.periodIdx] !== undefined) otherPeriods.add(NEXT_P[p.periodIdx]);
+                            const _nextForOther = getNextPeriodIdx(p.periodIdx); if (otherMerged && _nextForOther !== undefined) otherPeriods.add(_nextForOther);
                             // Conflict if the two period sets overlap
                             const overlaps = [...thisPeriods].some(tp => otherPeriods.has(tp));
                             if (!overlaps) return;
@@ -4019,10 +4024,8 @@
             if (!ctx) return;
             if (!ctx.data.slotMergeDown) ctx.data.slotMergeDown = new Set();
             const isMerged = ctx.data.slotMergeDown.has(ctx.slotId);
-            // Period → absorbed period mapping (same as calendar renderer's NEXT_P)
-            const NEXT_P = {0:9, 9:1, 1:2, 2:3, 3:4, 4:5, 5:6, 6:7, 7:8};
             const { dateIdx, periodIdx } = parseSlotId(ctx.slotId);
-            const absorbedPeriod = NEXT_P[periodIdx];
+            const absorbedPeriod = getNextPeriodIdx(parseInt(periodIdx));
             const absorbedSlotId = absorbedPeriod !== undefined
                 ? `${ctx.examType}-${dateIdx}-${absorbedPeriod}` : null;
             if (!ctx.data.slotEndTimes) ctx.data.slotEndTimes = {};
@@ -4377,8 +4380,6 @@
             eligibleTypes.forEach(function(et) {
                 const d = examData[et];
                 const typeName = typeLabels[et] || et;
-                // MERGE_NEXT: same map used by getMergeBlockLabel — handles BREAK(9)->D4(1) correctly
-                const _MERGE_NEXT = {0:9, 9:1, 1:2, 2:3, 3:4, 4:5, 5:6, 6:7, 7:8};
                 // Build set of absorbed slot IDs (the slot swallowed by the primary merge-down slot)
                 const mergedAwayIds = new Set();
                 if (d.slotMergeDown) {
@@ -4386,7 +4387,7 @@
                         const sp = sid.split('-');
                         const mDateIdx   = parseInt(sp[sp.length-2]);
                         const mPeriodIdx = parseInt(sp[sp.length-1]);
-                        const absorbedIdx = (mPeriodIdx in _MERGE_NEXT) ? _MERGE_NEXT[mPeriodIdx] : mPeriodIdx + 1;
+                        const absorbedIdx = getNextPeriodIdx(mPeriodIdx) ?? (mPeriodIdx + 1);
                         mergedAwayIds.add(et + '-' + mDateIdx + '-' + absorbedIdx);
                     });
                 }
@@ -4422,7 +4423,7 @@
                     // For merged slots, find the next block using MERGE_NEXT
                     const isMerged = d.slotMergeDown && d.slotMergeDown.has(slotId);
                     const nextBlock = isMerged
-                        ? getCycleBlockForSlot(dateIdx, (periodIdx in _MERGE_NEXT) ? _MERGE_NEXT[periodIdx] : periodIdx + 1, et)
+                        ? getCycleBlockForSlot(dateIdx, getNextPeriodIdx(periodIdx) ?? (periodIdx + 1), et)
                         : null;
                     const isNextRegular = nextBlock && /^[ABCD][12345]$/.test(nextBlock);
                     const isNextFlex    = nextBlock && /^FLEX-/.test(nextBlock);
@@ -4521,7 +4522,8 @@
 
                 _dateGroups.forEach(function(grp, _dgi) {
                     // Day-load header spanning all columns
-                    const _pills = buildDayLoadPills(teacher, grp.date, grp.slots);
+                    const _pillSlots = grp.slots.map(ae => ({ et: ae.calKey, sid: ae.slotId }));
+                    const _pills = buildDayLoadPills(teacher, grp.date, _pillSlots);
                     const _colspan = (currentSession?.role === 'teacher' && currentSession.teacherId === teacher.id) ? 9 : 8;
                     if (_dgi > 0) html += `<tr><td colspan="${_colspan}" style="padding:6px 0;background:transparent;"></td></tr>`;
                     html += `<tr style="background:#f0f4f8;border-top:2px solid #dde3ea;">
@@ -5622,8 +5624,7 @@
                     const isMergedSlot = data.slotMergeDown && data.slotMergeDown.has(slotId);
                     let mergedLookupBlock = null;
                     if (isMergedSlot) {
-                        const MERGE_NEXT = {0:9, 9:1, 1:2, 2:3, 3:4, 4:5, 5:6, 6:7, 7:8};
-                        const nextPIdx = (pIdx in MERGE_NEXT) ? MERGE_NEXT[pIdx] : pIdx + 1;
+                        const nextPIdx = getNextPeriodIdx(pIdx) ?? (pIdx + 1);
                         const nextCycleBlock = getCycleBlockForSlot(parseInt(dateIdx), nextPIdx, examType);
                         // Only require the second block if it is a cycle block or FLEX
                         // (LUNCH/After School don't appear in commitments)
@@ -5878,8 +5879,7 @@
                     const isMergedSlot = data.slotMergeDown && data.slotMergeDown.has(slotId);
                     let mergedLookupBlock = null;
                     if (isMergedSlot) {
-                        const MERGE_NEXT_SW = {0:9, 9:1, 1:2, 2:3, 3:4, 4:5, 5:6, 6:7, 7:8};
-                        const nextPIdx = (pIdx in MERGE_NEXT_SW) ? MERGE_NEXT_SW[pIdx] : pIdx + 1;
+                        const nextPIdx = getNextPeriodIdx(pIdx) ?? (pIdx + 1);
                         const nextCycleBlock = getCycleBlockForSlot(parseInt(dateIdx), nextPIdx, examType);
                         if (nextCycleBlock && (/^[ABCD][12345]$/.test(nextCycleBlock) || /^FLEX-/.test(nextCycleBlock))) {
                             mergedLookupBlock = nextCycleBlock;
@@ -6068,13 +6068,13 @@
             const { dateIdx, periodIdx } = parseSlotId(slotId);
             // BREAK is out-of-band at periodIdx 9. The next slot in the schedule
             // array after Break is always index 1 (B2). Using NEXT_P for consistency.
-            const MERGE_NEXT = {0:9, 9:1, 1:2, 2:3, 3:4, 4:5, 5:6, 6:7, 7:8};
-            const nextPeriodIdx = (periodIdx in MERGE_NEXT) ? MERGE_NEXT[periodIdx] : periodIdx + 1;
+            const nextPeriodIdx = getNextPeriodIdx(parseInt(periodIdx));
+            if (nextPeriodIdx === undefined) return cycleBlock;
             const nextBlock = getCycleBlockForSlot(dateIdx, nextPeriodIdx, examType);
             return nextBlock ? cycleBlock + '+' + nextBlock : cycleBlock;
         }
 
-                function exportTimetablePDF() {
+                function exportTimetablePDF(timetableFilter) {
             const { jsPDF } = window.jspdf;
             const doc = new jsPDF({ orientation: 'landscape' });
 
@@ -6146,7 +6146,20 @@
                     if (programFilter === 'IB' && meta && meta.program !== 'IB') return;
                     if (programFilter === 'AP' && meta && meta.program !== 'AP') return;
                     const data = examData[examType];
+                    // Build set of continuation (merge-target) slot IDs to skip
+                    const continuations = new Set();
+                    if (data.slotMergeDown) {
+                        data.slotMergeDown.forEach(function(primaryId) {
+                            const pp = primaryId.split('-');
+                            const pIdx = parseInt(pp[pp.length - 1]);
+                            const nextPIdx = getNextPeriodIdx(pIdx);
+                            if (nextPIdx !== undefined) {
+                                continuations.add(pp.slice(0, pp.length - 1).join('-') + '-' + nextPIdx);
+                            }
+                        });
+                    }
                     data.examSlots.forEach(function(slotId) {
+                        if (continuations.has(slotId)) return; // skip merge-continuation tail
                         const parts = slotId.split('-');
                         const dateIdx = parseInt(parts[parts.length-2]);
                         const periodIdx = parseInt(parts[parts.length-1]);
@@ -6254,12 +6267,17 @@
                 addFooter(programFilter || 'Full');
             }
 
-            // Render three sections: Full → IB only → AP only
-            renderSection(null, 'RIS Exam Timetable 2026 — Full', 'IB: Apr 27 \u2013 May 20   |   AP: May 4 \u2013 May 23', true);
-            renderSection('IB',  'RIS Exam Timetable 2026 — IB', 'IB: Apr 27 \u2013 May 20', false);
-            renderSection('AP',  'RIS Exam Timetable 2026 — AP', 'AP: May 4 \u2013 May 23', false);
-
-            doc.save('RIS-Exam-Timetable-2026.pdf');
+            // Render only the requested section
+            if (timetableFilter === 'IB') {
+                renderSection('IB', 'RIS Exam Timetable 2026 — IB', 'IB: Apr 27 \u2013 May 20', true);
+                doc.save('RIS-Exam-Timetable-2026-IB.pdf');
+            } else if (timetableFilter === 'AP') {
+                renderSection('AP', 'RIS Exam Timetable 2026 — AP', 'AP: May 4 \u2013 May 23', true);
+                doc.save('RIS-Exam-Timetable-2026-AP.pdf');
+            } else {
+                renderSection(null, 'RIS Exam Timetable 2026 — Full', 'IB: Apr 27 \u2013 May 20   |   AP: May 4 \u2013 May 23', true);
+                doc.save('RIS-Exam-Timetable-2026-Full.pdf');
+            }
         }
 
         function exportPDF() {
@@ -8805,10 +8823,11 @@
                 setToken(token);
             }
             const btn = document.getElementById('ghJsonBtn');
-            const orig = btn.innerHTML;
-            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin fa-btn-icon"></i> Saving\u2026';
-            btn.disabled = true;
-            btn.style.background = '#f39c12';
+            const btnNav = document.getElementById('ghJsonBtn-nav');
+            const orig = btn ? btn.innerHTML : '';
+            const origNav = btnNav ? btnNav.innerHTML : '';
+            if (btn) { btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin fa-btn-icon"></i> Saving\u2026'; btn.disabled = true; btn.style.background = '#f39c12'; }
+            if (btnNav) { btnNav.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Saving\u2026'; btnNav.disabled = true; btnNav.style.background = 'rgba(243,156,18,0.2)'; btnNav.style.color = '#f39c12'; btnNav.style.borderColor = 'rgba(243,156,18,0.6)'; }
             try {
                 const headers = ghHeaders(token);
                 const stateObj = buildStateObject();
@@ -8839,13 +8858,20 @@
                 _unsavedChanges = false;
                 updateUnsavedIndicator();
                 showGhToast('success', '\u2713 Saved \u2014 ' + tsFriendly + ' ICT');
-                setTimeout(() => { btn.innerHTML = orig; btn.style.background = '#24292e'; btn.disabled = false; }, 3000);
+                if (btnNav) { btnNav.innerHTML = '<i class="fa-solid fa-check"></i> Saved!'; btnNav.style.background = 'rgba(39,174,96,0.2)'; btnNav.style.color = '#27ae60'; btnNav.style.borderColor = 'rgba(39,174,96,0.6)'; }
+                setTimeout(() => {
+                    btn.innerHTML = orig; btn.style.background = '#24292e'; btn.disabled = false;
+                    if (btnNav) { btnNav.innerHTML = origNav; btnNav.disabled = false; btnNav.style.background = 'rgba(39,174,96,0.15)'; btnNav.style.color = '#27ae60'; btnNav.style.borderColor = 'rgba(39,174,96,0.4)'; }
+                }, 3000);
             } catch(e) {
                 console.error('[GH] Save error:', e);
                 cachedLatestSha = null;
-                btn.innerHTML = '<i class="fa-solid fa-xmark fa-btn-icon"></i> Failed';
-                btn.style.background = '#e74c3c';
-                setTimeout(() => { btn.innerHTML = orig; btn.style.background = '#24292e'; btn.disabled = false; }, 6000);
+                if (btn) { btn.innerHTML = '<i class="fa-solid fa-xmark fa-btn-icon"></i> Failed'; btn.style.background = '#e74c3c'; }
+                if (btnNav) { btnNav.innerHTML = '<i class="fa-solid fa-xmark"></i> Failed'; btnNav.style.background = 'rgba(231,76,60,0.15)'; btnNav.style.color = '#e74c3c'; btnNav.style.borderColor = 'rgba(231,76,60,0.5)'; }
+                setTimeout(() => {
+                    if (btn) { btn.innerHTML = orig; btn.style.background = '#24292e'; btn.disabled = false; }
+                    if (btnNav) { btnNav.innerHTML = origNav; btnNav.disabled = false; btnNav.style.background = 'rgba(39,174,96,0.15)'; btnNav.style.color = '#27ae60'; btnNav.style.borderColor = 'rgba(39,174,96,0.4)'; }
+                }, 6000);
                 if (e.isShaConflict) {
                     showShaConflictBanner();
                 } else {
@@ -9175,18 +9201,16 @@
             }
 
             // ── Merge handling ──
-            // Try to replicate merge if source was merged; if target's neighbor doesn't exist in dates, paste without merge
+            // Exact 1-to-1 copy: if source was merged, target is merged. Bell schedule
+            // is identical within the same session, so the absorbed period is always valid.
+            // Use getNextPeriodIdx to verify the absorbed period actually exists first.
             if (src.isMerged) {
-                const { dateIdx, periodIdx } = parseSlotId(targetSlotId);
-                const nextPeriod = parseInt(periodIdx) + 1;
-                // Check if nextPeriod is within range of the target type's period count
-                const tData = examData[targetExamType];
-                const hasWed = tData.dates[dateIdx] && tData.dates[dateIdx].getDay() === 3;
-                const maxPeriod = hasWed ? 8 : 7;
-                if (nextPeriod <= maxPeriod) {
+                const { periodIdx } = parseSlotId(targetSlotId);
+                const absorbedPeriod = getNextPeriodIdx(parseInt(periodIdx));
+                if (absorbedPeriod !== undefined) {
                     d.slotMergeDown.add(targetSlotId);
                 }
-                // else: paste without merge (neighbor doesn't exist)
+                // else: absorbed period doesn't exist in bell schedule — paste without merge
             } else {
                 d.slotMergeDown.delete(targetSlotId);
             }
@@ -9475,6 +9499,43 @@
         }
         rebuildBellPeriodMap(); // initialise on load
 
+        // ── Shared merge-sequence utility ─────────────────────────────────────────
+        // Returns the periodIdx that immediately follows `periodIdx` in the live bell
+        // schedule (sorted by start time). Replaces all hardcoded NEXT_P / MERGE_NEXT
+        // maps so merge logic adapts to any bell schedule configuration.
+        function getNextPeriodIdx(periodIdx) {
+            const toMins = t => { const [h,m] = t.split(':').map(Number); return h*60+m; };
+            const sorted = BELL_SCHEDULE.slice().sort((a,b) => toMins(a.start) - toMins(b.start));
+            const seq = sorted.map(b => BELL_TO_PERIOD_IDX[b.id]).filter(v => v !== undefined);
+            const i = seq.indexOf(periodIdx);
+            return (i >= 0 && i + 1 < seq.length) ? seq[i + 1] : undefined;
+        }
+
+        // Scans all calendars and removes any slotMergeDown entries whose absorbed
+        // period no longer exists in the bell schedule. Returns number removed.
+        // Call after any bell schedule deletion.
+        function auditMergesAgainstBellSchedule() {
+            const validPeriodIdxs = new Set(Object.values(BELL_TO_PERIOD_IDX));
+            let removed = 0;
+            CALENDAR_META.forEach(m => {
+                const d = examData[m.key];
+                if (!d || !d.slotMergeDown) return;
+                const stale = [];
+                d.slotMergeDown.forEach(sid => {
+                    const { periodIdx } = parseSlotId(sid);
+                    const pIdx = parseInt(periodIdx);
+                    const nextPIdx = getNextPeriodIdx(pIdx);
+                    // Stale if: primary period gone, OR absorbed period gone
+                    if (!validPeriodIdxs.has(pIdx) || nextPIdx === undefined || !validPeriodIdxs.has(nextPIdx)) {
+                        stale.push(sid);
+                    }
+                });
+                stale.forEach(sid => { d.slotMergeDown.delete(sid); removed++; });
+            });
+            return removed;
+        }
+        // ── End merge-sequence utility ─────────────────────────────────────────────
+
         // Get the display label for a period index from the live bell schedule.
         // Falls back to legacy names so existing slots aren't affected.
         function getPeriodLabel(periodIdx) {
@@ -9600,6 +9661,8 @@
         function bellRemove(i) {
             BELL_SCHEDULE.splice(i, 1);
             rebuildBellPeriodMap();
+            const staleMerges = auditMergesAgainstBellSchedule();
+            if (staleMerges > 0) showToast(`Bell schedule updated — ${staleMerges} stale merge${staleMerges!==1?'s':''} removed.`);
             autoSave();
             renderBellScheduleDisplay();
             computeSlotPreview();
@@ -10622,3 +10685,4 @@
     </script>
 </body>
 </html>
+
