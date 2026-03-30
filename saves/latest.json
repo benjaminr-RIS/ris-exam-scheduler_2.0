@@ -2825,7 +2825,11 @@
         "cal-3-13-7"
       ],
       "assignments": {},
-      "specialAssignments": {},
+      "specialAssignments": {
+        "cal-3-2-5": [
+          1
+        ]
+      },
       "manualAssignments": {},
       "assignmentSources": {
         "cal-3-6-5": {
@@ -2840,6 +2844,9 @@
         },
         "cal-3-1-4": {
           "8": "self-claimed"
+        },
+        "cal-3-2-5": {
+          "1": "self-claimed"
         }
       }
     },
