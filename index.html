@@ -3661,17 +3661,30 @@
                     return keyedParts.every(p => !!commits[p]);
                 }
 
-                const freeCandidates = candidates.filter(t => isTeacherFreeForBlock(t));
-                const busyCandidates = candidates.filter(t => !isTeacherFreeForBlock(t));
+                // Split free-block candidates into truly-free vs currently-proctoring-elsewhere
+                function isTeacherProctoring(t) {
+                    const assignedToday = getTeacherDayAssignedBlocks(t.id, slotsOnDate);
+                    // Check if any keyed part of the current slot's block overlaps with their assigned blocks today
+                    return keyedParts.some(p => assignedToday.has(p));
+                }
 
-                const buildRow = (t, dimmed) => {
+                const freeCandidates     = candidates.filter(t =>  isTeacherFreeForBlock(t) && !isTeacherProctoring(t));
+                const proctoringElsewhere = candidates.filter(t => isTeacherFreeForBlock(t) &&  isTeacherProctoring(t));
+                const busyCandidates     = candidates.filter(t => !isTeacherFreeForBlock(t));
+
+                const buildRow = (t, dimmed, statusOverride) => {
                     const load = getTeacherLoadLabel(t);
                     const pills = buildDayLoadPills(t, date, slotsOnDate, blockKey);
                     const isSelected = ctx._assignments[slotIndex] === t.id;
                     const isFreeThisBlock = isTeacherFreeForBlock(t);
-                    const blockStatus = isFreeThisBlock
-                        ? '<span style="font-size:10px;color:#27ae60;font-weight:600;">✓ Free this block</span>'
-                        : '<span style="font-size:10px;color:#e67e22;font-weight:600;">⚠ Teaching this block</span>';
+                    let blockStatus;
+                    if (statusOverride) {
+                        blockStatus = statusOverride;
+                    } else if (isFreeThisBlock) {
+                        blockStatus = '<span style="font-size:10px;color:#27ae60;font-weight:600;">✓ Free this block</span>';
+                    } else {
+                        blockStatus = '<span style="font-size:10px;color:#e67e22;font-weight:600;">⚠ Teaching this block</span>';
+                    }
                     const wrapStyle = dimmed
                         ? `border:2px solid ${isSelected?'#3498db':'#e8ecf0'};border-radius:8px;padding:10px 12px;background:${isSelected?'#eaf4fd':'#fafafa'};opacity:0.6;transition:all 0.15s;`
                         : `border:2px solid ${isSelected?'#3498db':'#e8ecf0'};border-radius:8px;padding:10px 12px;background:${isSelected?'#eaf4fd':'white'};transition:all 0.15s;`;
@@ -3695,17 +3708,29 @@
                     </div>`;
                 };
 
-                let html = freeCandidates.map(t => buildRow(t, false)).join('');
+                let html = freeCandidates.map(t => buildRow(t, false, null)).join('');
+
+                if (proctoringElsewhere.length > 0) {
+                    if (freeCandidates.length > 0) {
+                        html += `<div style="display:flex;align-items:center;gap:8px;margin:10px 0 8px;">
+                            <div style="flex:1;height:1px;background:#fdebd0;"></div>
+                            <span style="font-size:10px;font-weight:700;color:#e67e22;text-transform:uppercase;letter-spacing:0.5px;white-space:nowrap;">Currently proctoring</span>
+                            <div style="flex:1;height:1px;background:#fdebd0;"></div>
+                        </div>`;
+                    }
+                    const proctoringStatus = '<span style="font-size:10px;color:#e67e22;font-weight:600;">⚠ Proctoring elsewhere this block</span>';
+                    html += proctoringElsewhere.map(t => buildRow(t, true, proctoringStatus)).join('');
+                }
 
                 if (busyCandidates.length > 0) {
-                    if (freeCandidates.length > 0) {
+                    if (freeCandidates.length > 0 || proctoringElsewhere.length > 0) {
                         html += `<div style="display:flex;align-items:center;gap:8px;margin:10px 0 8px;">
                             <div style="flex:1;height:1px;background:#e8ecf0;"></div>
                             <span style="font-size:10px;font-weight:700;color:#b2bec3;text-transform:uppercase;letter-spacing:0.5px;white-space:nowrap;">Teaching this block</span>
                             <div style="flex:1;height:1px;background:#e8ecf0;"></div>
                         </div>`;
                     }
-                    html += busyCandidates.map(t => buildRow(t, true)).join('');
+                    html += busyCandidates.map(t => buildRow(t, true, null)).join('');
                 }
 
                 if (conflictedCandidates.length > 0) {
@@ -7566,8 +7591,8 @@
                 const required    = teacher.required || 0;
                 const pct         = required > 0 ? Math.min(100, Math.round(assigned / required * 100)) : 0;
                 const barColor    = assigned >= required ? '#27ae60' : assigned > 0 ? '#f39c12' : '#e74c3c';
-                const statusLabel = assigned > required ? `⚑ ${assigned}/${required}` : assigned === required ? `✓ ${assigned}/${required}` : assigned > 0 ? `${assigned}/${required}` : 'No assignments';
-                const statusColor = assigned > required ? '#e74c3c' : assigned === required ? '#27ae60' : assigned > 0 ? '#f39c12' : '#e74c3c';
+                const statusLabel = assigned >= required ? '✓ Complete' : assigned > 0 ? `${assigned}/${required} sessions` : 'No assignments';
+                const statusColor = assigned >= required ? '#27ae60' : assigned > 0 ? '#f39c12' : '#e74c3c';
                 const accentColor = teacher.color || '#3498db';
                 const cardId      = 'tcard-' + teacher.id;
 
@@ -7987,8 +8012,9 @@
                 });
             }
 
-            } // end if (!confirmedOnly)
+            addFooter();
             var safeName = teacher.name.replace(/[^a-z0-9]/gi, '_');
+            } // end if (!confirmedOnly)
             doc.save('RIS_Schedule_' + safeName + (confirmedOnly ? '_confirmed' : '') + '.pdf');
         }
 
