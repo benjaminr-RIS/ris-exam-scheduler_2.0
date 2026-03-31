@@ -162,12 +162,12 @@
         "cal-1-8-3": 2,
         "cal-1-8-4": 2,
         "cal-1-8-5": 2,
-        "cal-1-8-6": 2,
-        "cal-1-8-7": 2,
+        "cal-1-8-6": 3,
+        "cal-1-8-7": 3,
         "cal-1-8-8": 2,
         "cal-1-9-9": 2,
-        "cal-1-9-1": 2,
-        "cal-1-9-2": 2,
+        "cal-1-9-1": 4,
+        "cal-1-9-2": 4,
         "cal-1-9-3": 2,
         "cal-1-10-5": 2,
         "cal-1-10-6": 2,
@@ -1668,44 +1668,426 @@
         "cal-1-5-7",
         "cal-1-6-7"
       ],
-      "assignments": {},
-      "specialAssignments": {},
-      "manualAssignments": {},
+      "assignments": {
+        "cal-1-0-6": [
+          22
+        ],
+        "cal-1-1-2": [
+          10
+        ],
+        "cal-1-1-6": [
+          23
+        ],
+        "cal-1-2-2": [
+          22,
+          6
+        ],
+        "cal-1-2-6": [
+          23
+        ],
+        "cal-1-3-2": [
+          2,
+          25
+        ],
+        "cal-1-3-6": [
+          8,
+          23
+        ],
+        "cal-1-5-2": [
+          6
+        ],
+        "cal-1-5-6": [
+          6
+        ],
+        "cal-1-6-2": [
+          23
+        ],
+        "cal-1-6-6": [
+          8,
+          23
+        ],
+        "cal-1-7-2": [
+          2,
+          34
+        ],
+        "cal-1-8-2": [
+          5
+        ],
+        "cal-1-8-4": [
+          2
+        ],
+        "cal-1-8-6": [
+          23
+        ],
+        "cal-1-9-2": [
+          2,
+          23
+        ],
+        "cal-1-11-2": [
+          5
+        ],
+        "cal-1-11-4": [
+          23
+        ],
+        "cal-1-12-6": [
+          4,
+          23
+        ],
+        "cal-1-13-6": [
+          25
+        ],
+        "cal-1-14-2": [
+          25
+        ],
+        "cal-1-14-6": [
+          8
+        ]
+      },
+      "specialAssignments": {
+        "cal-1-1-9": [
+          15,
+          34,
+          5
+        ],
+        "cal-1-2-9": [
+          8,
+          5
+        ],
+        "cal-1-0-5": [
+          1,
+          6
+        ],
+        "cal-1-1-5": [
+          4,
+          6
+        ],
+        "cal-1-1-7": [
+          23
+        ],
+        "cal-1-2-5": [
+          6
+        ],
+        "cal-1-2-7": [
+          1
+        ],
+        "cal-1-2-8": [
+          1,
+          23
+        ],
+        "cal-1-3-9": [
+          1,
+          34
+        ],
+        "cal-1-3-5": [
+          6
+        ],
+        "cal-1-5-9": [
+          6
+        ],
+        "cal-1-5-5": [
+          6
+        ],
+        "cal-1-6-9": [
+          4,
+          25
+        ],
+        "cal-1-6-3": [
+          8
+        ],
+        "cal-1-6-7": [
+          8,
+          23
+        ],
+        "cal-1-7-9": [
+          2,
+          23
+        ],
+        "cal-1-7-5": [
+          22
+        ],
+        "cal-1-8-9": [
+          1
+        ],
+        "cal-1-8-3": [
+          34
+        ],
+        "cal-1-8-5": [
+          10
+        ],
+        "cal-1-8-7": [
+          23
+        ],
+        "cal-1-8-8": [
+          23
+        ],
+        "cal-1-9-9": [
+          2,
+          34
+        ],
+        "cal-1-10-5": [
+          25
+        ],
+        "cal-1-10-7": [
+          25
+        ],
+        "cal-1-11-9": [
+          23
+        ],
+        "cal-1-11-3": [
+          23
+        ],
+        "cal-1-11-5": [
+          1,
+          34
+        ],
+        "cal-1-12-9": [
+          5
+        ],
+        "cal-1-12-5": [
+          8,
+          34
+        ],
+        "cal-1-12-7": [
+          10
+        ],
+        "cal-1-13-9": [
+          5
+        ],
+        "cal-1-13-7": [
+          25
+        ],
+        "cal-1-14-5": [
+          19
+        ],
+        "cal-1-15-9": [
+          12
+        ],
+        "cal-1-15-3": [
+          12,
+          34
+        ],
+        "cal-1-17-5": [
+          25
+        ]
+      },
+      "manualAssignments": {
+        "cal-1-1-9": [
+          15,
+          34
+        ],
+        "cal-1-2-9": [
+          8,
+          5
+        ]
+      },
       "assignmentSources": {
         "cal-1-0-5": {
-          "1": "self-claimed"
+          "1": "self-claimed",
+          "6": "manual"
         },
         "cal-1-1-2": {
-          "8": "self-claimed"
+          "8": "self-claimed",
+          "10": "manual"
         },
-        "cal-1-1-5": {},
+        "cal-1-1-5": {
+          "4": "manual",
+          "6": "manual"
+        },
         "cal-1-2-1": {
           "1": "self-claimed",
           "8": "self-claimed"
         },
         "cal-1-2-5": {
-          "1": "self-claimed"
+          "1": "self-claimed",
+          "6": "manual"
         },
         "cal-1-2-9": {
+          "5": "manual",
           "8": "self-claimed"
         },
         "cal-1-1-7": {
-          "8": "self-claimed"
+          "8": "self-claimed",
+          "23": "manual"
         },
         "cal-1-0-6": {
-          "8": "self-claimed"
+          "8": "self-claimed",
+          "22": "manual"
         },
         "cal-1-1-6": {
-          "8": "self-claimed"
+          "8": "self-claimed",
+          "23": "manual"
         },
-        "cal-1-6-7": {},
+        "cal-1-6-7": {
+          "8": "manual",
+          "23": "manual"
+        },
         "cal-1-2-2": {
-          "8": "self-claimed"
+          "6": "manual",
+          "8": "self-claimed",
+          "22": "manual"
         },
         "cal-1-3-2": {
-          "1": "self-claimed"
+          "1": "self-claimed",
+          "2": "manual",
+          "25": "manual"
         },
-        "cal-1-3-9": {}
+        "cal-1-3-9": {
+          "1": "manual",
+          "34": "manual"
+        },
+        "cal-1-1-9": {
+          "5": "manual"
+        },
+        "cal-1-2-6": {
+          "23": "manual"
+        },
+        "cal-1-2-7": {
+          "1": "manual"
+        },
+        "cal-1-2-8": {
+          "1": "manual",
+          "23": "manual"
+        },
+        "cal-1-3-5": {
+          "6": "manual"
+        },
+        "cal-1-3-6": {
+          "8": "manual",
+          "23": "manual"
+        },
+        "cal-1-5-9": {
+          "6": "manual"
+        },
+        "cal-1-5-2": {
+          "6": "manual"
+        },
+        "cal-1-5-5": {
+          "6": "manual"
+        },
+        "cal-1-5-6": {
+          "6": "manual"
+        },
+        "cal-1-6-9": {
+          "4": "manual",
+          "25": "manual"
+        },
+        "cal-1-6-2": {
+          "23": "manual"
+        },
+        "cal-1-6-3": {
+          "8": "manual"
+        },
+        "cal-1-6-6": {
+          "8": "manual",
+          "23": "manual"
+        },
+        "cal-1-7-9": {
+          "2": "manual",
+          "23": "manual"
+        },
+        "cal-1-7-2": {
+          "2": "manual",
+          "34": "manual"
+        },
+        "cal-1-7-5": {
+          "22": "manual"
+        },
+        "cal-1-8-9": {
+          "1": "manual"
+        },
+        "cal-1-8-2": {
+          "5": "manual"
+        },
+        "cal-1-8-3": {
+          "34": "manual"
+        },
+        "cal-1-8-4": {
+          "2": "manual"
+        },
+        "cal-1-8-5": {
+          "10": "manual"
+        },
+        "cal-1-8-6": {
+          "23": "manual"
+        },
+        "cal-1-8-7": {
+          "23": "manual"
+        },
+        "cal-1-8-8": {
+          "23": "manual"
+        },
+        "cal-1-9-9": {
+          "2": "manual",
+          "34": "manual"
+        },
+        "cal-1-9-2": {
+          "2": "manual",
+          "23": "manual"
+        },
+        "cal-1-10-5": {
+          "25": "manual"
+        },
+        "cal-1-10-7": {
+          "25": "manual"
+        },
+        "cal-1-11-9": {
+          "23": "manual"
+        },
+        "cal-1-11-2": {
+          "5": "manual"
+        },
+        "cal-1-11-3": {
+          "23": "manual"
+        },
+        "cal-1-11-4": {
+          "23": "manual"
+        },
+        "cal-1-11-5": {
+          "1": "manual",
+          "34": "manual"
+        },
+        "cal-1-12-9": {
+          "5": "manual"
+        },
+        "cal-1-12-5": {
+          "8": "manual",
+          "34": "manual"
+        },
+        "cal-1-12-6": {
+          "4": "manual",
+          "23": "manual"
+        },
+        "cal-1-12-7": {
+          "10": "manual"
+        },
+        "cal-1-13-9": {
+          "5": "manual"
+        },
+        "cal-1-13-6": {
+          "25": "manual"
+        },
+        "cal-1-13-7": {
+          "25": "manual"
+        },
+        "cal-1-14-2": {
+          "25": "manual"
+        },
+        "cal-1-14-5": {
+          "19": "manual"
+        },
+        "cal-1-14-6": {
+          "8": "manual"
+        },
+        "cal-1-15-9": {
+          "12": "manual"
+        },
+        "cal-1-15-3": {
+          "12": "manual",
+          "34": "manual"
+        },
+        "cal-1-17-5": {
+          "25": "manual"
+        }
       }
     },
     "cal-2": {
@@ -1719,8 +2101,8 @@
       ],
       "slotProctorCount": {
         "cal-2-9-9": 2,
-        "cal-2-9-1": 2,
-        "cal-2-9-2": 2,
+        "cal-2-9-1": 1,
+        "cal-2-9-2": 1,
         "cal-2-9-3": 2
       },
       "slotExamNames": {
@@ -1801,9 +2183,17 @@
         "cal-2-9-9",
         "cal-2-9-2"
       ],
-      "assignments": {},
+      "assignments": {
+        "cal-2-9-2": [
+          20
+        ]
+      },
       "specialAssignments": {},
-      "manualAssignments": {},
+      "manualAssignments": {
+        "cal-2-9-2": [
+          20
+        ]
+      },
       "assignmentSources": {}
     },
     "cal-3": {
@@ -1870,7 +2260,8 @@
         "cal-3-14-4",
         "cal-3-17-5",
         "cal-3-17-6",
-        "cal-3-17-7"
+        "cal-3-17-7",
+        "cal-3-3-5"
       ],
       "slotProctorCount": {
         "cal-3-0-5": 1,
@@ -1904,9 +2295,9 @@
         "cal-3-8-7": 1,
         "cal-3-8-8": 1,
         "cal-3-8-10": 1,
-        "cal-3-9-1": 1,
-        "cal-3-9-2": 1,
-        "cal-3-9-3": 1,
+        "cal-3-9-1": 2,
+        "cal-3-9-2": 2,
+        "cal-3-9-3": 2,
         "cal-3-9-4": 1,
         "cal-3-10-5": 1,
         "cal-3-10-6": 1,
@@ -1927,13 +2318,14 @@
         "cal-3-13-6": 1,
         "cal-3-13-7": 1,
         "cal-3-13-8": 1,
-        "cal-3-14-1": 1,
-        "cal-3-14-2": 1,
+        "cal-3-14-1": 2,
+        "cal-3-14-2": 2,
         "cal-3-14-3": 1,
         "cal-3-14-4": 1,
         "cal-3-17-5": 1,
         "cal-3-17-6": 1,
-        "cal-3-17-7": 1
+        "cal-3-17-7": 1,
+        "cal-3-3-5": 1
       },
       "slotExamNames": {
         "cal-3-0-5": "Thai A Lang & Lit SL · Paper 1 · Accommodation",
@@ -1996,7 +2388,8 @@
         "cal-3-14-4": "Math AI HL/SL · Paper 2 · Accommodation",
         "cal-3-17-5": "Math AI HL · Paper 3 · Accommodation",
         "cal-3-17-6": "Math AI HL · Paper 3 · Accommodation",
-        "cal-3-17-7": "Math AI HL · Paper 3 · Accommodation"
+        "cal-3-17-7": "Math AI HL · Paper 3 · Accommodation",
+        "cal-3-3-5": "Computer Science · Paper 1 · Accommodation"
       },
       "slotTimes": {
         "cal-3-0-5": "13:20",
@@ -2059,7 +2452,8 @@
         "cal-3-14-4": "11:35",
         "cal-3-17-5": "13:20",
         "cal-3-17-6": "13:40",
-        "cal-3-17-7": "15:00"
+        "cal-3-17-7": "15:00",
+        "cal-3-3-5": "13:20"
       },
       "slotEndTimes": {
         "cal-3-6-1": "09:55",
@@ -2068,7 +2462,7 @@
         "cal-3-5-5": "13:40",
         "cal-3-1-1": "09:55",
         "cal-3-1-2": "10:55",
-        "cal-3-1-3": "11:35",
+        "cal-3-1-3": "11:55",
         "cal-3-2-5": "13:40",
         "cal-3-2-7": "15:45",
         "cal-3-3-1": "09:55",
@@ -2186,7 +2580,8 @@
         "cal-3-14-4": "150 paper 5 reading 5 instructions 5 pre-/post calculator 2h45 min",
         "cal-3-17-5": "94 paper 5 reading 5 instructions 5 pre-/post calculator 1h49 min",
         "cal-3-17-6": "94 paper 5 reading 5 instructions 5 pre-/post calculator 1h49 min",
-        "cal-3-17-7": "94 paper 5 reading 5 instructions 5 pre-/post calculator 1h49 min"
+        "cal-3-17-7": "94 paper 5 reading 5 instructions 5 pre-/post calculator 1h49 min",
+        "cal-3-3-5": "135 paper 5 reading 5 instructions 2h25min"
       },
       "slotRoom": {
         "cal-3-6-1": "AD303/311b",
@@ -2812,36 +3207,173 @@
       },
       "slotMergeDown": [
         "cal-3-2-5",
-        "cal-3-3-5",
         "cal-3-0-5",
         "cal-3-5-7",
         "cal-3-6-3",
         "cal-3-9-3",
         "cal-3-5-2",
-        "cal-3-13-7"
+        "cal-3-13-7",
+        "cal-3-1-3",
+        "cal-3-3-5"
       ],
-      "assignments": {},
-      "specialAssignments": {},
-      "manualAssignments": {},
+      "assignments": {
+        "cal-3-1-1": [
+          19
+        ],
+        "cal-3-1-2": [
+          13
+        ],
+        "cal-3-1-4": [
+          22
+        ],
+        "cal-3-3-1": [
+          13
+        ],
+        "cal-3-6-1": [
+          13
+        ],
+        "cal-3-8-6": [
+          13
+        ],
+        "cal-3-9-1": [
+          13
+        ],
+        "cal-3-10-6": [
+          13
+        ],
+        "cal-3-11-1": [
+          13
+        ],
+        "cal-3-12-1": [
+          13
+        ],
+        "cal-3-14-1": [
+          13
+        ]
+      },
+      "specialAssignments": {
+        "cal-3-0-5": [
+          13
+        ],
+        "cal-3-1-3": [
+          22
+        ],
+        "cal-3-2-7": [
+          13
+        ],
+        "cal-3-6-5": [
+          13
+        ],
+        "cal-3-8-7": [
+          15
+        ],
+        "cal-3-8-8": [
+          15
+        ],
+        "cal-3-8-10": [
+          15
+        ],
+        "cal-3-10-5": [
+          13
+        ],
+        "cal-3-10-7": [
+          15
+        ],
+        "cal-3-11-7": [
+          8
+        ],
+        "cal-3-17-7": [
+          13
+        ],
+        "cal-3-3-5": [
+          19
+        ]
+      },
+      "manualAssignments": {
+        "cal-3-1-3": [
+          22
+        ],
+        "cal-3-3-5": [
+          19
+        ]
+      },
       "assignmentSources": {
         "cal-3-6-5": {
-          "1": "self-claimed"
+          "1": "self-claimed",
+          "13": "manual"
         },
         "cal-3-1-3": {
           "1": "self-claimed",
-          "8": "self-claimed"
+          "8": "self-claimed",
+          "22": "manual"
         },
         "cal-3-1-2": {
-          "8": "self-claimed"
+          "8": "self-claimed",
+          "13": "manual"
         },
         "cal-3-1-4": {
-          "8": "self-claimed"
+          "8": "self-claimed",
+          "22": "manual"
         },
-        "cal-3-2-5": {}
+        "cal-3-2-5": {},
+        "cal-3-0-5": {
+          "13": "manual"
+        },
+        "cal-3-1-1": {
+          "19": "manual"
+        },
+        "cal-3-2-7": {
+          "13": "manual"
+        },
+        "cal-3-3-1": {
+          "13": "manual"
+        },
+        "cal-3-6-1": {
+          "13": "manual"
+        },
+        "cal-3-8-6": {
+          "13": "manual"
+        },
+        "cal-3-8-7": {
+          "15": "manual"
+        },
+        "cal-3-8-8": {
+          "15": "manual"
+        },
+        "cal-3-8-10": {
+          "15": "manual"
+        },
+        "cal-3-9-1": {
+          "13": "manual"
+        },
+        "cal-3-10-5": {
+          "13": "manual"
+        },
+        "cal-3-10-6": {
+          "13": "manual"
+        },
+        "cal-3-10-7": {
+          "15": "manual"
+        },
+        "cal-3-11-1": {
+          "13": "manual"
+        },
+        "cal-3-11-7": {
+          "8": "manual"
+        },
+        "cal-3-12-1": {
+          "13": "manual"
+        },
+        "cal-3-14-1": {
+          "13": "manual"
+        },
+        "cal-3-17-7": {
+          "13": "manual"
+        }
       }
     },
     "cal-4": {
-      "startDate": "2026-05-05T00:00:00.000Z",
+      "startDate": "2026-05-04T00:00:00.000Z",
       "endDate": "2026-05-23T00:00:00.000Z",
       "examSlots": [
         "cal-4-0-0",
@@ -3819,17 +4351,280 @@
         "cal-4-7-0",
         "cal-4-9-0"
       ],
-      "assignments": {},
-      "specialAssignments": {},
-      "manualAssignments": {},
+      "assignments": {
+        "cal-4-0-0": [
+          31,
+          23
+        ],
+        "cal-4-0-1": [
+          31,
+          23
+        ],
+        "cal-4-0-2": [
+          31,
+          23
+        ],
+        "cal-4-0-4": [
+          31,
+          11,
+          33,
+          23
+        ],
+        "cal-4-0-6": [
+          31,
+          11,
+          33,
+          23
+        ],
+        "cal-4-1-1": [
+          6
+        ],
+        "cal-4-2-4": [
+          13
+        ],
+        "cal-4-3-4": [
+          12
+        ],
+        "cal-4-3-2": [
+          9
+        ],
+        "cal-4-5-0": [
+          12,
+          13
+        ],
+        "cal-4-5-1": [
+          34
+        ],
+        "cal-4-6-4": [
+          12,
+          8
+        ],
+        "cal-4-6-6": [
+          12
+        ],
+        "cal-4-7-1": [
+          9
+        ],
+        "cal-4-7-4": [
+          12,
+          13
+        ],
+        "cal-4-7-6": [
+          12
+        ],
+        "cal-4-8-4": [
+          12
+        ],
+        "cal-4-9-0": [
+          34
+        ],
+        "cal-4-9-1": [
+          9,
+          15
+        ],
+        "cal-4-9-2": [
+          12
+        ],
+        "cal-4-9-6": [
+          12,
+          14
+        ],
+        "cal-4-9-4": [
+          14
+        ],
+        "cal-4-12-0": [
+          9,
+          13
+        ],
+        "cal-4-12-2": [
+          9
+        ],
+        "cal-4-12-4": [
+          12,
+          13,
+          8
+        ],
+        "cal-4-12-6": [
+          12,
+          14
+        ]
+      },
+      "specialAssignments": {
+        "cal-4-3-3": [
+          21
+        ],
+        "cal-4-0-3": [
+          31,
+          23
+        ],
+        "cal-4-0-5": [
+          31,
+          11,
+          33,
+          23
+        ],
+        "cal-4-3-7": [
+          12
+        ],
+        "cal-4-5-3": [
+          12
+        ],
+        "cal-4-7-3": [
+          9
+        ],
+        "cal-4-7-5": [
+          13
+        ],
+        "cal-4-9-5": [
+          14
+        ],
+        "cal-4-12-5": [
+          14
+        ],
+        "cal-4-12-7": [
+          14,
+          15
+        ]
+      },
+      "manualAssignments": {
+        "cal-4-3-3": [
+          21
+        ]
+      },
       "assignmentSources": {
         "cal-4-0-0": {
-          "8": "self-claimed"
+          "8": "self-claimed",
+          "23": "manual",
+          "31": "manual"
+        },
+        "cal-4-0-1": {
+          "23": "manual",
+          "31": "manual"
+        },
+        "cal-4-0-2": {
+          "23": "manual",
+          "31": "manual"
+        },
+        "cal-4-0-3": {
+          "23": "manual",
+          "31": "manual"
+        },
+        "cal-4-0-4": {
+          "11": "manual",
+          "23": "manual",
+          "31": "manual",
+          "33": "manual"
+        },
+        "cal-4-0-5": {
+          "11": "manual",
+          "23": "manual",
+          "31": "manual",
+          "33": "manual"
+        },
+        "cal-4-0-6": {
+          "11": "manual",
+          "23": "manual",
+          "31": "manual",
+          "33": "manual"
+        },
+        "cal-4-1-1": {
+          "6": "manual"
+        },
+        "cal-4-2-4": {
+          "13": "manual"
+        },
+        "cal-4-3-4": {
+          "12": "manual"
+        },
+        "cal-4-3-7": {
+          "12": "manual"
+        },
+        "cal-4-3-2": {
+          "9": "manual"
+        },
+        "cal-4-5-0": {
+          "12": "manual",
+          "13": "manual"
+        },
+        "cal-4-5-1": {
+          "34": "manual"
+        },
+        "cal-4-5-3": {
+          "12": "manual"
+        },
+        "cal-4-6-4": {
+          "8": "manual",
+          "12": "manual"
+        },
+        "cal-4-6-6": {
+          "12": "manual"
+        },
+        "cal-4-7-1": {
+          "9": "manual"
+        },
+        "cal-4-7-3": {
+          "9": "manual"
+        },
+        "cal-4-7-4": {
+          "12": "manual",
+          "13": "manual"
+        },
+        "cal-4-7-6": {
+          "12": "manual"
+        },
+        "cal-4-7-5": {
+          "13": "manual"
+        },
+        "cal-4-8-4": {
+          "12": "manual"
+        },
+        "cal-4-9-0": {
+          "34": "manual"
+        },
+        "cal-4-9-1": {
+          "9": "manual",
+          "15": "manual"
+        },
+        "cal-4-9-2": {
+          "12": "manual"
+        },
+        "cal-4-9-6": {
+          "12": "manual",
+          "14": "manual"
+        },
+        "cal-4-9-4": {
+          "14": "manual"
+        },
+        "cal-4-9-5": {
+          "14": "manual"
+        },
+        "cal-4-12-0": {
+          "9": "manual",
+          "13": "manual"
+        },
+        "cal-4-12-2": {
+          "9": "manual"
+        },
+        "cal-4-12-4": {
+          "8": "manual",
+          "12": "manual",
+          "13": "manual"
+        },
+        "cal-4-12-6": {
+          "12": "manual",
+          "14": "manual"
+        },
+        "cal-4-12-5": {
+          "14": "manual"
+        },
+        "cal-4-12-7": {
+          "14": "manual",
+          "15": "manual"
         }
       }
     },
     "cal-5": {
-      "startDate": "2026-05-05T00:00:00.000Z",
+      "startDate": "2026-05-04T00:00:00.000Z",
       "endDate": "2026-05-23T00:00:00.000Z",
       "examSlots": [
         "cal-5-0-4",
@@ -3910,11 +4705,11 @@
         "cal-5-2-6": 1,
         "cal-5-2-7": 1,
         "cal-5-2-8": 1,
-        "cal-5-3-0": 2,
+        "cal-5-3-0": 1,
         "cal-5-3-9": 2,
-        "cal-5-3-1": 2,
-        "cal-5-3-2": 2,
-        "cal-5-3-3": 2,
+        "cal-5-3-1": 1,
+        "cal-5-3-2": 1,
+        "cal-5-3-3": 1,
         "cal-5-4-4": 2,
         "cal-5-4-5": 2,
         "cal-5-4-6": 2,
@@ -3932,11 +4727,11 @@
         "cal-5-7-3": 1,
         "cal-5-7-4": 1,
         "cal-5-7-5": 1,
-        "cal-5-8-0": 2,
+        "cal-5-8-0": 1,
         "cal-5-8-9": 2,
-        "cal-5-8-1": 2,
-        "cal-5-8-2": 2,
-        "cal-5-8-3": 2,
+        "cal-5-8-1": 1,
+        "cal-5-8-2": 1,
+        "cal-5-8-3": 1,
         "cal-5-8-4": 2,
         "cal-5-8-5": 2,
         "cal-5-8-6": 2,
@@ -3946,15 +4741,15 @@
         "cal-5-9-6": 1,
         "cal-5-9-7": 1,
         "cal-5-9-8": 1,
-        "cal-5-12-0": 1,
+        "cal-5-12-0": 2,
         "cal-5-12-9": 1,
-        "cal-5-12-1": 1,
-        "cal-5-12-2": 1,
-        "cal-5-12-3": 1,
-        "cal-5-12-4": 1,
-        "cal-5-12-5": 1,
-        "cal-5-12-6": 1,
-        "cal-5-12-7": 1,
+        "cal-5-12-1": 2,
+        "cal-5-12-2": 2,
+        "cal-5-12-3": 2,
+        "cal-5-12-4": 2,
+        "cal-5-12-5": 2,
+        "cal-5-12-6": 2,
+        "cal-5-12-7": 2,
         "cal-5-12-8": 1
       },
       "slotExamNames": {
@@ -4778,15 +5573,268 @@
         "cal-5-12-0",
         "cal-5-1-3"
       ],
-      "assignments": {},
+      "assignments": {
+        "cal-5-0-4": [
+          31,
+          11,
+          33,
+          23
+        ],
+        "cal-5-0-6": [
+          31,
+          11,
+          33,
+          23
+        ],
+        "cal-5-2-4": [
+          13
+        ],
+        "cal-5-3-0": [
+          9
+        ],
+        "cal-5-3-1": [
+          6
+        ],
+        "cal-5-4-4": [
+          24
+        ],
+        "cal-5-4-6": [
+          24,
+          13
+        ],
+        "cal-5-5-0": [
+          12,
+          13
+        ],
+        "cal-5-5-1": [
+          34
+        ],
+        "cal-5-5-4": [
+          13
+        ],
+        "cal-5-7-1": [
+          9
+        ],
+        "cal-5-7-4": [
+          13
+        ],
+        "cal-5-8-0": [
+          24
+        ],
+        "cal-5-8-1": [
+          24
+        ],
+        "cal-5-8-2": [
+          24
+        ],
+        "cal-5-8-4": [
+          12
+        ],
+        "cal-5-9-6": [
+          12,
+          14
+        ],
+        "cal-5-9-4": [
+          14
+        ],
+        "cal-5-12-0": [
+          9,
+          13
+        ],
+        "cal-5-12-2": [
+          9
+        ],
+        "cal-5-12-4": [
+          12,
+          13,
+          8
+        ],
+        "cal-5-12-6": [
+          12,
+          14
+        ]
+      },
       "specialAssignments": {
-        "cal-5-1-3": []
+        "cal-5-1-3": [
+          12,
+          9
+        ],
+        "cal-5-0-5": [
+          31,
+          11,
+          33,
+          23
+        ],
+        "cal-5-0-7": [
+          23
+        ],
+        "cal-5-4-5": [
+          24,
+          12
+        ],
+        "cal-5-5-3": [
+          12
+        ],
+        "cal-5-5-5": [
+          13
+        ],
+        "cal-5-7-3": [
+          9
+        ],
+        "cal-5-8-3": [
+          24
+        ],
+        "cal-5-8-5": [
+          13,
+          8
+        ],
+        "cal-5-9-5": [
+          14
+        ],
+        "cal-5-12-5": [
+          14
+        ],
+        "cal-5-12-7": [
+          14,
+          15
+        ],
+        "cal-5-12-8": [
+          14,
+          15
+        ]
       },
       "manualAssignments": {},
-      "assignmentSources": {}
+      "assignmentSources": {
+        "cal-5-0-4": {
+          "11": "manual",
+          "23": "manual",
+          "31": "manual",
+          "33": "manual"
+        },
+        "cal-5-0-5": {
+          "11": "manual",
+          "23": "manual",
+          "31": "manual",
+          "33": "manual"
+        },
+        "cal-5-0-6": {
+          "11": "manual",
+          "23": "manual",
+          "31": "manual",
+          "33": "manual"
+        },
+        "cal-5-0-7": {
+          "23": "manual"
+        },
+        "cal-5-1-3": {
+          "9": "manual",
+          "12": "manual"
+        },
+        "cal-5-2-4": {
+          "13": "manual"
+        },
+        "cal-5-3-0": {
+          "9": "manual"
+        },
+        "cal-5-3-1": {
+          "6": "manual"
+        },
+        "cal-5-4-4": {
+          "24": "manual"
+        },
+        "cal-5-4-5": {
+          "12": "manual",
+          "24": "manual"
+        },
+        "cal-5-4-6": {
+          "13": "manual",
+          "24": "manual"
+        },
+        "cal-5-5-0": {
+          "12": "manual",
+          "13": "manual"
+        },
+        "cal-5-5-1": {
+          "34": "manual"
+        },
+        "cal-5-5-3": {
+          "12": "manual"
+        },
+        "cal-5-5-4": {
+          "13": "manual"
+        },
+        "cal-5-5-5": {
+          "13": "manual"
+        },
+        "cal-5-7-1": {
+          "9": "manual"
+        },
+        "cal-5-7-3": {
+          "9": "manual"
+        },
+        "cal-5-7-4": {
+          "13": "manual"
+        },
+        "cal-5-8-0": {
+          "24": "manual"
+        },
+        "cal-5-8-1": {
+          "24": "manual"
+        },
+        "cal-5-8-2": {
+          "24": "manual"
+        },
+        "cal-5-8-3": {
+          "24": "manual"
+        },
+        "cal-5-8-5": {
+          "8": "manual",
+          "13": "manual"
+        },
+        "cal-5-8-4": {
+          "12": "manual"
+        },
+        "cal-5-9-6": {
+          "12": "manual",
+          "14": "manual"
+        },
+        "cal-5-9-4": {
+          "14": "manual"
+        },
+        "cal-5-9-5": {
+          "14": "manual"
+        },
+        "cal-5-12-0": {
+          "9": "manual",
+          "13": "manual"
+        },
+        "cal-5-12-2": {
+          "9": "manual"
+        },
+        "cal-5-12-4": {
+          "8": "manual",
+          "12": "manual",
+          "13": "manual"
+        },
+        "cal-5-12-6": {
+          "12": "manual",
+          "14": "manual"
+        },
+        "cal-5-12-5": {
+          "14": "manual"
+        },
+        "cal-5-12-7": {
+          "14": "manual",
+          "15": "manual"
+        },
+        "cal-5-12-8": {
+          "14": "manual",
+          "15": "manual"
+        }
+      }
     },
     "cal-6": {
-      "startDate": "2026-05-05T00:00:00.000Z",
+      "startDate": "2026-05-04T00:00:00.000Z",
       "endDate": "2026-05-23T00:00:00.000Z",
       "examSlots": [
         "cal-6-1-0",
@@ -4829,16 +5877,16 @@
         "cal-6-3-3": 1,
         "cal-6-3-4": 1,
         "cal-6-3-5": 1,
-        "cal-6-4-4": 2,
-        "cal-6-4-5": 2,
-        "cal-6-4-6": 2,
+        "cal-6-4-4": 3,
+        "cal-6-4-5": 3,
+        "cal-6-4-6": 3,
         "cal-6-12-0": 2,
         "cal-6-12-9": 2,
         "cal-6-12-1": 2,
         "cal-6-12-2": 2,
-        "cal-6-12-4": 2,
-        "cal-6-12-5": 2,
-        "cal-6-12-6": 2
+        "cal-6-12-4": 1,
+        "cal-6-12-5": 1,
+        "cal-6-12-6": 1
       },
       "slotExamNames": {
         "cal-6-1-0": "AP Chemistry · Hyb. · Accommodation",
@@ -5172,13 +6220,60 @@
         "cal-6-3-0",
         "cal-6-12-0"
       ],
-      "assignments": {},
-      "specialAssignments": {},
+      "assignments": {
+        "cal-6-1-4": [
+          9
+        ],
+        "cal-6-3-0": [
+          9
+        ],
+        "cal-6-3-1": [
+          6
+        ],
+        "cal-6-4-6": [
+          8
+        ],
+        "cal-6-4-4": [
+          13
+        ]
+      },
+      "specialAssignments": {
+        "cal-6-1-3": [
+          12,
+          9
+        ],
+        "cal-6-4-5": [
+          15
+        ]
+      },
       "manualAssignments": {},
-      "assignmentSources": {}
+      "assignmentSources": {
+        "cal-6-1-3": {
+          "9": "manual",
+          "12": "manual"
+        },
+        "cal-6-1-4": {
+          "9": "manual"
+        },
+        "cal-6-3-0": {
+          "9": "manual"
+        },
+        "cal-6-3-1": {
+          "6": "manual"
+        },
+        "cal-6-4-5": {
+          "15": "manual"
+        },
+        "cal-6-4-6": {
+          "8": "manual"
+        },
+        "cal-6-4-4": {
+          "13": "manual"
+        }
+      }
     },
     "cal-7": {
-      "startDate": "2026-05-05T00:00:00.000Z",
+      "startDate": "2026-05-04T00:00:00.000Z",
       "endDate": "2026-05-23T00:00:00.000Z",
       "examSlots": [
         "cal-7-1-0",
@@ -5356,15 +6451,46 @@
         "cal-7-1-3",
         "cal-7-1-0"
       ],
-      "assignments": {},
-      "specialAssignments": {},
-      "manualAssignments": {},
+      "assignments": {
+        "cal-7-1-1": [
+          28,
+          6
+        ],
+        "cal-7-4-6": [
+          8
+        ],
+        "cal-7-4-4": [
+          13
+        ]
+      },
+      "specialAssignments": {
+        "cal-7-4-5": [
+          15
+        ]
+      },
+      "manualAssignments": {
+        "cal-7-1-1": [
+          28
+        ]
+      },
       "assignmentSources": {
         "cal-7-1-3": {
           "8": "self-claimed"
         },
         "cal-7-1-0": {
           "8": "self-claimed"
+        },
+        "cal-7-1-1": {
+          "6": "manual"
+        },
+        "cal-7-4-5": {
+          "15": "manual"
+        },
+        "cal-7-4-6": {
+          "8": "manual"
+        },
+        "cal-7-4-4": {
+          "13": "manual"
         }
       }
     },
@@ -5411,7 +6537,7 @@
       "assignmentSources": {}
     },
     "cal-10": {
-      "startDate": "2026-05-05T00:00:00.000Z",
+      "startDate": "2026-05-04T00:00:00.000Z",
       "endDate": "2026-05-23T00:00:00.000Z",
       "examSlots": [],
       "slotProctorCount": {},
@@ -5474,7 +6600,7 @@
       "assignmentSources": {}
     },
     "cal-13": {
-      "startDate": "2026-05-05T00:00:00.000Z",
+      "startDate": "2026-05-04T00:00:00.000Z",
       "endDate": "2026-05-23T00:00:00.000Z",
       "examSlots": [],
       "slotProctorCount": {},
@@ -5537,7 +6663,7 @@
       "assignmentSources": {}
     },
     "cal-16": {
-      "startDate": "2026-05-05T00:00:00.000Z",
+      "startDate": "2026-05-04T00:00:00.000Z",
       "endDate": "2026-05-23T00:00:00.000Z",
       "examSlots": [],
       "slotProctorCount": {},
@@ -5600,7 +6726,7 @@
       "assignmentSources": {}
     },
     "cal-19": {
-      "startDate": "2026-05-05T00:00:00.000Z",
+      "startDate": "2026-05-04T00:00:00.000Z",
       "endDate": "2026-05-23T00:00:00.000Z",
       "examSlots": [],
       "slotProctorCount": {},
@@ -8027,7 +9153,7 @@
       "displayName": "AP-1",
       "color": "#e67e22",
       "csvAliases": "ap-1,ap1",
-      "startDate": "2026-05-05",
+      "startDate": "2026-05-04",
       "endDate": "2026-05-23",
       "apPlaceholderDate": "2026-05-04",
       "calVisible": true
@@ -8038,7 +9164,7 @@
       "displayName": "AP-2",
       "color": "#c0392b",
       "csvAliases": "ap-2,ap2",
-      "startDate": "2026-05-05",
+      "startDate": "2026-05-04",
       "endDate": "2026-05-23",
       "apPlaceholderDate": "2026-05-04",
       "calVisible": true
@@ -8049,7 +9175,7 @@
       "displayName": "AP-3",
       "color": "#16a085",
       "csvAliases": "ap-3,ap3",
-      "startDate": "2026-05-05",
+      "startDate": "2026-05-04",
       "endDate": "2026-05-23",
       "apPlaceholderDate": "2026-05-04",
       "calVisible": true
@@ -8060,7 +9186,7 @@
       "displayName": "AP-4",
       "color": "#8e44ad",
       "csvAliases": "ap-4,ap4",
-      "startDate": "2026-05-05",
+      "startDate": "2026-05-04",
       "endDate": "2026-05-23",
       "apPlaceholderDate": "2026-05-04",
       "calVisible": true
@@ -8091,7 +9217,7 @@
       "displayName": "Cal 10",
       "color": "#f39c12",
       "csvAliases": "cal-10,cal10",
-      "startDate": "2026-05-05",
+      "startDate": "2026-05-04",
       "endDate": "2026-05-23",
       "apPlaceholderDate": "2026-05-04",
       "calVisible": false
@@ -8122,7 +9248,7 @@
       "displayName": "Cal 13",
       "color": "#e74c3c",
       "csvAliases": "cal-13,cal13",
-      "startDate": "2026-05-05",
+      "startDate": "2026-05-04",
       "endDate": "2026-05-23",
       "apPlaceholderDate": "2026-05-04",
       "calVisible": false
@@ -8153,7 +9279,7 @@
       "displayName": "Cal 16",
       "color": "#d35400",
       "csvAliases": "cal-16,cal16",
-      "startDate": "2026-05-05",
+      "startDate": "2026-05-04",
       "endDate": "2026-05-23",
       "apPlaceholderDate": "2026-05-04",
       "calVisible": false
@@ -8184,7 +9310,7 @@
       "displayName": "Cal 19",
       "color": "#8e44ad",
       "csvAliases": "cal-19,cal19",
-      "startDate": "2026-05-05",
+      "startDate": "2026-05-04",
       "endDate": "2026-05-23",
       "apPlaceholderDate": "2026-05-04",
       "calVisible": false
