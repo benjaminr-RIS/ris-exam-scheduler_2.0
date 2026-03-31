@@ -1819,20 +1819,11 @@
 
         async function resetToLastSave() {
             if (currentSession?.role !== "admin") { showPinModal(); return; }
-            let token = getToken();
-            if (!token) {
-                token = prompt('Enter your GitHub token to restore from cloud save:');
-                if (!token) return;
-                setToken(token);
-            }
             const btn = document.querySelector('[onclick="resetToLastSave()"]');
             const origHTML = btn ? btn.innerHTML : '';
             if (btn) { btn.disabled = true; btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin fa-btn-icon"></i> Fetching…'; }
             try {
-                const headers = { 'Authorization': 'token ' + token, 'Accept': 'application/vnd.github.v3+json' };
-                const res = await fetch(ghApiUrl(GH_LATEST) + '?ref=' + GH_BRANCH + '&t=' + Date.now(), { headers, cache: 'no-store' });
-                if (!res.ok) throw new Error('GitHub returned ' + res.status + '. Check your token.');
-                const fileInfo = await res.json();
+                const fileInfo = await workerFetchState();
                 const state = JSON.parse(fromBase64(fileInfo.content));
                 const lastSaveTime = localStorage.getItem('risScheduler_lastSave');
                 const timeLabel = lastSaveTime
@@ -8330,12 +8321,7 @@
         const GH_SAVES  = 'saves';
         const GH_LATEST = 'saves/latest.json';
         const API_BASE  = 'https://api.github.com/repos/' + GH_OWNER + '/' + GH_REPO + '/contents';
-        const GH_TOKEN_KEY = 'risScheduler_ghToken';
-
-        let cachedLatestSha = null; // SHA of saves/latest.json, updated after each save
-
-        function getToken() { return sessionStorage.getItem(GH_TOKEN_KEY) || ''; }
-        function setToken(t) { sessionStorage.setItem(GH_TOKEN_KEY, t.trim()); }
+        let cachedLatestSha = null; // SHA of saves/latest.json, cached from Worker response
 
         function ghApiUrl(path) {
             return 'https://api.github.com/repos/' + GH_OWNER + '/' + GH_REPO + '/contents/' + path;
@@ -8583,17 +8569,7 @@
             return data.content.sha;
         }
 
-        // ── Get SHA of existing file (null if not found) ──
-        async function ghGetSha(path, headers) {
-            const res = await fetch(ghApiUrl(path) + '?ref=' + GH_BRANCH, { method: 'GET', headers, cache: 'no-store' });
-            if (res.ok) return (await res.json()).sha;
-            if (res.status === 404) return null;
-            if (res.status === 401 || res.status === 403) {
-                sessionStorage.removeItem(GH_TOKEN_KEY);
-                throw new Error('Invalid token — please enter a valid PAT');
-            }
-            throw new Error('GitHub error ' + res.status);
-        }
+        // ghGetSha removed — admin writes now go via Cloudflare Worker
 
         function showPortalMessage(msg, type, duration) {
             const colors = { success:'#27ae60', info:'#3498db', warning:'#f39c12', error:'#e74c3c' };
@@ -8812,13 +8788,38 @@
         // ── GitHub Save History System ──
         // Each save creates: saves/YYYY-MM-DD_HH-MM-SS.json (permanent)
         //                     saves/latest.json (overwritten, used for auto-load)
-        function ghHeaders(token) {
-            return {
-                'Authorization': 'Bearer ' + token,
-                'Accept': 'application/vnd.github+json',
-                'X-GitHub-Api-Version': '2022-11-28',
-                'Content-Type': 'application/json'
-            };
+        // ── Worker helper functions for admin saves (no token needed client-side) ──
+        async function workerAdminSave(b64, ts) {
+            const res = await fetch(WORKER_URL, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ action: 'admin_save', content: b64, ts })
+            });
+            const data = await res.json();
+            if (!res.ok) throw new Error(data.error || 'Worker save failed (HTTP ' + res.status + ')');
+            return data; // { ok, latestSha }
+        }
+
+        async function workerListSaves() {
+            const res = await fetch(WORKER_URL, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ action: 'list_saves' })
+            });
+            const data = await res.json();
+            if (!res.ok) throw new Error(data.error || 'Worker list failed (HTTP ' + res.status + ')');
+            return data.saves; // [{ name, label }]
+        }
+
+        async function workerGetSave(filename) {
+            const res = await fetch(WORKER_URL, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ action: 'get_save', filename })
+            });
+            const data = await res.json();
+            if (!res.ok) throw new Error(data.error || 'Worker fetch failed (HTTP ' + res.status + ')');
+            return data.content; // base64 string
         }
 
         function encodeToB64(obj) {
@@ -8834,44 +8835,16 @@
             return JSON.parse(jsonText);
         }
 
-        async function getFileSha(path, headers) {
-            const res = await fetch(API_BASE + '/' + path + '?ref=' + GH_BRANCH, { method: 'GET', headers, cache: 'no-store' });
-            if (res.ok) return (await res.json()).sha;
-            if (res.status === 404) return null;
-            if (res.status === 401 || res.status === 403) { sessionStorage.removeItem(GH_TOKEN_KEY); throw new Error('Invalid token'); }
-            throw new Error('GitHub error ' + res.status);
-        }
-
-        async function pushFile(path, b64, message, sha, headers) {
-            const body = { message, content: b64, branch: GH_BRANCH };
-            if (sha) body.sha = sha;
-            const res = await fetch(API_BASE + '/' + path, { method: 'PUT', headers, body: JSON.stringify(body) });
-            if (!res.ok) {
-                const err = await res.json().catch(() => ({}));
-                if (res.status === 401 || res.status === 403) sessionStorage.removeItem(GH_TOKEN_KEY);
-                if (res.status === 409) { const e = new Error('SHA conflict'); e.isShaConflict = true; throw e; }
-                throw new Error((err.message || 'Push failed') + ' (HTTP ' + res.status + ')');
-            }
-            return (await res.json()).content.sha;
-        }
-
         async function githubSaveJSON() {
             localStorage.setItem('risScheduler_lastSave', Date.now().toString());
             updateAdminDashboard();
-            let token = getToken();
-            if (!token) {
-                token = prompt('Enter your GitHub Personal Access Token (PAT).\n\nRemembered for this session only.\nNeeds "repo" scope: github.com/settings/tokens');
-                if (!token) return;
-                setToken(token);
-            }
             const btn = document.getElementById('ghJsonBtn');
             const btnNav = document.getElementById('ghJsonBtn-nav');
             const orig = btn ? btn.innerHTML : '';
             const origNav = btnNav ? btnNav.innerHTML : '';
-            if (btn) { btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin fa-btn-icon"></i> Saving\u2026'; btn.disabled = true; btn.style.background = '#f39c12'; }
-            if (btnNav) { btnNav.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Saving\u2026'; btnNav.disabled = true; btnNav.style.background = 'rgba(243,156,18,0.2)'; btnNav.style.color = '#f39c12'; btnNav.style.borderColor = 'rgba(243,156,18,0.6)'; }
+            if (btn) { btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin fa-btn-icon"></i> Saving…'; btn.disabled = true; btn.style.background = '#f39c12'; }
+            if (btnNav) { btnNav.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Saving…'; btnNav.disabled = true; btnNav.style.background = 'rgba(243,156,18,0.2)'; btnNav.style.color = '#f39c12'; btnNav.style.borderColor = 'rgba(243,156,18,0.6)'; }
             try {
-                const headers = ghHeaders(token);
                 const stateObj = buildStateObject();
                 if (!stateObj.version || !stateObj.examData || !stateObj.teachers)
                     throw new Error('State object invalid');
@@ -8885,21 +8858,16 @@
                     year:'numeric', month:'short', day:'2-digit',
                     hour:'2-digit', minute:'2-digit', second:'2-digit'
                 });
-                const msg = '[RIS Scheduler] Save ' + ts + ' ICT';
 
-                // 1. Push timestamped snapshot (no SHA needed — new file)
-                const snapPath = GH_SAVES + '/' + ts + '.json';
-                await pushFile(snapPath, b64, msg, null, headers);
-
-                // 2. Update latest.json
-                if (!cachedLatestSha) cachedLatestSha = await getFileSha(GH_LATEST, headers);
-                cachedLatestSha = await pushFile(GH_LATEST, b64, msg + ' [latest]', cachedLatestSha, headers);
+                // Push via Cloudflare Worker — no token needed client-side
+                const result = await workerAdminSave(b64, ts);
+                cachedLatestSha = result.latestSha || null;
 
                 btn.innerHTML = '<i class="fa-solid fa-check fa-btn-icon"></i> Saved!';
                 btn.style.background = '#27ae60';
                 _unsavedChanges = false;
                 updateUnsavedIndicator();
-                showGhToast('success', '\u2713 Saved \u2014 ' + tsFriendly + ' ICT');
+                showGhToast('success', '✓ Saved — ' + tsFriendly + ' ICT');
                 if (btnNav) { btnNav.innerHTML = '<i class="fa-solid fa-check"></i> Saved!'; btnNav.style.background = 'rgba(39,174,96,0.2)'; btnNav.style.color = '#27ae60'; btnNav.style.borderColor = 'rgba(39,174,96,0.6)'; }
                 setTimeout(() => {
                     btn.innerHTML = orig; btn.style.background = '#24292e'; btn.disabled = false;
@@ -8914,11 +8882,7 @@
                     if (btn) { btn.innerHTML = orig; btn.style.background = '#24292e'; btn.disabled = false; }
                     if (btnNav) { btnNav.innerHTML = origNav; btnNav.disabled = false; btnNav.style.background = 'rgba(39,174,96,0.15)'; btnNav.style.color = '#27ae60'; btnNav.style.borderColor = 'rgba(39,174,96,0.4)'; }
                 }, 6000);
-                if (e.isShaConflict) {
-                    showShaConflictBanner();
-                } else {
-                    showGhToast('error', '\u2717 ' + e.message);
-                }
+                showGhToast('error', '✗ ' + e.message);
             }
         }
 
@@ -8966,12 +8930,6 @@
         }
 
         async function showSaveHistory() {
-            let token = getToken();
-            if (!token) {
-                token = prompt('Enter your GitHub PAT to view save history:');
-                if (!token) return;
-                setToken(token);
-            }
             const overlay = document.createElement('div');
             overlay.id = 'ghHistoryOverlay';
             overlay.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.55);z-index:100000;display:flex;align-items:center;justify-content:center;';
@@ -8989,37 +8947,20 @@
             document.getElementById('ghHistoryCloseBtn').onclick = () => overlay.remove();
 
             try {
-                const headers = ghHeaders(token);
-                const res = await fetch(API_BASE + '/' + GH_SAVES + '?ref=' + GH_BRANCH, { headers, cache: 'no-store' });
-                if (!res.ok) throw new Error('Could not list saves folder (HTTP ' + res.status + ')');
-                const files = await res.json();
-
-                const saves = files
-                    .filter(f => f.name.match(/^\d{4}-\d{2}-\d{2}_\d{2}-\d{2}-\d{2}\.json$/))
-                    .sort((a, b) => b.name.localeCompare(a.name));
-
+                const saves = await workerListSaves();
                 const body = document.getElementById('ghHistoryBody');
                 if (!saves.length) {
                     body.innerHTML = '<p style="color:#7f8c8d;text-align:center;padding:30px;">No saves found yet.</p>';
                     return;
                 }
-
-                const fmtName = name => {
-                    const m = name.match(/^(\d{4})-(\d{2})-(\d{2})_(\d{2})-(\d{2})-(\d{2})/);
-                    if (!m) return name;
-                    const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-                    return months[parseInt(m[2])-1] + ' ' + m[3] + ' ' + m[1] + ', ' + m[4] + ':' + m[5] + ':' + m[6] + ' ICT';
-                };
-
                 body.innerHTML = '<p style="font-size:13px;color:#7f8c8d;margin:0 0 14px;">' + saves.length + ' save' + (saves.length===1?'':'s') + ' — click any to restore.</p>' +
                     '<div style="display:flex;flex-direction:column;gap:8px;">' +
-                    saves.map((f, i) => {
-                        const label = fmtName(f.name);
+                    saves.map((s, i) => {
                         const isLatest = i === 0;
                         return '<div style="display:flex;align-items:center;justify-content:space-between;padding:11px 15px;border:2px solid ' + (isLatest?'#3498db':'#e8ecef') + ';border-radius:10px;background:' + (isLatest?'#eaf4fd':'white') + ';">' +
-                            '<div><div style="font-weight:700;font-size:14px;color:#2c3e50;">' + label + (isLatest ? ' <span style="background:#3498db;color:white;font-size:11px;padding:1px 7px;border-radius:8px;margin-left:6px;">LATEST</span>' : '') + '</div>' +
-                            '<div style="font-size:11px;color:#95a5a6;margin-top:2px;">' + f.name + '</div></div>' +
-                            '<button onclick="loadSaveFromHistory(\'' + f.name + '\',\'' + label.replace(/'/g, '') + '\')" style="padding:7px 14px;background:#3498db;color:white;border:none;border-radius:8px;cursor:pointer;font-size:13px;font-weight:600;white-space:nowrap;margin-left:12px;"><i class="fa-solid fa-rotate-left" style="margin-right:5px;"></i>Restore</button>' +
+                            '<div><div style="font-weight:700;font-size:14px;color:#2c3e50;">' + s.label + (isLatest ? ' <span style="background:#3498db;color:white;font-size:11px;padding:1px 7px;border-radius:8px;margin-left:6px;">LATEST</span>' : '') + '</div>' +
+                            '<div style="font-size:11px;color:#95a5a6;margin-top:2px;">' + s.name + '</div></div>' +
+                            '<button onclick="loadSaveFromHistory(\'' + s.name + '\',\'' + s.label.replace(/'/g, '') + '\')" style="padding:7px 14px;background:#3498db;color:white;border:none;border-radius:8px;cursor:pointer;font-size:13px;font-weight:600;white-space:nowrap;margin-left:12px;"><i class="fa-solid fa-rotate-left" style="margin-right:5px;"></i>Restore</button>' +
                             '</div>';
                     }).join('') + '</div>';
             } catch(e) {
@@ -9030,14 +8971,9 @@
 
         async function loadSaveFromHistory(filename, label) {
             if (!confirm('Restore save from ' + label + '?\n\nThis will replace your current state.')) return;
-            const token = getToken();
-            if (!token) { alert('No PAT stored.'); return; }
             try {
-                const headers = ghHeaders(token);
-                const res = await fetch(API_BASE + '/' + GH_SAVES + '/' + filename + '?ref=' + GH_BRANCH, { headers });
-                if (!res.ok) throw new Error('Could not fetch file (HTTP ' + res.status + ')');
-                const fileInfo = await res.json();
-                const state = decodeFromB64(fileInfo.content);
+                const b64 = await workerGetSave(filename);
+                const state = decodeFromB64(b64);
                 if (!state.version || !state.examData || !state.teachers) throw new Error('Not valid scheduler state');
                 applyStateObject(state);
                 cachedLatestSha = null;
@@ -9045,9 +8981,9 @@
                 else renderCalendar(currentTab);
                 const overlay = document.getElementById('ghHistoryOverlay');
                 if (overlay) overlay.remove();
-                showGhToast('success', '\u2713 Restored: ' + label);
+                showGhToast('success', '✓ Restored: ' + label);
             } catch(e) {
-                showGhToast('error', '\u2717 Restore failed: ' + e.message);
+                showGhToast('error', '✗ Restore failed: ' + e.message);
             }
         }
 
@@ -10727,4 +10663,3 @@
     </script>
 </body>
 </html>
-
