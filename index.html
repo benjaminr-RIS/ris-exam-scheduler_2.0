@@ -3443,8 +3443,35 @@
                 preMergeEnd: data._preMergeEndTime?.[slotId],
             };
 
-            // _assignments: array of teacher ids (or null for empty), indexed by slot
-            const _assignments = Array.from({ length: proctorCount }, (_, i) => currentAssignments[i] || null);
+            // _assignments: array of teacher ids (or null for empty), indexed by slot.
+            // For MF slots, sort existing assignments into the correct gendered positions:
+            // index 0 = M proctor, index 1 = F proctor — regardless of saved order.
+            let _assignments;
+            if (genderReq === 'MF' && currentAssignments.length > 0) {
+                // Pre-fill with nulls
+                _assignments = Array.from({ length: proctorCount }, () => null);
+                const _mSlot = [], _fSlot = [], _other = [];
+                currentAssignments.forEach(id => {
+                    if (!id) return;
+                    const _t = TEACHERS.find(t => t.id === id);
+                    if (!_t) { _other.push(id); return; }
+                    if (_t.gender === 'M') _mSlot.push(id);
+                    else if (_t.gender === 'F') _fSlot.push(id);
+                    else _other.push(id);
+                });
+                // Fill slot 0 with first M, slot 1 with first F, rest overflow to higher slots
+                if (_mSlot.length) _assignments[0] = _mSlot[0];
+                if (_fSlot.length) _assignments[1] = _fSlot[0];
+                // Any overflow (extra M, extra F, genderless) fill remaining slots
+                let _overflow = [..._mSlot.slice(1), ..._fSlot.slice(1), ..._other];
+                for (let _oi = 0; _oi < _overflow.length; _oi++) {
+                    for (let _si = 2; _si < proctorCount; _si++) {
+                        if (!_assignments[_si]) { _assignments[_si] = _overflow[_oi]; break; }
+                    }
+                }
+            } else {
+                _assignments = Array.from({ length: proctorCount }, (_, i) => currentAssignments[i] || null);
+            }
 
             window.currentExamModal = {
                 modal, examType, slotId, data, proctorCount, isSpecial, _mergeSnapshot,
@@ -3921,7 +3948,23 @@
             const manualTeachers = [];
             // Read from _assignments array (new three-column picker) OR legacy proctor-N selects
             if (ctx._assignments) {
-                ctx._assignments.forEach(id => {
+                // For MF slots, sort the output so M is always at index 0, F at index 1.
+                // This keeps saved data gender-ordered so re-opening the modal is correct.
+                const _saveGenderReqFinal = document.getElementById('examGenderReq')?.value || '';
+                let _orderedAssignments = ctx._assignments.slice();
+                if (_saveGenderReqFinal === 'MF') {
+                    const _ms = [], _fs = [], _ox = [];
+                    _orderedAssignments.forEach(id => {
+                        if (!id) return;
+                        const _t = TEACHERS.find(t => t.id === id);
+                        if (!_t) { _ox.push(id); return; }
+                        if (_t.gender === 'M') _ms.push(id);
+                        else if (_t.gender === 'F') _fs.push(id);
+                        else _ox.push(id);
+                    });
+                    _orderedAssignments = [..._ms, ..._fs, ..._ox];
+                }
+                _orderedAssignments.forEach(id => {
                     if (id) { assignments.push(id); manualTeachers.push(id); }
                 });
             } else {
@@ -7532,8 +7575,8 @@
                 const required    = teacher.required || 0;
                 const pct         = required > 0 ? Math.min(100, Math.round(assigned / required * 100)) : 0;
                 const barColor    = assigned >= required ? '#27ae60' : assigned > 0 ? '#f39c12' : '#e74c3c';
-                const statusLabel = assigned >= required ? '✓ Complete' : assigned > 0 ? `${assigned}/${required} sessions` : 'No assignments';
-                const statusColor = assigned >= required ? '#27ae60' : assigned > 0 ? '#f39c12' : '#e74c3c';
+                const statusLabel = assigned > required ? `⚑ ${assigned}/${required}` : assigned === required ? `✓ ${assigned}/${required}` : assigned > 0 ? `${assigned}/${required}` : 'No assignments';
+                const statusColor = assigned > required ? '#e74c3c' : assigned === required ? '#27ae60' : assigned > 0 ? '#f39c12' : '#e74c3c';
                 const accentColor = teacher.color || '#3498db';
                 const cardId      = 'tcard-' + teacher.id;
 
@@ -7953,9 +7996,8 @@
                 });
             }
 
-            addFooter();
-            var safeName = teacher.name.replace(/[^a-z0-9]/gi, '_');
             } // end if (!confirmedOnly)
+            var safeName = teacher.name.replace(/[^a-z0-9]/gi, '_');
             doc.save('RIS_Schedule_' + safeName + (confirmedOnly ? '_confirmed' : '') + '.pdf');
         }
 
@@ -10685,4 +10727,3 @@
     </script>
 </body>
 </html>
-
