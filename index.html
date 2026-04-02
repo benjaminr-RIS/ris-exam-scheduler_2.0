@@ -4364,7 +4364,7 @@
                     if (!date) return;
                     const cycleBlock = getMergeBlockLabel(examType, slotId,
                         getCycleBlockForSlot(dateIdx, periodIdx, examType));
-                    const _isSC = (data.assignmentSources?.[slotId]?.[teacher.id]) === 'self-claimed';
+                    const _isSC = (data.assignmentSources?.[slotId]?.[String(teacher.id)]) === 'self-claimed';
                     assignments.push({
                         date, examType, slotId, calKey: examType,
                         block: cycleBlock,
@@ -4408,7 +4408,8 @@
                     const time = a.start ? fmt12h(a.start) + (a.end ? '–' + fmt12h(a.end) : '') : '—';
                     const borderTop = i > 0 ? 'border-top:1px solid #c8e6d0;' : '';
                     const locked = portalMeta.globalLock;
-                    const unclaimBtn = (a.isSelfClaimed && !locked && currentSession?.role === 'teacher')
+                    const isAdminView = currentSession?.role === 'admin';
+                    const unclaimBtn = (a.isSelfClaimed && (!locked || isAdminView) && (currentSession?.role === 'teacher' || isAdminView))
                         ? `<button onclick="unclaimSlot('${a.calKey}','${a.slotId}')"
                             style="padding:4px 10px;background:white;border:1px solid #e74c3c;border-radius:5px;color:#e74c3c;font-size:11px;font-weight:600;cursor:pointer;white-space:nowrap;flex-shrink:0;">
                             <i class="fa-solid fa-xmark" style="pointer-events:none;"></i> Unclaim</button>`
@@ -4521,7 +4522,7 @@
                         fillCount:  _allAssigned.length,
                         proctorNames: _proctorNames,
                         isSelfClaimed: (_allAssigned.includes(teacher.id) &&
-                            (d.assignmentSources?.[slotId]?.[teacher.id]) === 'self-claimed'),
+                            (d.assignmentSources?.[slotId]?.[String(teacher.id)]) === 'self-claimed'),
                         alreadyAssigned: _allAssigned.includes(teacher.id),
                     });
                 });
@@ -4557,7 +4558,7 @@
                         <col style="min-width:0;">
                         <col style="width:90px;">
                         <col style="width:110px;">
-                        ${currentSession?.role === 'teacher' && currentSession.teacherId === teacher.id ? '<col style="width:95px;">' : ''}
+                        ${(currentSession?.role === 'teacher' && currentSession.teacherId === teacher.id) || currentSession?.role === 'admin' ? '<col style="width:95px;">' : ''}
                     </colgroup>
                     <thead><tr style="background:#f0f3f7;">
                         <th style="padding:4px 6px;text-align:center;color:#7f8c8d;font-size:11px;font-weight:700;border-bottom:1px solid #e0e4e8;">FILL</th>
@@ -4568,7 +4569,7 @@
                         <th style="padding:4px 8px;text-align:left;color:#7f8c8d;font-size:11px;font-weight:700;border-bottom:1px solid #e0e4e8;">EXAM</th>
                         <th style="padding:4px 8px;text-align:left;color:#7f8c8d;font-size:11px;font-weight:700;border-bottom:1px solid #e0e4e8;">ROOM</th>
                         <th style="padding:4px 8px;text-align:left;color:#7f8c8d;font-size:11px;font-weight:700;border-bottom:1px solid #e0e4e8;">TIME</th>
-                        ${currentSession?.role === 'teacher' && currentSession.teacherId === teacher.id ? '<th style="padding:4px 8px;border-bottom:1px solid #e0e4e8;"></th>' : ''}
+                        ${(currentSession?.role === 'teacher' && currentSession.teacherId === teacher.id) || currentSession?.role === 'admin' ? '<th style="padding:4px 8px;border-bottom:1px solid #e0e4e8;"></th>' : ''}
                     </tr></thead><tbody>`;
                 // Group slots by date for day-load header
                 const _dateGroups = [];
@@ -4583,7 +4584,7 @@
                     // Day-load header spanning all columns
                     const _pillSlots = grp.slots.map(ae => ({ et: ae.calKey, sid: ae.slotId }));
                     const _pills = buildDayLoadPills(teacher, grp.date, _pillSlots);
-                    const _colspan = (currentSession?.role === 'teacher' && currentSession.teacherId === teacher.id) ? 9 : 8;
+                    const _colspan = ((currentSession?.role === 'teacher' && currentSession.teacherId === teacher.id) || currentSession?.role === 'admin') ? 9 : 8;
                     if (_dgi > 0) html += `<tr><td colspan="${_colspan}" style="padding:6px 0;background:transparent;"></td></tr>`;
                     html += `<tr style="background:#f0f4f8;border-top:2px solid #dde3ea;">
                         <td colspan="${_colspan}" style="padding:7px 10px;">
@@ -4622,7 +4623,7 @@
 
                         // ── Action cell (teacher session only) ──────────────────
                         let actionCell = '';
-                        if (currentSession?.role === 'teacher' && currentSession.teacherId === teacher.id) {
+                        if ((currentSession?.role === 'teacher' && currentSession.teacherId === teacher.id) || currentSession?.role === 'admin') {
                             const locked = portalMeta.globalLock;
                             const _teacherGender = TEACHERS.find(t => t.id === currentSession.teacherId)?.gender || '';
                             const _gr = ae.genderReq || '';
@@ -4653,8 +4654,9 @@
                                     _genderLabel = 'Males Only';
                                 }
                             }
+                            const isAdminView2 = currentSession?.role === 'admin';
                             if (ae.alreadyAssigned) {
-                                if (ae.isSelfClaimed && !locked) {
+                                if ((ae.isSelfClaimed && !locked) || isAdminView2) {
                                     actionCell = `<td style="padding:4px 8px;">
                                         <button id="unclaim-btn-${ae.slotId}" onclick="unclaimSlot('${ae.calKey}','${ae.slotId}')"
                                             style="padding:4px 10px;background:#fdf0f0;border:1px solid #e74c3c;border-radius:5px;color:#e74c3c;font-size:11px;font-weight:600;cursor:pointer;white-space:nowrap;">
@@ -4676,7 +4678,7 @@
                                     <span style="padding:4px 10px;background:#fdf4ff;border:1px solid #d8b4fe;border-radius:5px;color:#9333ea;font-size:11px;font-weight:700;white-space:nowrap;display:inline-block;cursor:default;">
                                         ${_genderLabel}</span>
                                 </td>`;
-                            } else {
+                            } else if (!isAdminView2) {
                                 actionCell = `<td style="padding:4px 8px;">
                                     <button id="claim-btn-${ae.slotId}" onclick="claimSlot('${ae.calKey}','${ae.slotId}')"
                                         style="padding:4px 10px;background:#eaf4fd;border:1px solid #3498db;border-radius:5px;color:#2980b9;font-size:11px;font-weight:700;cursor:pointer;white-space:nowrap;">
@@ -10689,3 +10691,4 @@
     </script>
 </body>
 </html>
+
