@@ -7611,7 +7611,7 @@
       "gender": "F",
       "program": "Both",
       "color": "#f39c12",
-      "pin": ""
+      "pin": "1234J"
     },
     {
       "id": 23,
@@ -7701,7 +7701,7 @@
       "gender": "M",
       "program": "Both",
       "color": "#e74c3c",
-      "pin": ""
+      "pin": "1234R"
     },
     {
       "id": 2,
@@ -7773,7 +7773,7 @@
       "gender": "M",
       "program": "Both",
       "color": "#2ecc71",
-      "pin": ""
+      "pin": "1234W"
     },
     {
       "id": 34,
