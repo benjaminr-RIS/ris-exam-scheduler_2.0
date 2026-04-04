@@ -2119,7 +2119,7 @@
                     const uniqueIds = assignedIds.filter(id => { if (seen.has(id)) return false; seen.add(id); return true; });
                     const teacherNames = uniqueIds.map(id => teacherName[id] || `ID:${id}`);
                     const guestNames   = (cal.slotGuestProctors && cal.slotGuestProctors[sid]) || [];
-                    const allNames     = [...teacherNames, ...guestNames];
+                    const allNames     = [...teacherNames, ...guestNames.map(e => /^[MF]:/.test(e) ? e.slice(2) : e)];
                     const proctorCols  = Array.from({length: MAX_PROCTOR_COLS}, (_, i) => allNames[i] || '');
 
                     rows.push([
@@ -3022,7 +3022,7 @@
                                 return t ? t.name.split(' ').pop() : '?';
                             });
                             const guestNames = data.slotGuestProctors ? (data.slotGuestProctors[slotId] || []) : [];
-                            const allProctorNames = [...assignedNames, ...guestNames.map(g => g.split(' ').pop())];
+                            const allProctorNames = [...assignedNames, ...guestNames.map(g => { const n = /^[MF]:/.test(g) ? g.slice(2) : g; return n.split(' ').pop(); })];
                             const endTime = data.slotEndTimes ? data.slotEndTimes[slotId] || '' : '';
                             const timeStr = (startTime || endTime) ? `${startTime}${startTime && endTime ? '–' : ''}${endTime}` : '';
                             const proctor = allProctorNames.length > 0 ? allProctorNames.join(', ') : `${assignedIds.length}/${proctorCount}`;
@@ -3418,15 +3418,29 @@
                             <div id="guestProctorList" style="display:flex;flex-direction:column;gap:6px;margin-bottom:6px;">
                                 ${(function() {
                                     const guests = data.slotGuestProctors?.[slotId] || [];
-                                    return guests.map((g,i) => `
-                                        <div style="display:flex;gap:6px;align-items:center;">
-                                            <input type="text" class="guest-proctor-input" list="guestProctorSuggestions" value="${g.replace(/"/g,'&quot;')}" placeholder="Full name"
+                                    return guests.map((g,i) => {
+                                        const genderPrefix = g.startsWith('M:') ? 'M' : g.startsWith('F:') ? 'F' : '';
+                                        const plainName = genderPrefix ? g.slice(2) : g;
+                                        const badgeStyle = genderPrefix === 'M'
+                                            ? 'background:#3498db;color:white;'
+                                            : genderPrefix === 'F'
+                                                ? 'background:#e91e8c;color:white;'
+                                                : 'background:#95a5a6;color:white;';
+                                        const badgeLabel = genderPrefix === 'M' ? '♂' : genderPrefix === 'F' ? '♀' : '?';
+                                        return `
+                                        <div style="display:flex;gap:6px;align-items:center;" data-guest-gender="${genderPrefix}">
+                                            <span style="padding:6px 9px;border-radius:6px;font-size:13px;font-weight:700;flex-shrink:0;${badgeStyle}">${badgeLabel}</span>
+                                            <input type="text" class="guest-proctor-input" list="guestProctorSuggestions" value="${plainName.replace(/"/g,'&quot;')}" placeholder="Full name"
                                                 style="flex:1;padding:8px 10px;border:2px solid #ddd;border-radius:6px;font-size:13px;">
                                             <button onclick="this.parentElement.remove()" style="padding:6px 10px;background:#e74c3c;color:white;border:none;border-radius:6px;cursor:pointer;font-size:14px;flex-shrink:0;">✕</button>
-                                        </div>`).join('');
+                                        </div>`;
+                                    }).join('');
                                 })()}
                             </div>
-                            <button onclick="addGuestProctorRow()" style="padding:6px 12px;background:#f0f4ff;color:#3498db;border:1px solid #3498db;border-radius:6px;cursor:pointer;font-size:12px;font-weight:600;">+ Add Guest</button>
+                            <div style="display:flex;gap:6px;">
+                                <button onclick="addGuestProctorRow('M')" style="padding:6px 12px;background:#ebf5fb;color:#3498db;border:1px solid #3498db;border-radius:6px;cursor:pointer;font-size:12px;font-weight:600;">+ ♂ Male Guest</button>
+                                <button onclick="addGuestProctorRow('F')" style="padding:6px 12px;background:#fdf0f8;color:#e91e8c;border:1px solid #e91e8c;border-radius:6px;cursor:pointer;font-size:12px;font-weight:600;">+ ♀ Female Guest</button>
+                            </div>
                         </div>
                     </div>
 
@@ -3841,13 +3855,22 @@
             renderProctorSlots();
         }
         
-        function addGuestProctorRow() {
+        function addGuestProctorRow(gender) {
             const list = document.getElementById('guestProctorList');
             if (!list) return;
+            const g = gender || '';
+            const badgeStyle = g === 'M'
+                ? 'background:#3498db;color:white;'
+                : g === 'F'
+                    ? 'background:#e91e8c;color:white;'
+                    : 'background:#95a5a6;color:white;';
+            const badgeLabel = g === 'M' ? '♂' : g === 'F' ? '♀' : '?';
             const row = document.createElement('div');
             row.style.cssText = 'display:flex;gap:6px;align-items:center;';
-            row.innerHTML = `<input type="text" class="guest-proctor-input" list="guestProctorSuggestions" placeholder="Full name"
-                style="flex:1;padding:8px 10px;border:2px solid #ddd;border-radius:6px;font-size:13px;">
+            row.dataset.guestGender = g;
+            row.innerHTML = `<span style="padding:6px 9px;border-radius:6px;font-size:13px;font-weight:700;flex-shrink:0;${badgeStyle}">${badgeLabel}</span>
+                <input type="text" class="guest-proctor-input" list="guestProctorSuggestions" placeholder="Full name"
+                    style="flex:1;padding:8px 10px;border:2px solid #ddd;border-radius:6px;font-size:13px;">
                 <button onclick="this.parentElement.remove()" style="padding:6px 10px;background:#e74c3c;color:white;border:none;border-radius:6px;cursor:pointer;font-size:14px;flex-shrink:0;">✕</button>`;
             list.appendChild(row);
             row.querySelector('input').focus();
@@ -3895,7 +3918,13 @@
             
             if (!ctx.data.slotGuestProctors) ctx.data.slotGuestProctors = {};
             const guestInputs = document.querySelectorAll('#guestProctorList .guest-proctor-input');
-            const guests = Array.from(guestInputs).map(i => i.value.trim()).filter(v => v);
+            const guests = Array.from(guestInputs).map(input => {
+                const name = input.value.trim();
+                if (!name) return null;
+                const row = input.closest('[data-guest-gender]');
+                const g = row ? (row.dataset.guestGender || '') : '';
+                return g ? g + ':' + name : name;
+            }).filter(v => v);
 
             // ── Guest double-booking check ────────────────────────────────────────
             // Exact-match check: flag if any guest name appears in a slot that overlaps
@@ -3910,13 +3939,15 @@
 
                 const seenConflicts = new Set(); // dedupe "name|cal" pairs
                 const conflicts = [];
-                guests.forEach(name => {
+                guests.forEach(entry => {
+                    const name = /^[MF]:/.test(entry) ? entry.slice(2) : entry;
                     Object.keys(examData).forEach(otherCal => {
                         if (otherCal === ctx.examType) return;
                         const od = examData[otherCal];
                         if (!od.slotGuestProctors) return;
                         Object.keys(od.slotGuestProctors).forEach(sid => {
-                            if (!(od.slotGuestProctors[sid] || []).includes(name)) return;
+                            const otherGuests = (od.slotGuestProctors[sid] || []).map(e => /^[MF]:/.test(e) ? e.slice(2) : e);
+                            if (!otherGuests.includes(name)) return;
                             const p = parseSlotId(sid);
                             if (p.dateIdx !== dateIdx) return;
                             // Periods covered by the other slot
@@ -3959,7 +3990,8 @@
             if (guests.length > 0) ctx.data.slotGuestProctors[ctx.slotId] = guests;
             else delete ctx.data.slotGuestProctors[ctx.slotId];
             // Merge any new names into the persistent guest proctor library
-            guests.forEach(name => {
+            guests.forEach(entry => {
+                const name = /^[MF]:/.test(entry) ? entry.slice(2) : entry;
                 if (name && !knownGuestProctors.includes(name)) knownGuestProctors.push(name);
             });
             knownGuestProctors.sort((a, b) => a.localeCompare(b));
@@ -6772,6 +6804,14 @@
                             if (!t) return;
                             const name = t.name.replace(/^(Mr\.|Ms\.|Mrs\.)\s*/i,'');
                             (t.gender === 'M' ? males : females).push(name);
+                        });
+                        // Guest proctors: route by stored gender prefix (M:/F:); legacy unprefixed → males
+                        const guestEntries = (data.slotGuestProctors && data.slotGuestProctors[slotId]) || [];
+                        guestEntries.forEach(function(entry) {
+                            const isF = entry.startsWith('F:');
+                            const nm = (entry.startsWith('M:') || isF) ? entry.slice(2) : entry;
+                            if (!nm) return;
+                            (isF ? females : males).push('(' + nm + ')'); // parentheses mark guests
                         });
                         allExams.push({
                             date, dateIdx, periodIdx, examType, slotId, males, females,
