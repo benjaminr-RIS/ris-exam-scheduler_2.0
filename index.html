@@ -750,29 +750,29 @@
                                 <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px;">
                                     <div>
                                         <div style="font-size:11px;font-weight:700;color:#7f8c8d;margin-bottom:3px;">Paper</div>
-                                        <select id="newExam_paper" onchange="if(this.value==='_other_')handleSelectOther('newExam_paper','paper','— none —');else updateExamPreview();" style="width:100%;padding:6px;border:1px solid #ddd;border-radius:4px;font-size:13px;">
-                                            <option value="">— none —</option>
-                                        </select>
+                                        <input type="text" id="newExam_paper" list="dl_paper" placeholder="— none —" oninput="updateExamPreview()" autocomplete="off"
+                                               style="width:100%;padding:6px;border:1px solid #ddd;border-radius:4px;font-size:13px;">
+                                        <datalist id="dl_paper"></datalist>
                                     </div>
                                     <div>
                                         <div style="font-size:11px;font-weight:700;color:#7f8c8d;margin-bottom:3px;">Format</div>
-                                        <select id="newExam_format" onchange="if(this.value==='_other_')handleSelectOther('newExam_format','format','— standard —');else updateExamPreview();" style="width:100%;padding:6px;border:1px solid #ddd;border-radius:4px;font-size:13px;">
-                                            <option value="">— standard —</option>
-                                        </select>
+                                        <input type="text" id="newExam_format" list="dl_format" placeholder="— standard —" oninput="updateExamPreview()" autocomplete="off"
+                                               style="width:100%;padding:6px;border:1px solid #ddd;border-radius:4px;font-size:13px;">
+                                        <datalist id="dl_format"></datalist>
                                     </div>
                                 </div>
                                 <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px;">
                                     <div>
                                         <div style="font-size:11px;font-weight:700;color:#7f8c8d;margin-bottom:3px;">Access</div>
-                                        <select id="newExam_access" onchange="if(this.value==='_other_')handleSelectOther('newExam_access','access','— standard —');else updateExamPreview();" style="width:100%;padding:6px;border:1px solid #ddd;border-radius:4px;font-size:13px;">
-                                            <option value="">— standard —</option>
-                                        </select>
+                                        <input type="text" id="newExam_access" list="dl_access" placeholder="— standard —" oninput="updateExamPreview()" autocomplete="off"
+                                               style="width:100%;padding:6px;border:1px solid #ddd;border-radius:4px;font-size:13px;">
+                                        <datalist id="dl_access"></datalist>
                                     </div>
                                     <div>
                                         <div style="font-size:11px;font-weight:700;color:#7f8c8d;margin-bottom:3px;">Session</div>
-                                        <select id="newExam_session" onchange="if(this.value==='_other_')handleSelectOther('newExam_session','session','— primary —');else updateExamPreview();" style="width:100%;padding:6px;border:1px solid #ddd;border-radius:4px;font-size:13px;">
-                                            <option value="">— primary —</option>
-                                        </select>
+                                        <input type="text" id="newExam_session" list="dl_session" placeholder="— primary —" oninput="updateExamPreview()" autocomplete="off"
+                                               style="width:100%;padding:6px;border:1px solid #ddd;border-radius:4px;font-size:13px;">
+                                        <datalist id="dl_session"></datalist>
                                     </div>
                                 </div>
                                 <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px;">
@@ -782,12 +782,11 @@
                                     </div>
                                     <div>
                                         <div style="font-size:11px;font-weight:700;color:#7f8c8d;margin-bottom:3px;">Room</div>
-                                        <select id="newExam_room" onchange="if(this.value='_other_')handleSelectOther('newExam_room','room','— select —');else updateExamPreview();" style="width:100%;padding:6px;border:1px solid #ddd;border-radius:4px;font-size:13px;">
-                                            <option value="">— select —</option>
-                                        </select>
+                                        <input type="text" id="newExam_room" list="dl_room" placeholder="e.g. H408, Nest, TBD" oninput="updateExamPreview()" autocomplete="off"
+                                               style="width:100%;padding:6px;border:1px solid #ddd;border-radius:4px;font-size:13px;">
+                                        <datalist id="dl_room"></datalist>
                                     </div>
                                 </div>
-                                <div id="roomOtherRow" style="display:none;"></div>
                                 <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px;">
                                     <div>
                                         <div style="font-size:11px;font-weight:700;color:#7f8c8d;margin-bottom:3px;">Start Time</div>
@@ -930,14 +929,20 @@
                                 </button>
                                 <div style="border-top:1px solid #f0f2f4;padding-top:10px;">
                                     <div style="font-size:11px;font-weight:700;color:#b2bec3;text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px;">Reset Assignments</div>
-                                    <div style="display:flex;gap:8px;">
+                                    <div style="display:flex;gap:8px;flex-wrap:wrap;">
                                         <button onclick="resetToLastSave()"
-                                            style="flex:1;padding:7px 6px;background:white;border:1px solid #ddd;border-radius:5px;cursor:pointer;font-size:11px;color:#7f8c8d;font-weight:600;transition:all 0.15s;"
+                                            style="flex:1;min-width:80px;padding:7px 6px;background:white;border:1px solid #ddd;border-radius:5px;cursor:pointer;font-size:11px;color:#7f8c8d;font-weight:600;transition:all 0.15s;"
                                             onmouseover="this.style.borderColor='#e67e22';this.style.color='#e67e22'" onmouseout="this.style.borderColor='#ddd';this.style.color='#7f8c8d'">
                                             <i class="fa-solid fa-cloud-arrow-down fa-btn-icon"></i> Cloud Save
                                         </button>
+                                        <button onclick="clearAutoAssignments()"
+                                            title="Remove only auto-scheduled assignments; keeps manual and self-claimed"
+                                            style="flex:1;min-width:80px;padding:7px 6px;background:white;border:1px solid #ddd;border-radius:5px;cursor:pointer;font-size:11px;color:#7f8c8d;font-weight:600;transition:all 0.15s;"
+                                            onmouseover="this.style.borderColor='#e67e22';this.style.color='#e67e22'" onmouseout="this.style.borderColor='#ddd';this.style.color='#7f8c8d'">
+                                            <i class="fa-solid fa-robot fa-btn-icon"></i> Clear Auto
+                                        </button>
                                         <button onclick="clearAssignments()"
-                                            style="flex:1;padding:7px 6px;background:white;border:1px solid #ddd;border-radius:5px;cursor:pointer;font-size:11px;color:#7f8c8d;font-weight:600;transition:all 0.15s;"
+                                            style="flex:1;min-width:80px;padding:7px 6px;background:white;border:1px solid #ddd;border-radius:5px;cursor:pointer;font-size:11px;color:#7f8c8d;font-weight:600;transition:all 0.15s;"
                                             onmouseover="this.style.borderColor='#e74c3c';this.style.color='#e74c3c'" onmouseout="this.style.borderColor='#ddd';this.style.color='#7f8c8d'">
                                             <i class="fa-solid fa-trash fa-btn-icon"></i> Clear All
                                         </button>
@@ -2373,31 +2378,43 @@
         }
 
         function rebuildSelect(selectId, field, blankLabel, onchangeAttr) {
-            const sel = document.getElementById(selectId);
-            if (!sel) return;
+            // Legacy shim — now a no-op since all fields use datalists
+        }
+
+        // Populate a <datalist> with builtin + custom + live-harvested options
+        function rebuildDatalist(datalistId, field) {
+            const dl = document.getElementById(datalistId);
+            if (!dl) return;
             const opts = getOptionsFor(field);
-            const current = sel.value;
-            sel.innerHTML =
-                `<option value="">${blankLabel}</option>` +
-                opts.map(v => `<option value="${v}"${v===current?' selected':''}>${v}</option>`).join('') +
-                `<option value="_other_">+ Add new…</option>`;
+            // For 'room', also harvest every room value currently stored in examData
+            if (field === 'room') {
+                CALENDAR_KEYS.forEach(calKey => {
+                    const d = examData[calKey];
+                    if (!d || !d.slotRoom) return;
+                    Object.values(d.slotRoom).forEach(r => {
+                        if (r && !opts.includes(r)) opts.push(r);
+                    });
+                });
+            }
+            dl.innerHTML = opts.map(v => `<option value="${v}"></option>`).join('');
+        }
+
+        // Rebuild all exam-creator datalists (call on init and after any state load)
+        function rebuildAllDataLists() {
+            rebuildDatalist('dl_paper',  'paper');
+            rebuildDatalist('dl_format', 'format');
+            rebuildDatalist('dl_access', 'access');
+            rebuildDatalist('dl_session','session');
+            rebuildDatalist('dl_room',   'room');
         }
 
         function handleSelectOther(selectId, field, blankLabel) {
-            const sel = document.getElementById(selectId);
-            if (!sel || sel.value !== '_other_') return;
-            const val = prompt(`Add a new ${field} option:`);
-            if (val && val.trim()) {
-                addCustomOption(field, val.trim());
-                rebuildSelect(selectId, field, blankLabel, null);
-                sel.value = val.trim();
-                updateExamPreview();
-            } else {
-                sel.value = '';
-            }
+            // No longer used — fields are now freeform comboboxes
         }
 
         loadCustomOptions();
+        // Datalists are rebuilt after examData is loaded; also call here for initial page load
+        setTimeout(rebuildAllDataLists, 0);
 
 
         // ── Teacher Panel Mode Switcher ────────────────────────────────────────────
@@ -2955,9 +2972,10 @@
                         
                         if (isExam) {
                             const hasData = !!examName; // only colour if exam name has been saved
-                            const teacherAssigned = isSpecial ? 
-                                (data.specialAssignments[slotId] || []).filter(t => t).length :
-                                (data.assignments[slotId] || []).length;
+                            // Fix: include manualAssignments in fill count so color reflects true assignment state
+                            const _aRegCount  = isSpecial ? (data.specialAssignments[slotId] || []).filter(t => t).length : (data.assignments[slotId] || []).length;
+                            const _aManCount  = data.manualAssignments ? (data.manualAssignments[slotId] || []).length : 0;
+                            const teacherAssigned = Math.min(_aRegCount + _aManCount, proctorCount); // cap at proctorCount to avoid over-counting overlaps
                             const guestAssigned = data.slotGuestProctors ? (data.slotGuestProctors[slotId] || []).length : 0;
                             const assigned = teacherAssigned + guestAssigned;
                             
@@ -2995,9 +3013,10 @@
                             const room = data.slotRoom ? data.slotRoom[slotId] || '' : '';
                             const students = data.slotStudents ? data.slotStudents[slotId] || '' : '';
                             const startTime = data.slotTimes ? data.slotTimes[slotId] || '' : '';
-                            const assignedIds = isSpecial ?
-                                (data.specialAssignments[slotId] || []).filter(t => t) :
-                                (data.assignments[slotId] || []).filter(t => t);
+                            // Fix #4: include manualAssignments so manually-assigned teachers show on grid
+                            const _aReg  = isSpecial ? (data.specialAssignments[slotId] || []) : (data.assignments[slotId] || []);
+                            const _aMan  = data.manualAssignments ? (data.manualAssignments[slotId] || []) : [];
+                            const assignedIds = [...new Set([..._aReg, ..._aMan])].filter(t => t);
                             const assignedNames = assignedIds.map(id => {
                                 const t = TEACHERS.find(x => x.id === id);
                                 return t ? t.name.split(' ').pop() : '?';
@@ -3223,9 +3242,11 @@
 
             const examName = data.slotExamNames[slotId] || '';
             const proctorCount = data.slotProctorCount[slotId] || 2;
-            const currentAssignments = isSpecial ?
-                (data.specialAssignments[slotId] || []) :
-                (data.assignments[slotId] || []);
+            // Fix: merge all three assignment maps so manually-assigned teachers appear in the modal
+            const currentAssignments = [...new Set([
+                ...(isSpecial ? (data.specialAssignments[slotId] || []) : (data.assignments[slotId] || [])),
+                ...(data.manualAssignments?.[slotId] || []),
+            ])].filter(Boolean);
             const notes = data.slotNotes ? data.slotNotes[slotId] || '' : '';
             const genderReq = data.slotGenderReq ? (data.slotGenderReq[slotId] || '') : '';
 
@@ -3516,6 +3537,12 @@
                                 : `<div style="font-size:13px;color:#b2bec3;font-style:italic;">Not assigned</div>`
                             }
                         </div>
+                        ${teacher ? (() => {
+                            const _modalSrc = ctx.data.assignmentSources?.[ctx.slotId]?.[String(assignedId)] || 'manual';
+                            const _modalSrcLabel = _modalSrc === 'self-claimed' ? 'SELF' : _modalSrc === 'auto' ? 'AUTO' : 'MANUAL';
+                            const _modalSrcColor = _modalSrc === 'self-claimed' ? '#2980b9' : _modalSrc === 'auto' ? '#8e44ad' : '#e67e22';
+                            return `<span style="font-size:9px;font-weight:800;color:white;background:${_modalSrcColor};border-radius:3px;padding:2px 6px;white-space:nowrap;letter-spacing:0.4px;flex-shrink:0;">${_modalSrcLabel}</span>`;
+                        })() : ''}
                         <div style="display:flex;gap:4px;flex-shrink:0;">
                             <button onclick="openTeacherPicker(${i})"
                                 style="padding:5px 10px;background:${isActive?'#3498db':'#ecf0f1'};color:${isActive?'white':'#555'};border:none;border-radius:5px;cursor:pointer;font-size:11px;font-weight:600;">
@@ -3995,6 +4022,34 @@
             }
             
             if (!ctx.data.manualAssignments) ctx.data.manualAssignments = {};
+            // Fix #3: pre-flight double-booking check across all calendars before saving
+            const _slotParts = ctx.slotId.split('-');
+            const _slotDateIdx  = _slotParts[_slotParts.length - 2];
+            const _slotPeriodIdx = parseInt(_slotParts[_slotParts.length - 1]);
+            const _conflictTeachers = [];
+            manualTeachers.forEach(tid => {
+                // Check if this teacher is already assigned to another slot on the same date+period
+                const _alreadyBooked = Object.keys(examData).some(otherCal => {
+                    if (otherCal === ctx.examType) {
+                        // Same calendar: check same slotId but different assignment maps
+                        return false; // same slot is being overwritten — not a conflict
+                    }
+                    const od = examData[otherCal];
+                    const oSlotId = otherCal + '-' + _slotDateIdx + '-' + _slotPeriodIdx;
+                    return (od.assignments?.[oSlotId] || []).includes(tid) ||
+                           (od.specialAssignments?.[oSlotId] || []).includes(tid) ||
+                           (od.manualAssignments?.[oSlotId] || []).includes(tid);
+                });
+                if (_alreadyBooked) {
+                    const _conflictTeacher = TEACHERS.find(t => t.id === tid);
+                    if (_conflictTeacher) _conflictTeachers.push(_conflictTeacher.name);
+                }
+            });
+            if (_conflictTeachers.length > 0) {
+                if (!confirm('Warning: ' + _conflictTeachers.join(', ') + ' already have an exam assignment that overlaps with this slot on another calendar. Save anyway?')) {
+                    return;
+                }
+            }
             if (manualTeachers.length > 0) {
                 ctx.data.manualAssignments[ctx.slotId] = manualTeachers;
             }
@@ -4211,18 +4266,127 @@
 
         function getTotalAssignedHours(teacherId) {
             let total = 0;
+            const _seen = new Set(); // deduplicate: teacher may be in both assignments and manualAssignments
             Object.keys(examData).forEach(type => {
                 const data = examData[type];
-                Object.values(data.assignments).forEach(proctors => {
-                    if (Array.isArray(proctors) && proctors.includes(teacherId)) total++;
-                });
-                Object.values(data.specialAssignments).forEach(proctors => {
-                    if (Array.isArray(proctors) && proctors.includes(teacherId)) total++;
-                });
+                // Build absorbed continuation slot IDs so merged slots don't double-count
+                const _absorbedIds = new Set();
+                if (data.slotMergeDown) {
+                    data.slotMergeDown.forEach(primarySid => {
+                        const _sp = primarySid.split('-');
+                        const _nextPIdx = getNextPeriodIdx(parseInt(_sp[_sp.length - 1]));
+                        if (_nextPIdx !== undefined) {
+                            _absorbedIds.add(type + '-' + _sp[_sp.length - 2] + '-' + _nextPIdx);
+                        }
+                    });
+                }
+                function countMap(map) {
+                    Object.keys(map).forEach(slotId => {
+                        if (_absorbedIds.has(slotId)) return; // skip continuation half
+                        const proctors = map[slotId];
+                        if (Array.isArray(proctors) && proctors.includes(teacherId)) {
+                            const _k = type + '|' + slotId;
+                            if (!_seen.has(_k)) { _seen.add(_k); total++; }
+                        }
+                    });
+                }
+                countMap(data.assignments);
+                countMap(data.specialAssignments);
+                countMap(data.manualAssignments || {});
             });
             return total;
         }
         
+        // ── Returns flag state for a teacher: { hasDoubleBooking, hasUnavailable, isOverbooked } ──
+        // Used by both the collapsed header pills and buildTeacherCardRight.
+        function getTeacherFlags(teacher) {
+            const assignments = [];
+            Object.keys(examData).forEach(examType => {
+                const data = examData[examType];
+                const _absorbedIds = new Set();
+                if (data.slotMergeDown) {
+                    data.slotMergeDown.forEach(primarySid => {
+                        const _sp = primarySid.split('-');
+                        const _nextPIdx = getNextPeriodIdx(parseInt(_sp[_sp.length - 1]));
+                        if (_nextPIdx !== undefined)
+                            _absorbedIds.add(examType + '-' + _sp[_sp.length - 2] + '-' + _nextPIdx);
+                    });
+                }
+                Array.from(data.examSlots || []).forEach(slotId => {
+                    if (_absorbedIds.has(slotId)) return;
+                    const assigned = [...new Set([
+                        ...(data.assignments[slotId]||[]),
+                        ...(data.specialAssignments[slotId]||[]),
+                        ...(data.manualAssignments[slotId]||[]),
+                    ])];
+                    if (!assigned.includes(teacher.id)) return;
+                    const parts = slotId.split('-');
+                    const dateIdx = parseInt(parts[parts.length-2]);
+                    const periodIdx = parseInt(parts[parts.length-1]);
+                    const date = data.dates[dateIdx];
+                    if (!date) return;
+                    assignments.push({ date, examType, slotId,
+                        dateIdx, periodIdx });
+                });
+            });
+
+            // Double-booking: same real date+period across 2+ calendars
+            const _slotsByDatePeriod = {};
+            assignments.forEach(a => {
+                const key = a.dateIdx + '-' + a.periodIdx + '-' + a.date.getTime();
+                if (!_slotsByDatePeriod[key]) _slotsByDatePeriod[key] = [];
+                _slotsByDatePeriod[key].push(a);
+            });
+            const hasDoubleBooking = Object.values(_slotsByDatePeriod).some(g => g.length > 1);
+
+            // Unavailable: assigned to a block not in teacher's commitments
+            const _commits = teacherBlockCommitments[teacher.id] || {};
+            const hasUnavailable = assignments.some(a => {
+                const _isAlwaysOk = [3,7,8,9,10].includes(a.periodIdx);
+                if (_isAlwaysOk) return false;
+                const _rawBlock = getCycleBlockForSlot(a.dateIdx, a.periodIdx, a.examType);
+                if (!_rawBlock || _rawBlock === '?') return false;
+                const _isReg  = /^[ABCD][12345]$/.test(_rawBlock);
+                const _isFlex = /^FLEX-/.test(_rawBlock);
+                if ((_isReg || _isFlex) && !_commits[_rawBlock]) return true;
+                // Also check second block of a merged slot
+                const _data = examData[a.examType];
+                if (_data && _data.slotMergeDown && _data.slotMergeDown.has(a.slotId)) {
+                    const _nPIdx = getNextPeriodIdx(a.periodIdx);
+                    if (_nPIdx !== undefined) {
+                        const _nBlock = getCycleBlockForSlot(a.dateIdx, _nPIdx, a.examType);
+                        const _nReg  = _nBlock && /^[ABCD][12345]$/.test(_nBlock);
+                        const _nFlex = _nBlock && /^FLEX-/.test(_nBlock);
+                        if ((_nReg || _nFlex) && !_commits[_nBlock]) return true;
+                    }
+                }
+                return false;
+            });
+
+            // Overbooked: more assigned sessions than required hours
+            const isOverbooked = assignments.length > (teacher.required || 0);
+
+            return { hasDoubleBooking, hasUnavailable, isOverbooked };
+        }
+
+        // ── Renders the three flag pills HTML for the collapsed header ──
+        function buildTeacherFlagPills(flags) {
+            let pills = '';
+            if (flags.hasDoubleBooking) {
+                pills += '<span title="Double Booking" style="display:inline-flex;align-items:center;gap:3px;background:#e74c3c;color:white;font-size:10px;font-weight:700;padding:2px 7px;border-radius:20px;margin-left:4px;white-space:nowrap;">'
+                       + '<i class="fa-solid fa-arrows-left-right" style="font-size:9px;pointer-events:none;"></i> Double Booking</span>';
+            }
+            if (flags.hasUnavailable) {
+                pills += '<span title="Booked into unavailable block" style="display:inline-flex;align-items:center;gap:3px;background:#c0392b;color:white;font-size:10px;font-weight:700;padding:2px 7px;border-radius:20px;margin-left:4px;white-space:nowrap;">'
+                       + '<i class="fa-solid fa-ban" style="font-size:9px;pointer-events:none;"></i> Unavailable</span>';
+            }
+            if (flags.isOverbooked) {
+                pills += '<span title="Overbooked" style="display:inline-flex;align-items:center;gap:3px;background:#e67e22;color:white;font-size:10px;font-weight:700;padding:2px 7px;border-radius:20px;margin-left:4px;white-space:nowrap;">'
+                       + '<i class="fa-solid fa-circle-exclamation" style="font-size:9px;pointer-events:none;"></i> Overbooked</span>';
+            }
+            return pills;
+        }
+
         function generateTeacherCards() {
             normalizeExamConflictKeys(); // ensure string keys before rendering
             const grid = document.getElementById('teacherGrid');
@@ -4238,6 +4402,11 @@
                 const remaining = Math.max(0, teacher.required - totalAssigned);
                 const statusColor = totalAssigned >= teacher.required ? '#27ae60' : totalAssigned > 0 ? '#f39c12' : '#e74c3c';
                 
+                const _flags = getTeacherFlags(teacher);
+                const _flagPills = buildTeacherFlagPills(_flags);
+                // Left border reflects highest-priority flag
+                const _headerBorder = _flags.hasDoubleBooking ? '#e74c3c' : _flags.hasUnavailable ? '#c0392b' : _flags.isOverbooked ? '#e67e22' : (teacher.color || '#3498db');
+
                 const card = document.createElement('div');
                 card.className = 'teacher-card';
                 card.dataset.tid = teacher.id;
@@ -4249,7 +4418,7 @@
                     <!-- Collapsed header — always visible -->
                     <div class="teacher-card-header" onclick="toggleTeacherAdminCard(${teacher.id})"
                          style="display:flex;align-items:center;gap:12px;padding:11px 15px;cursor:pointer;
-                                background:#fafbfc;border-left:4px solid ${teacher.color || '#3498db'};
+                                background:#fafbfc;border-left:4px solid ${_headerBorder};
                                 user-select:none;"
                          onmouseover="this.style.background='#f0f4ff'" onmouseout="this.style.background='#fafbfc'">
                         <span style="font-size:12px;color:#bdc3c7;transition:transform 0.2s;display:inline-block;
@@ -4259,11 +4428,12 @@
                             ${teacher.gender === 'M' ? '♂' : '♀'} ${teacher.name}
                         </span>
                         <span style="font-size:11px;color:#7f8c8d;margin-left:4px;">${teacher.program}</span>
-                        <span style="margin-left:auto;font-size:12px;font-weight:600;color:${statusColor};">
-                            ${totalAssigned}/${teacher.required} hrs
+                        <span style="margin-left:auto;display:inline-flex;align-items:center;gap:6px;">
+                            ${_flagPills}
+                            <span style="font-size:12px;font-weight:600;color:${statusColor};">${totalAssigned}/${teacher.required} hrs</span>
                         </span>
-                        <button onclick="event.stopPropagation();printTeacherSchedule(${teacher.id})"
-                                title="Print this teacher's exam schedule"
+                        <button onclick="event.stopPropagation();printTeacherSchedule(${teacher.id}, true)"
+                                title="Print this teacher's confirmed exam sessions"
                                 style="background:white;color:#3498db;border:1px solid #3498db;padding:3px 8px;border-radius:4px;cursor:pointer;font-size:11px;margin-left:4px;display:inline-flex;align-items:center;gap:4px;transition:all 0.15s;"
                                 onmouseover="this.style.background='#3498db';this.style.color='white';"
                                 onmouseout="this.style.background='white';this.style.color='#3498db';">
@@ -4282,6 +4452,15 @@
 
                             <!-- LEFT 50%: fields + block grid, always top-anchored -->
                             <div style="flex:0 0 50%;min-width:0;">
+                                <div style="margin-bottom:8px;">
+                                    <label style="color:#7f8c8d;font-size:11px;">Display Name:</label><br>
+                                    <div style="display:flex;gap:5px;align-items:center;">
+                                        <input type="text" id="name-input-${teacher.id}" value="${teacher.name}"
+                                               style="flex:1;padding:4px 6px;border:1px solid #ddd;border-radius:4px;font-size:13px;font-weight:600;color:#2c3e50;"
+                                               onkeydown="if(event.key==='Enter'){updateTeacherName(${teacher.id},this.value);this.blur();}"
+                                               onblur="updateTeacherName(${teacher.id},this.value)">
+                                    </div>
+                                </div>
                                 <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:10px;font-size:13px;">
                                     <div>
                                         <label style="color:#7f8c8d;font-size:11px;">Program:</label><br>
@@ -4349,8 +4528,23 @@
             const assignments = [];
             Object.keys(examData).forEach(examType => {
                 const data = examData[examType];
+                // Fix #2: build set of absorbed (continuation) slot IDs so we only show the primary merged slot
+                const _absorbedIds = new Set();
+                if (data.slotMergeDown) {
+                    data.slotMergeDown.forEach(primarySid => {
+                        const _sp = primarySid.split('-');
+                        const _pPeriodIdx = parseInt(_sp[_sp.length - 1]);
+                        const _pDateIdx   = _sp[_sp.length - 2];
+                        const _absorbedPeriodIdx = getNextPeriodIdx(_pPeriodIdx);
+                        if (_absorbedPeriodIdx !== undefined) {
+                            _absorbedIds.add(examType + '-' + _pDateIdx + '-' + _absorbedPeriodIdx);
+                        }
+                    });
+                }
                 const allSlotIds = Array.from(data.examSlots || []);
                 allSlotIds.forEach(slotId => {
+                    // Skip slots that are the continuation/absorbed half of a merge
+                    if (_absorbedIds.has(slotId)) return;
                     const assigned = [...new Set([
                         ...(data.assignments[slotId]||[]),
                         ...(data.specialAssignments[slotId]||[]),
@@ -4365,6 +4559,7 @@
                     const cycleBlock = getMergeBlockLabel(examType, slotId,
                         getCycleBlockForSlot(dateIdx, periodIdx, examType));
                     const _isSC = (data.assignmentSources?.[slotId]?.[String(teacher.id)]) === 'self-claimed';
+                    const _src  = data.assignmentSources?.[slotId]?.[String(teacher.id)] || 'manual';
                     assignments.push({
                         date, examType, slotId, calKey: examType,
                         block: cycleBlock,
@@ -4373,6 +4568,7 @@
                         start: (data.slotTimes       && data.slotTimes[slotId])       || '',
                         end:   (data.slotEndTimes    && data.slotEndTimes[slotId])    || '',
                         isSelfClaimed: _isSC,
+                        source: _src, // 'auto' | 'self-claimed' | 'manual'
                     });
                 });
             });
@@ -4392,23 +4588,65 @@
             const _doubleBookings = Object.values(_slotsByDatePeriod).filter(group => group.length > 1);
             const _hasDoubleBooking = _doubleBookings.length > 0;
 
+            // ── Booked-against-availability detection ─────────────────────
+            // Flag any assignment where the slot's cycleBlock is not in the teacher's commitments.
+            // LUNCH, After School, and BREAK (primary slot) require no commitment.
+            const _teacherCommits = teacherBlockCommitments[teacher.id] || {};
+            const _unavailableSlotIds = new Set();
+            assignments.forEach(a => {
+                const _parts = a.slotId.split('-');
+                const _dIdx = parseInt(_parts[_parts.length - 2]);
+                const _pIdx = parseInt(_parts[_parts.length - 1]);
+                // Special periods that never need a commitment: Lunch(3), After School(7,8,10), Break(9)
+                const _isAlwaysOk = [3, 7, 8, 9, 10].includes(_pIdx);
+                if (_isAlwaysOk) return;
+                // Get the raw cycleBlock for the primary period (not the merged label)
+                const _rawBlock = getCycleBlockForSlot(_dIdx, _pIdx, a.examType);
+                if (!_rawBlock || _rawBlock === '?') return; // no-school day, skip
+                const _isRegular = /^[ABCD][12345]$/.test(_rawBlock);
+                const _isFlex    = /^FLEX-/.test(_rawBlock);
+                if ((_isRegular || _isFlex) && !_teacherCommits[_rawBlock]) {
+                    _unavailableSlotIds.add(a.slotId);
+                }
+                // For merged slots, also check the absorbed second block
+                const _data = examData[a.examType];
+                if (_data && _data.slotMergeDown && _data.slotMergeDown.has(a.slotId)) {
+                    const _nextPIdx = getNextPeriodIdx(_pIdx);
+                    if (_nextPIdx !== undefined) {
+                        const _nextBlock = getCycleBlockForSlot(_dIdx, _nextPIdx, a.examType);
+                        const _nextIsRegular = _nextBlock && /^[ABCD][12345]$/.test(_nextBlock);
+                        const _nextIsFlex    = _nextBlock && /^FLEX-/.test(_nextBlock);
+                        if ((_nextIsRegular || _nextIsFlex) && !_teacherCommits[_nextBlock]) {
+                            _unavailableSlotIds.add(a.slotId);
+                        }
+                    }
+                }
+            });
+            const _hasUnavailable = _unavailableSlotIds.size > 0;
+
             const assigned = assignments.length;
             const required = teacher.required || 0;
-            const barColor = _hasDoubleBooking ? '#e74c3c' : assigned >= required ? '#27ae60' : assigned > 0 ? '#f39c12' : '#e74c3c';
+            const _isOverbooked = assigned > required;
+            // Priority: double-booking (red) > unavailable block (dark orange) > overbooked (orange) > ok (green)
+            const _cardBorderColor = _hasDoubleBooking ? '#e74c3c' : _hasUnavailable ? '#c0392b' : _isOverbooked ? '#e67e22' : '#27ae60';
+            const _cardBgColor    = _hasDoubleBooking ? '#c0392b'  : _hasUnavailable ? '#922b21' : _isOverbooked ? '#d35400' : '#27ae60';
+            const barColor = _hasDoubleBooking ? '#e74c3c' : _hasUnavailable ? '#e74c3c' : _isOverbooked ? '#e67e22' : assigned >= required ? '#27ae60' : assigned > 0 ? '#f39c12' : '#e74c3c';
 
             // ── Confirmed sessions card ───────────────────────────────────
-            let html = `<div style="background:#f0faf4;border:2px solid ${_hasDoubleBooking ? '#e74c3c' : '#27ae60'};border-radius:12px;overflow:hidden;margin-bottom:20px;">
-                <div style="background:${_hasDoubleBooking ? '#c0392b' : '#27ae60'};padding:10px 16px;display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;">
+            let html = `<div style="background:#f0faf4;border:2px solid ${_cardBorderColor};border-radius:12px;overflow:hidden;margin-bottom:20px;">
+                <div style="background:${_cardBgColor};padding:10px 16px;display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;">
                     <div style="display:flex;align-items:center;gap:8px;">
                         <i class="fa-solid fa-calendar-check" style="color:white;font-size:15px;"></i>
                         <span style="font-size:13px;font-weight:800;color:white;letter-spacing:0.3px;">YOUR CONFIRMED SESSIONS</span>
                         <span style="background:rgba(255,255,255,0.25);color:white;font-size:12px;font-weight:800;padding:2px 10px;border-radius:20px;">${assigned} / ${required}</span>
                         ${_hasDoubleBooking ? '<span style="background:rgba(255,255,255,0.25);color:white;font-size:11px;font-weight:800;padding:2px 8px;border-radius:20px;margin-left:4px;"><i class=\\"fa-solid fa-triangle-exclamation\\" style=\\"margin-right:3px;\\"></i>DOUBLE BOOKING</span>' : ''}
+                        ${_hasUnavailable ? '<span style="background:rgba(255,255,255,0.25);color:white;font-size:11px;font-weight:800;padding:2px 8px;border-radius:20px;margin-left:4px;"><i class=\\"fa-solid fa-ban\\" style=\\"margin-right:3px;\\"></i>UNAVAILABLE BLOCK</span>' : ''}
+                        ${_isOverbooked ? '<span style="background:rgba(255,255,255,0.25);color:white;font-size:11px;font-weight:800;padding:2px 8px;border-radius:20px;margin-left:4px;"><i class=\\"fa-solid fa-circle-exclamation\\" style=\\"margin-right:3px;\\"></i>OVERBOOKED</span>' : ''}
                     </div>
                     <div style="display:flex;gap:6px;">
-                        <button onclick="printTeacherSchedule(${teacher.id}, true)" style="padding:4px 10px;background:rgba(255,255,255,0.2);color:white;border:1px solid rgba(255,255,255,0.5);border-radius:5px;font-size:11px;font-weight:600;cursor:pointer;white-space:nowrap;">
-                            <i class="fa-solid fa-print" style="margin-right:4px;"></i>Print My Sessions</button>
                         <button onclick="printTeacherSchedule(${teacher.id}, false)" style="padding:4px 10px;background:rgba(255,255,255,0.2);color:white;border:1px solid rgba(255,255,255,0.5);border-radius:5px;font-size:11px;font-weight:600;cursor:pointer;white-space:nowrap;">
+                            <i class="fa-solid fa-print" style="margin-right:4px;"></i>Print My Sessions</button>
+                        <button onclick="printTeacherSchedule(${teacher.id}, true)" style="padding:4px 10px;background:rgba(255,255,255,0.2);color:white;border:1px solid rgba(255,255,255,0.5);border-radius:5px;font-size:11px;font-weight:600;cursor:pointer;white-space:nowrap;">
                             <i class="fa-solid fa-print" style="margin-right:4px;"></i>Print Full Schedule</button>
                     </div>
                 </div>`;
@@ -4429,39 +4667,92 @@
                 html += `</div></div>`;
             }
 
+            if (_hasUnavailable) {
+                html += `<div style="padding:8px 14px;background:#fdedec;border-bottom:2px solid #922b21;font-size:12px;color:#922b21;display:flex;align-items:flex-start;gap:8px;">
+                    <i class="fa-solid fa-ban" style="flex-shrink:0;margin-top:1px;"></i>
+                    <div><strong>Booked into unavailable block${_unavailableSlotIds.size !== 1 ? 's' : ''} — teacher has no availability commitment for the highlighted slot${_unavailableSlotIds.size !== 1 ? 's' : ''}:</strong><br>`;
+                assignments.filter(a => _unavailableSlotIds.has(a.slotId)).forEach(a => {
+                    const _mo = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"][a.date.getMonth()];
+                    html += _mo + ' ' + a.date.getDate() + ': ' + a.block + ' — ' + a.exam + '<br>';
+                });
+                html += `</div></div>`;
+            }
+
+            if (_isOverbooked) {
+                html += `<div style="padding:8px 14px;background:#fef3ec;border-bottom:2px solid #e67e22;font-size:12px;color:#9c5a00;display:flex;align-items:flex-start;gap:8px;">
+                    <i class="fa-solid fa-circle-exclamation" style="flex-shrink:0;margin-top:1px;color:#e67e22;"></i>
+                    <div><strong>Overbooked:</strong> ${assigned} sessions assigned against a requirement of ${required}. Please remove ${assigned - required} session${assigned - required !== 1 ? 's' : ''}.</div>
+                </div>`;
+            }
+
             if (assignments.length === 0) {
                 html += `<div style="padding:20px;text-align:center;color:#6b9e7a;font-style:italic;font-size:13px;">No sessions confirmed yet — claim an exam below.</div>`;
             } else {
+                // Sort by date first, then chronologically by start time within each day
+                assignments.sort((a, b) => {
+                    const dateDiff = (a.date ? a.date.getTime() : 0) - (b.date ? b.date.getTime() : 0);
+                    if (dateDiff !== 0) return dateDiff;
+                    return (a.start || '').localeCompare(b.start || '');
+                });
+                // Group by date
+                const _confirmedGroups = [];
+                let _lastConfDk = null;
+                assignments.forEach(a => {
+                    const dk = fmtDate(a.date);
+                    if (dk !== _lastConfDk) { _confirmedGroups.push({ dk, date: a.date, items: [] }); _lastConfDk = dk; }
+                    _confirmedGroups[_confirmedGroups.length-1].items.push(a);
+                });
+
                 html += `<div style="display:flex;flex-direction:column;gap:0;">`;
-                assignments.forEach((a, i) => {
-                    const tc  = typeColors[a.examType] || '#27ae60';
-                    const lbl = typeLabels[a.examType] || a.examType;
-                    const time = a.start ? fmt12h(a.start) + (a.end ? '–' + fmt12h(a.end) : '') : '—';
-                    const borderTop = i > 0 ? 'border-top:1px solid #c8e6d0;' : '';
-                    const locked = portalMeta.globalLock;
-                    const isAdminView = currentSession?.role === 'admin';
-                    const unclaimBtn = ((!locked || isAdminView) && (currentSession?.role === 'teacher' || isAdminView))
-                        ? `<button onclick="unclaimSlot('${a.calKey}','${a.slotId}',${teacher.id})"
-                            style="padding:4px 10px;background:white;border:1px solid #e74c3c;border-radius:5px;color:#e74c3c;font-size:11px;font-weight:600;cursor:pointer;white-space:nowrap;flex-shrink:0;">
-                            <i class="fa-solid fa-xmark" style="pointer-events:none;"></i> Unclaim</button>`
-                        : '';
-                    const _isConflictRow = _conflictedSlotIds.has(a.slotId);
-                    const _rowBg = _isConflictRow ? 'background:#fdf2f2;' : '';
-                    const _conflictFlag = _isConflictRow
-                        ? `<span style="font-size:10px;font-weight:800;color:#c0392b;background:#fdd;border:1px solid #e74c3c;border-radius:3px;padding:1px 5px;flex-shrink:0;white-space:nowrap;">
-                            <i class="fa-solid fa-triangle-exclamation" style="pointer-events:none;margin-right:2px;"></i>CONFLICT</span>`
-                        : '';
-                    html += `<div style="padding:7px 14px;${borderTop}${_rowBg}display:flex;align-items:center;gap:8px;">
-                        <div style="width:3px;align-self:stretch;background:${_isConflictRow ? '#e74c3c' : tc};border-radius:2px;flex-shrink:0;"></div>
-                        <span style="background:${tc};color:white;padding:1px 5px;border-radius:3px;font-size:10px;font-weight:700;flex-shrink:0;">${lbl}</span>
-                        <span style="font-size:11px;font-weight:700;color:#1a5c35;white-space:nowrap;flex-shrink:0;">${fmtDate(a.date)}</span>
-                        <span style="font-size:11px;font-weight:700;color:#2c3e50;white-space:nowrap;flex-shrink:0;">${a.block}</span>
-                        <span style="font-size:11px;color:#2c3e50;flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;" title="${a.exam}">${a.exam}</span>
-                        ${_conflictFlag}
-                        <span style="font-size:11px;color:#6b9e7a;white-space:nowrap;flex-shrink:0;">${a.room || '—'}</span>
-                        <span style="font-size:11px;color:#6b9e7a;white-space:nowrap;flex-shrink:0;">${time}</span>
-                        ${unclaimBtn}
+                _confirmedGroups.forEach((grp, _gi) => {
+                    const _pillSlotsConfirmed = grp.items.map(a => ({ et: a.examType, sid: a.slotId }));
+                    const _dayPills = buildDayLoadPills(teacher, grp.date, _pillSlotsConfirmed);
+                    const _topBorder = _gi > 0 ? 'border-top:2px solid #c8e6d0;margin-top:2px;' : '';
+                    html += `<div style="padding:6px 14px 5px;background:#e8f5ee;${_topBorder}display:flex;align-items:center;gap:0;">
+                        <span style="font-size:11px;font-weight:800;color:#1a5c35;white-space:nowrap;width:110px;flex-shrink:0;">
+                            ${grp.date.toLocaleDateString('en-GB',{weekday:'short',day:'numeric',month:'short'})}
+                        </span>
+                        <div style="display:flex;flex-wrap:wrap;gap:3px;align-items:center;">${_dayPills}</div>
                     </div>`;
+                    grp.items.forEach((a, i) => {
+                        const tc  = typeColors[a.examType] || '#27ae60';
+                        const lbl = typeLabels[a.examType] || a.examType;
+                        const time = a.start ? fmt12h(a.start) + (a.end ? '–' + fmt12h(a.end) : '') : '—';
+                        const borderTop = i > 0 ? 'border-top:1px solid #c8e6d0;' : '';
+                        const locked = portalMeta.globalLock;
+                        const isAdminView = currentSession?.role === 'admin';
+                        const unclaimBtn = ((!locked || isAdminView) && (currentSession?.role === 'teacher' || isAdminView))
+                            ? `<button onclick="unclaimSlot('${a.calKey}','${a.slotId}',${teacher.id})"
+                                style="padding:4px 10px;background:white;border:1px solid #e74c3c;border-radius:5px;color:#e74c3c;font-size:11px;font-weight:600;cursor:pointer;white-space:nowrap;flex-shrink:0;">
+                                <i class="fa-solid fa-xmark" style="pointer-events:none;"></i> Unclaim</button>`
+                            : '';
+                        const _isConflictRow  = _conflictedSlotIds.has(a.slotId);
+                        const _isUnavailRow   = _unavailableSlotIds.has(a.slotId);
+                        const _rowBg = _isConflictRow ? 'background:#fdf2f2;' : _isUnavailRow ? 'background:#fdf2f2;' : '';
+                        const _accentColor = _isConflictRow ? '#e74c3c' : _isUnavailRow ? '#922b21' : tc;
+                        const _conflictFlag = _isConflictRow
+                            ? `<span style="font-size:10px;font-weight:800;color:#c0392b;background:#fdd;border:1px solid #e74c3c;border-radius:3px;padding:1px 5px;flex-shrink:0;white-space:nowrap;">
+                                <i class="fa-solid fa-triangle-exclamation" style="pointer-events:none;margin-right:2px;"></i>CONFLICT</span>`
+                            : '';
+                        const _unavailFlag = _isUnavailRow
+                            ? `<span style="font-size:10px;font-weight:800;color:#922b21;background:#fdd;border:1px solid #922b21;border-radius:3px;padding:1px 5px;flex-shrink:0;white-space:nowrap;">
+                                <i class="fa-solid fa-ban" style="pointer-events:none;margin-right:2px;"></i>UNAVAIL</span>`
+                            : '';
+                        const _srcLabel = a.source === 'self-claimed' ? 'SELF' : a.source === 'auto' ? 'AUTO' : 'MANUAL';
+                        const _srcColor = a.source === 'self-claimed' ? '#2980b9' : a.source === 'auto' ? '#8e44ad' : '#e67e22';
+                        const _srcBadge = `<span style="font-size:9px;font-weight:800;color:white;background:${_srcColor};border-radius:3px;padding:1px 5px;flex-shrink:0;white-space:nowrap;letter-spacing:0.4px;min-width:46px;text-align:center;">${_srcLabel}</span>`;
+                        html += `<div style="padding:7px 14px;${borderTop}${_rowBg}display:flex;align-items:center;gap:8px;">
+                            <div style="width:3px;align-self:stretch;background:${_accentColor};border-radius:2px;flex-shrink:0;"></div>
+                            <span style="background:${tc};color:white;padding:1px 5px;border-radius:3px;font-size:10px;font-weight:700;flex-shrink:0;">${lbl}</span>
+                            <span style="font-size:11px;font-weight:700;color:#2c3e50;white-space:nowrap;flex-shrink:0;">${a.block}</span>
+                            <span style="font-size:11px;color:#2c3e50;flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;" title="${a.exam}">${a.exam}</span>
+                            ${_conflictFlag}${_unavailFlag}
+                            <span style="font-size:11px;color:#6b9e7a;white-space:nowrap;flex-shrink:0;">${a.room || '—'}</span>
+                            <span style="font-size:11px;color:#6b9e7a;white-space:nowrap;flex-shrink:0;min-width:110px;">${time}</span>
+                            ${_srcBadge}
+                            ${unclaimBtn}
+                        </div>`;
+                    });
                 });
                 html += `</div>`;
             }
@@ -4595,6 +4886,7 @@
                     <colgroup>
                         <col style="width:44px;">
                         <col style="width:72px;">
+                        <col style="width:72px;">
                         <col style="width:110px;">
                         <col style="width:70px;">
                         <col style="width:90px;">
@@ -4606,6 +4898,7 @@
                     <thead><tr style="background:#f0f3f7;">
                         <th style="padding:4px 6px;text-align:center;color:#7f8c8d;font-size:11px;font-weight:700;border-bottom:1px solid #e0e4e8;">FILL</th>
                         <th style="padding:4px 8px;text-align:left;color:#7f8c8d;font-size:11px;font-weight:700;border-bottom:1px solid #e0e4e8;">STATUS</th>
+                        <th style="padding:4px 8px;text-align:left;color:#7f8c8d;font-size:11px;font-weight:700;border-bottom:1px solid #e0e4e8;">SOURCE</th>
                         <th style="padding:4px 8px;text-align:left;color:#7f8c8d;font-size:11px;font-weight:700;border-bottom:1px solid #e0e4e8;">TYPE</th>
                         <th style="padding:4px 8px;text-align:left;color:#7f8c8d;font-size:11px;font-weight:700;border-bottom:1px solid #e0e4e8;">DATE</th>
                         <th style="padding:4px 8px;text-align:left;color:#7f8c8d;font-size:11px;font-weight:700;border-bottom:1px solid #e0e4e8;">BLOCK</th>
@@ -4627,7 +4920,7 @@
                     // Day-load header spanning all columns
                     const _pillSlots = grp.slots.map(ae => ({ et: ae.calKey, sid: ae.slotId }));
                     const _pills = buildDayLoadPills(teacher, grp.date, _pillSlots);
-                    const _colspan = ((currentSession?.role === 'teacher' && currentSession.teacherId === teacher.id) || currentSession?.role === 'admin') ? 9 : 8;
+                    const _colspan = ((currentSession?.role === 'teacher' && currentSession.teacherId === teacher.id) || currentSession?.role === 'admin') ? 10 : 9;
                     if (_dgi > 0) html += `<tr><td colspan="${_colspan}" style="padding:6px 0;background:transparent;"></td></tr>`;
                     html += `<tr style="background:#f0f4f8;border-top:2px solid #dde3ea;">
                         <td colspan="${_colspan}" style="padding:7px 10px;">
@@ -4730,6 +5023,14 @@
                             }
                         }
 
+                        // Fix #6: source badge for available slots table (only shown if assigned)
+                        const _aeSource = isAssigned ? (examData[ae.calKey]?.assignmentSources?.[ae.slotId]?.[String(teacher.id)] || 'manual') : null;
+                        const _aeSrcLabel = _aeSource === 'self-claimed' ? 'SELF' : _aeSource === 'auto' ? 'AUTO' : _aeSource === 'manual' ? 'MANUAL' : '';
+                        const _aeSrcColor = _aeSource === 'self-claimed' ? '#2980b9' : _aeSource === 'auto' ? '#8e44ad' : '#e67e22';
+                        const _aeSrcCell = _aeSource
+                            ? `<td style="padding:4px 8px;"><span style="font-size:9px;font-weight:800;color:white;background:${_aeSrcColor};border-radius:3px;padding:1px 5px;white-space:nowrap;letter-spacing:0.4px;">${_aeSrcLabel}</span></td>`
+                            : `<td style="padding:4px 8px;"></td>`;
+
                         html += `<tr style="background:${bg};border-bottom:1px solid #f0f0f0;${rowBorderLeft}">
                             <td style="padding:4px 6px;text-align:center;">
                                 <span title="${hoverTitle}"
@@ -4741,6 +5042,7 @@
                             <td style="padding:4px 8px;white-space:nowrap;">
                                 <span style="font-size:10px;font-weight:${statusWeight};color:${statusColor};">${blockLabel}</span>
                             </td>
+                            ${_aeSrcCell}
                             <td style="padding:4px 8px;font-size:11px;font-weight:700;color:#7f8c8d;">${ae.typeName}</td>
                             <td style="padding:4px 8px;color:#555;white-space:nowrap;font-size:11px;">${fmtDate(ae.date)}</td>
                             <td style="padding:4px 8px;font-weight:${isAssigned?'800':'700'};color:#2c3e50;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${ae.cycleBlock}</td>
@@ -4764,6 +5066,48 @@
             const rightPanel = document.getElementById('tcard-' + teacher.id + '-right');
             if (!rightPanel) return; // card not expanded/rendered yet — nothing to do
             rightPanel.innerHTML = buildTeacherCardRight(teacher);
+        }
+
+        // Refresh a single teacher's card in the Teacher Schedules accordion:
+        // updates both the header row (flag pills, progress bar) and the right-panel body.
+        // Avoids a full regenerateTeacherSchedulesView() which would reset expand/collapse state.
+        function refreshTeacherScheduleCard(teacherId) {
+            const teacher = TEACHERS.find(t => t.id === teacherId || String(t.id) === String(teacherId));
+            if (!teacher) return;
+            const cardId = 'tcard-' + teacher.id;
+
+            // Update right panel body if expanded
+            const rightPanel = document.getElementById(cardId + '-right');
+            if (rightPanel) rightPanel.innerHTML = buildTeacherCardRight(teacher);
+
+            // Recompute flags and progress for the header
+            const assigned  = getTotalAssignedHours(teacher.id);
+            const required  = teacher.required || 0;
+            const pct       = required > 0 ? Math.min(100, Math.round(assigned / required * 100)) : 0;
+            const barColor  = assigned >= required ? '#27ae60' : assigned > 0 ? '#f39c12' : '#e74c3c';
+            const statusLabel = assigned >= required ? '\u2713 Complete'
+                              : assigned > 0 ? `${assigned}/${required} sessions` : 'No assignments';
+            const statusColor = barColor;
+            const _flags    = getTeacherFlags(teacher);
+            const _pills    = buildTeacherFlagPills(_flags);
+            const accentColor = _flags.hasDoubleBooking ? '#e74c3c'
+                              : _flags.hasUnavailable   ? '#c0392b'
+                              : _flags.isOverbooked     ? '#e67e22'
+                              : (teacher.color || '#3498db');
+
+            // Update the header div's border-left colour
+            const headerDiv = document.querySelector(`#${cardId} > div[onclick]`);
+            if (headerDiv) headerDiv.style.borderLeftColor = accentColor;
+
+            // Update flag pills — they sit in a wrapper div before the progress block
+            const pillsContainer = document.getElementById(cardId + '-pills');
+            if (pillsContainer) pillsContainer.innerHTML = _pills;
+
+            // Update progress bar + status label
+            const barFill   = document.getElementById(cardId + '-barfill');
+            const barLabel  = document.getElementById(cardId + '-barlabel');
+            if (barFill)  { barFill.style.width = pct + '%'; barFill.style.background = barColor; }
+            if (barLabel) { barLabel.textContent = statusLabel; barLabel.style.color = statusColor; }
         }
 
         function toggleExamConflict(teacherId, examName) {
@@ -5431,6 +5775,22 @@
             autoSave();
         }
 
+        function updateTeacherName(teacherId, newName) {
+            const teacher = TEACHERS.find(t => t.id === teacherId);
+            if (!teacher) return;
+            const trimmed = newName.trim();
+            if (!trimmed || trimmed === teacher.name) return;
+            teacher.name = trimmed;
+            // Update just the header span — avoid full card re-render which would reset the input
+            const card = document.querySelector(`.teacher-card[data-tid="${teacherId}"]`);
+            if (card) {
+                const headerSpan = card.querySelector('.teacher-card-header span[style*="font-weight:700"]');
+                if (headerSpan) headerSpan.textContent = (teacher.gender === 'M' ? '\u2642' : '\u2640') + ' ' + trimmed;
+            }
+            autoSave();
+            showClipToast('\u2713 Name updated to \u201c' + trimmed + '\u201d');
+        }
+
         function updateTeacherProgram(teacherId, program) {
             const teacher = TEACHERS.find(t => t.id === teacherId);
             teacher.program = program;
@@ -5655,13 +6015,10 @@
         // ════════════════════════════════════════════════════════════════════════
         function runUnifiedScheduler() {
             normalizeExamConflictKeys(); // ensure string keys before filtering
-            localStorage.setItem('risScheduler_lastRun', Date.now().toString());
-            updateAdminDashboard();
             const log = document.getElementById('reportLog');
             log.innerHTML = '<div style="padding:10px;background:#3498db;color:white;border-radius:4px;margin-bottom:10px;"><strong><i class="fa-solid fa-play" style="margin-right:6px;"></i>Unified Scheduler — all 7 calendars</strong></div>';
             // Navigate to scheduler panel so report log is visible
             if (typeof adminNav === 'function') adminNav('scheduler');
-            // reportLog is always visible in card 3
 
             const IB_CALS = ibKeys();
             const AP_CALS = apKeys();
@@ -5691,10 +6048,30 @@
             // Count how many AP-calendar assignments a teacher currently has
             function getApAssigned(teacherId) {
                 let n = 0;
+                const _apSeen = new Set();
                 AP_CALS.forEach(et => {
                     const d = examData[et];
-                    Object.values(d.assignments        || {}).forEach(p => { if (Array.isArray(p) && p.includes(teacherId)) n++; });
-                    Object.values(d.specialAssignments || {}).forEach(p => { if (Array.isArray(p) && p.includes(teacherId)) n++; });
+                    const _absorbedAP = new Set();
+                    if (d.slotMergeDown) {
+                        d.slotMergeDown.forEach(sid => {
+                            const _sp = sid.split('-');
+                            const _nx = getNextPeriodIdx(parseInt(_sp[_sp.length-1]));
+                            if (_nx !== undefined) _absorbedAP.add(et + '-' + _sp[_sp.length-2] + '-' + _nx);
+                        });
+                    }
+                    function _apCount(map) {
+                        Object.keys(map || {}).forEach(slotId => {
+                            if (_absorbedAP.has(slotId)) return;
+                            const p = map[slotId];
+                            if (Array.isArray(p) && p.includes(teacherId)) {
+                                const _k = et + '|' + slotId;
+                                if (!_apSeen.has(_k)) { _apSeen.add(_k); n++; }
+                            }
+                        });
+                    }
+                    _apCount(d.assignments);
+                    _apCount(d.specialAssignments);
+                    _apCount(d.manualAssignments);
                 });
                 return n;
             }
@@ -5749,12 +6126,19 @@
 
                     // Scarcity: count teachers free for ALL blocks in this slot.
                     // Special periods (Lunch pIdx 3, After School 7/8/10) require no
-                    // cycle-block commitment, so skip that check for them.
+                    // cycle-block commitment. FLEX (pIdx 5) requires the specific FLEX-X block.
                     const availCount = activeTeachers.filter(t => {
                         if (!progFilter.includes(t.program)) return false;
-                        if (!isSpecialPeriod && pIdx !== 5) {
-                            const commits = teacherBlockCommitments[t.id] || {};
+                        const commits = teacherBlockCommitments[t.id] || {};
+                        if (pIdx === 5) {
+                            // Fix #8: require the specific FLEX-X block for this day
                             if (!commits[lookupBlock]) return false;
+                            if (mergedLookupBlock && !commits[mergedLookupBlock]) return false;
+                        } else if (!isSpecialPeriod) {
+                            if (!commits[lookupBlock]) return false;
+                            if (mergedLookupBlock && !commits[mergedLookupBlock]) return false;
+                        } else {
+                            // Fix #5: special-period primary merged with a real block — require that real block
                             if (mergedLookupBlock && !commits[mergedLookupBlock]) return false;
                         }
                         return true;
@@ -5773,18 +6157,57 @@
             // Called fresh each iteration so teachers consumed by earlier slots
             // are correctly reflected before the next slot is chosen.
             function liveAvailCount(slot, progFilter) {
+                const _gReq = slot.genderReq || 'MF';
+                // For MF slots, true scarcity = min(available males, available females)
+                // since we need exactly one of each
+                if (_gReq === 'MF') {
+                    const mCount = activeTeachers.filter(t => {
+                        if (!progFilter.includes(t.program)) return false;
+                        if (t.gender !== 'M') return false;
+                        const commits = teacherBlockCommitments[t.id] || {};
+                        if (slot.pIdx === 5) {
+                            if (!commits[slot.lookupBlock]) return false;
+                            if (slot.mergedLookupBlock && !commits[slot.mergedLookupBlock]) return false;
+                        } else if (!slot.isSpecialPeriod) {
+                            if (!commits[slot.lookupBlock]) return false;
+                            if (slot.mergedLookupBlock && !commits[slot.mergedLookupBlock]) return false;
+                        } else {
+                            if (slot.mergedLookupBlock && !commits[slot.mergedLookupBlock]) return false;
+                        }
+                        if (getTotalAssignedHours(t.id) >= t.required) return false;
+                        return true;
+                    }).length;
+                    const fCount = activeTeachers.filter(t => {
+                        if (!progFilter.includes(t.program)) return false;
+                        if (t.gender !== 'F') return false;
+                        const commits = teacherBlockCommitments[t.id] || {};
+                        if (slot.pIdx === 5) {
+                            if (!commits[slot.lookupBlock]) return false;
+                            if (slot.mergedLookupBlock && !commits[slot.mergedLookupBlock]) return false;
+                        } else if (!slot.isSpecialPeriod) {
+                            if (!commits[slot.lookupBlock]) return false;
+                            if (slot.mergedLookupBlock && !commits[slot.mergedLookupBlock]) return false;
+                        } else {
+                            if (slot.mergedLookupBlock && !commits[slot.mergedLookupBlock]) return false;
+                        }
+                        if (getTotalAssignedHours(t.id) >= t.required) return false;
+                        return true;
+                    }).length;
+                    return Math.min(mCount, fCount); // bottleneck is whichever gender is scarcer
+                }
                 return activeTeachers.filter(t => {
                     if (!progFilter.includes(t.program)) return false;
+                    if (_gReq && _gReq !== 'MF' && t.gender !== _gReq) return false;
                     const commits = teacherBlockCommitments[t.id] || {};
                     if (slot.pIdx === 5) {
-                        // FLEX: teacher must have opted in to at least one FLEX-* block
-                        if (!Object.keys(commits).some(k => k.startsWith('FLEX-'))) return false;
-                    } else if (!slot.isSpecialPeriod) {
-                        // Regular block: must have the specific cycle block committed
                         if (!commits[slot.lookupBlock]) return false;
                         if (slot.mergedLookupBlock && !commits[slot.mergedLookupBlock]) return false;
+                    } else if (!slot.isSpecialPeriod) {
+                        if (!commits[slot.lookupBlock]) return false;
+                        if (slot.mergedLookupBlock && !commits[slot.mergedLookupBlock]) return false;
+                    } else {
+                        if (slot.mergedLookupBlock && !commits[slot.mergedLookupBlock]) return false;
                     }
-                    // Lunch / After School (pIdx 3,7,8,10): no commit key required
                     if (getTotalAssignedHours(t.id) >= t.required) return false;
                     return true;
                 }).length;
@@ -5868,12 +6291,17 @@
                     if (!progFilter.includes(t.program)) return false;
                     const commits = teacherBlockCommitments[t.id] || {};
                     if (pIdx === 5) {
-                        // FLEX: teacher must have opted in to at least one FLEX-* block
-                        if (!Object.keys(commits).some(k => k.startsWith('FLEX-'))) return false;
+                        // Fix #8: FLEX — require the specific FLEX-X block for this day
+                        if (!commits[lookupBlock]) return false;
+                        if (mergedLookupBlock && !commits[mergedLookupBlock]) return false;
                     } else if (!isSpecialPeriod) {
                         // Regular block: must have the specific cycle block committed
                         if (!commits[lookupBlock]) return false;
                         // For merged slots, teacher must be free for BOTH blocks
+                        if (mergedLookupBlock && !commits[mergedLookupBlock]) return false;
+                    } else {
+                        // Fix #5: special-period primary (e.g. BREAK pIdx=9) merged with a real block —
+                        // teacher must still be available for the absorbed real block
                         if (mergedLookupBlock && !commits[mergedLookupBlock]) return false;
                     }
                     // Lunch / After School (pIdx 3,7,8,10): no commit key required
@@ -5883,18 +6311,25 @@
                     // Exam conflict of interest: skip if teacher flagged this exam
                     if (slotExamName && (teacherExamConflicts[String(t.id)] || new Set()).has(slotExamName)) return false;
 
-                    // Cross-calendar conflict: a teacher can only appear once per date+period slot
-                    // across ALL calendars (IB and AP). Prevents double-booking.
+                    // Cross-calendar double-booking check: teacher can only appear once per date+period
+                    // across ALL calendars. Must check assignments, specialAssignments, AND manualAssignments.
                     {
-                        const conflicted = ALL_CALS.filter(c => c !== examType).some(otherCal => {
+                        const _tid = t.id;
+                        const conflicted = ALL_CALS.some(otherCal => {
                             const od = examData[otherCal];
                             if (!od) return false;
                             const oSlot = otherCal + '-' + dateIdx + '-' + pIdx;
-                            return (od.assignments[oSlot]        || []).includes(t.id) ||
-                                   (od.specialAssignments[oSlot] || []).includes(t.id);
+                            // Skip same cal+slot check here (already handled by currentAssignments.includes above)
+                            if (otherCal === examType && oSlot === slotId) return false;
+                            return (od.assignments[oSlot]        || []).includes(_tid) ||
+                                   (od.specialAssignments[oSlot] || []).includes(_tid) ||
+                                   (od.manualAssignments[oSlot]  || []).includes(_tid);
                         });
                         if (conflicted) return false;
                     }
+
+                    // Same-calendar manual check: auto-scheduler must not double-book over an existing manual entry
+                    if ((data.manualAssignments[slotId] || []).includes(t.id)) return false;
 
                     if (genderReq && genderReq !== 'MF' && t.gender !== genderReq) return false;
 
@@ -5916,10 +6351,31 @@
                 });
 
                 let toAssign;
-                if (genderReq === 'MF' && needed === 2) {
-                    const bestM = candidates.find(t => t.gender === 'M');
-                    const bestF = candidates.find(t => t.gender === 'F');
-                    toAssign = (bestM && bestF) ? [bestM, bestF] : candidates.slice(0, needed);
+                if (genderReq === 'MF') {
+                    // Determine which gender seats are already filled (auto + manual + special)
+                    const _allCurrent = [...new Set([
+                        ...(data.assignments[slotId]        || []),
+                        ...(data.specialAssignments[slotId] || []),
+                        ...(data.manualAssignments[slotId]  || []),
+                    ])].map(id => TEACHERS.find(t => t.id === id)).filter(Boolean);
+                    const _mFilled = _allCurrent.filter(t => t.gender === 'M').length > 0;
+                    const _fFilled = _allCurrent.filter(t => t.gender === 'F').length > 0;
+                    if (!_mFilled && !_fFilled) {
+                        // Both seats empty — need one M and one F; only assign if both available
+                        const bestM = candidates.find(t => t.gender === 'M');
+                        const bestF = candidates.find(t => t.gender === 'F');
+                        toAssign = (bestM && bestF) ? [bestM, bestF] : [];
+                    } else if (!_mFilled) {
+                        // Female seat already taken — only assign a male
+                        const bestM = candidates.find(t => t.gender === 'M');
+                        toAssign = bestM ? [bestM] : [];
+                    } else if (!_fFilled) {
+                        // Male seat already taken — only assign a female
+                        const bestF = candidates.find(t => t.gender === 'F');
+                        toAssign = bestF ? [bestF] : [];
+                    } else {
+                        toAssign = []; // both seats filled
+                    }
                 } else {
                     toAssign = candidates.slice(0, needed);
                 }
@@ -5997,22 +6453,34 @@
                         if (!progFilter.includes(t.program)) return false;
                         const commits = teacherBlockCommitments[t.id] || {};
                         if (pIdx === 5) {
-                            if (!Object.keys(commits).some(k => k.startsWith('FLEX-'))) return false;
+                            // Fix #8: require the specific FLEX-X block for this day
+                            if (!commits[lookupBlock]) return false;
+                            if (mergedLookupBlock && !commits[mergedLookupBlock]) return false;
                         } else if (!isSpecialPeriod) {
                             if (!commits[lookupBlock]) return false;
+                            if (mergedLookupBlock && !commits[mergedLookupBlock]) return false;
+                        } else {
+                            // Fix #5: special-period primary merged with a real block — require that real block
                             if (mergedLookupBlock && !commits[mergedLookupBlock]) return false;
                         }
                         if (getTotalAssignedHours(t.id) >= t.required) return false;
                         if (currentAssignments.includes(t.id)) return false;
                         if (slotExamName && (teacherExamConflicts[String(t.id)] || new Set()).has(slotExamName)) return false;
-                        const conflicted = ALL_CALS.filter(c => c !== examType).some(otherCal => {
-                            const od = examData[otherCal];
-                            if (!od) return false;
-                            const oSlot = otherCal + '-' + dateIdx + '-' + pIdx;
-                            return (od.assignments[oSlot]        || []).includes(t.id) ||
-                                   (od.specialAssignments[oSlot] || []).includes(t.id);
-                        });
-                        if (conflicted) return false;
+                        // Cross-calendar + same-cal manual double-booking check — all three maps
+                        {
+                            const _tid = t.id;
+                            const conflicted = ALL_CALS.some(otherCal => {
+                                const od = examData[otherCal];
+                                if (!od) return false;
+                                const oSlot = otherCal + '-' + dateIdx + '-' + pIdx;
+                                if (otherCal === examType && oSlot === slotId) return false;
+                                return (od.assignments[oSlot]        || []).includes(_tid) ||
+                                       (od.specialAssignments[oSlot] || []).includes(_tid) ||
+                                       (od.manualAssignments[oSlot]  || []).includes(_tid);
+                            });
+                            if (conflicted) return false;
+                        }
+                        if ((data.manualAssignments[slotId] || []).includes(t.id)) return false;
                         if (genderReq && genderReq !== 'MF' && t.gender !== genderReq) return false;
                         if (isIbCal && t.program === 'Both') {
                             if (!ibGateOpen(t)) return false;
@@ -6029,10 +6497,27 @@
                     });
 
                     let toAssign;
-                    if (genderReq === 'MF' && needed === 2) {
-                        const bestM = candidates.find(t => t.gender === 'M');
-                        const bestF = candidates.find(t => t.gender === 'F');
-                        toAssign = (bestM && bestF) ? [bestM, bestF] : candidates.slice(0, needed);
+                    if (genderReq === 'MF') {
+                        const _swAllCurrent = [...new Set([
+                            ...(data.assignments[slotId]        || []),
+                            ...(data.specialAssignments[slotId] || []),
+                            ...(data.manualAssignments[slotId]  || []),
+                        ])].map(id => TEACHERS.find(t => t.id === id)).filter(Boolean);
+                        const _swMFilled = _swAllCurrent.filter(t => t.gender === 'M').length > 0;
+                        const _swFFilled = _swAllCurrent.filter(t => t.gender === 'F').length > 0;
+                        if (!_swMFilled && !_swFFilled) {
+                            const bestM = candidates.find(t => t.gender === 'M');
+                            const bestF = candidates.find(t => t.gender === 'F');
+                            toAssign = (bestM && bestF) ? [bestM, bestF] : [];
+                        } else if (!_swMFilled) {
+                            const bestM = candidates.find(t => t.gender === 'M');
+                            toAssign = bestM ? [bestM] : [];
+                        } else if (!_swFFilled) {
+                            const bestF = candidates.find(t => t.gender === 'F');
+                            toAssign = bestF ? [bestF] : [];
+                        } else {
+                            toAssign = [];
+                        }
                     } else {
                         toAssign = candidates.slice(0, needed);
                     }
@@ -6134,33 +6619,39 @@
                 </div>`;
 
             autoSave();
+            // Record completion time after scheduler finishes (not at start) so dashboard shows accurate time
+            localStorage.setItem('risScheduler_lastRun', Date.now().toString());
+            updateAdminDashboard(); // refresh system status to reflect post-schedule assignment counts
         }
-        // Sort exam rows: groups defined by (date+examName+room), ordered by group's earliest
         // start time within the day, then by start time within the group.
         function sortExamRows(rows) {
-            // Compute earliest start time per group key
-            const groupMin = {};
-            rows.forEach(function(r) {
-                const dk = (r.date ? r.date.getTime() : 0) + '|' + (r.exam || r.examName || '') + '|' + (r.room || '');
-                const t  = r.start || r.startTime || '';
-                if (!groupMin[dk] || t < groupMin[dk]) groupMin[dk] = t;
-            });
+            // Sort strictly chronologically within each day.
+            // Primary: date ascending.
+            // Secondary: proctor start time ascending (HH:MM string comparison works for 24h times).
+            // Tertiary: proctor end time, then exam name, then room — for stable tie-breaking.
             rows.sort(function(a, b) {
-                const dateDiff = (a.date ? a.date.getTime() : 0) - (b.date ? b.date.getTime() : 0);
+                // Primary: date
+                const aDateMs = a.date ? a.date.getTime() : 0;
+                const bDateMs = b.date ? b.date.getTime() : 0;
+                const dateDiff = aDateMs - bDateMs;
                 if (dateDiff !== 0) return dateDiff;
-                const aKey = (a.exam || a.examName || '') + '|' + (a.room || '');
-                const bKey = (b.exam || b.examName || '') + '|' + (b.room || '');
-                const aDK  = (a.date ? a.date.getTime() : 0) + '|' + aKey;
-                const bDK  = (b.date ? b.date.getTime() : 0) + '|' + bKey;
-                // Order groups by their earliest slot
-                const gCmp = (groupMin[aDK] || '').localeCompare(groupMin[bDK] || '');
-                if (gCmp !== 0) return gCmp;
-                // Within same group, sort by name then room then time
+
+                // Secondary: start time (HH:MM 24h — lexicographic comparison is correct)
+                const aStart = a.start || a.startTime || '';
+                const bStart = b.start || b.startTime || '';
+                const startCmp = aStart.localeCompare(bStart);
+                if (startCmp !== 0) return startCmp;
+
+                // Tertiary: end time
+                const aEnd = a.end || a.endTime || '';
+                const bEnd = b.end || b.endTime || '';
+                const endCmp = aEnd.localeCompare(bEnd);
+                if (endCmp !== 0) return endCmp;
+
+                // Quaternary: exam name then room for stability
                 const nCmp = (a.exam || a.examName || '').localeCompare(b.exam || b.examName || '');
                 if (nCmp !== 0) return nCmp;
-                const rCmp = (a.room || '').localeCompare(b.room || '');
-                if (rCmp !== 0) return rCmp;
-                return (a.start || a.startTime || '').localeCompare(b.start || b.startTime || '');
+                return (a.room || '').localeCompare(b.room || '');
             });
             return rows;
         }
@@ -6270,7 +6761,11 @@
                         const date = data.dates[dateIdx];
                         if (!date) return;
                         const cycleBlock = getMergeBlockLabel(examType, slotId, getCycleBlockForSlot(dateIdx, periodIdx, examType));
-                        const assignedIds = (data.assignments && data.assignments[slotId]) || [];
+                        const assignedIds = [...new Set([
+                            ...(data.assignments        && data.assignments[slotId]        || []),
+                            ...(data.specialAssignments && data.specialAssignments[slotId] || []),
+                            ...(data.manualAssignments  && data.manualAssignments[slotId]  || []),
+                        ])];
                         const males = [], females = [];
                         assignedIds.forEach(function(id) {
                             const t = teacherById[id];
@@ -6510,8 +7005,21 @@
                 const allAssignments = [];
                 Object.keys(examData).forEach(function(examType) {
                     const data = examData[examType];
-                    function addFromMap(map) {
+                    // Fix #2: build set of absorbed continuation slot IDs so they don't appear twice
+                    const _pdfAbsorbedIds = new Set();
+                    if (data.slotMergeDown) {
+                        data.slotMergeDown.forEach(function(primarySid) {
+                            const _sp = primarySid.split('-');
+                            const _nextPIdx = getNextPeriodIdx(parseInt(_sp[_sp.length - 1]));
+                            if (_nextPIdx !== undefined) {
+                                _pdfAbsorbedIds.add(examType + '-' + _sp[_sp.length - 2] + '-' + _nextPIdx);
+                            }
+                        });
+                    }
+                    function addFromMap(map, sourceLabel) {
                         Object.keys(map).forEach(function(slotId) {
+                            // Skip absorbed continuation slots
+                            if (_pdfAbsorbedIds.has(slotId)) return;
                             const proctors = map[slotId];
                             if (!proctors || !proctors.includes(teacher.id)) return;
                             const parts = slotId.split('-');
@@ -6520,6 +7028,7 @@
                             const date = data.dates[dateIdx];
                             if (!date) return;
                             const cycleBlock = getMergeBlockLabel(examType, slotId, getCycleBlockForSlot(dateIdx, periodIdx, examType));
+                            const _src = data.assignmentSources?.[slotId]?.[String(teacher.id)] || sourceLabel;
                             allAssignments.push({
                                 date, dateKey: formatDateKey(date),
                                 cycleBlock, periodIdx,
@@ -6528,13 +7037,24 @@
                                 endTime:  data.slotEndTimes  ? (data.slotEndTimes[slotId]  || '') : '',
                                 room:     data.slotRoom      ? (data.slotRoom[slotId]      || '') : '',
                                 students: data.slotStudents  ? (data.slotStudents[slotId]  || '') : '',
-                                type:     EXAM_TYPE_NAMES[examType]
+                                type:     EXAM_TYPE_NAMES[examType],
+                                source:   _src,
                             });
                         });
                     }
-                    addFromMap(data.assignments);
-                    addFromMap(data.specialAssignments);
+                    addFromMap(data.assignments,        'auto');
+                    addFromMap(data.specialAssignments, 'auto');
+                    addFromMap(data.manualAssignments,  'manual'); // Fix #4: include manual assignments
                 });
+                // De-duplicate: same slotId from both assignments and manualAssignments may appear twice
+                const _seenPdfSlots = new Set();
+                const _dedupedAssignments = allAssignments.filter(function(a) {
+                    const _k = a.dateKey + '|' + a.cycleBlock + '|' + a.exam + '|' + a.room;
+                    if (_seenPdfSlots.has(_k)) return false;
+                    _seenPdfSlots.add(_k); return true;
+                });
+                allAssignments.length = 0;
+                _dedupedAssignments.forEach(function(a) { allAssignments.push(a); });
                 sortExamRows(allAssignments);
 
                 // ── Availability Grid ─────────────────────────────────────────
@@ -6818,6 +7338,58 @@
                 }
                 if (currentTab === 'TEACHERS') generateTeacherCards();
             }
+        }
+
+        function clearAutoAssignments() {
+            if (currentSession?.role !== "admin") { showPinModal(); return; }
+            // Count auto assignments across all calendars
+            let autoCount = 0;
+            Object.keys(examData).forEach(calKey => {
+                const d = examData[calKey];
+                const src = d.assignmentSources || {};
+                [d.assignments, d.specialAssignments].forEach(map => {
+                    Object.keys(map || {}).forEach(slotId => {
+                        (map[slotId] || []).forEach(tid => {
+                            if ((src[slotId]?.[String(tid)] || 'auto') === 'auto') autoCount++;
+                        });
+                    });
+                });
+            });
+            if (!confirm('Clear Auto-Scheduled assignments only?\n\n' + autoCount + ' auto assignment' + (autoCount !== 1 ? 's' : '') + ' will be removed.\nManual and self-claimed assignments are preserved.\n\nThis lets you re-run the auto-scheduler fresh.')) return;
+
+            Object.keys(examData).forEach(calKey => {
+                const d = examData[calKey];
+                const src = d.assignmentSources || {};
+                function filterAutoFromMap(map) {
+                    Object.keys(map || {}).forEach(slotId => {
+                        if (!map[slotId]) return;
+                        map[slotId] = map[slotId].filter(tid => {
+                            return (src[slotId]?.[String(tid)] || 'auto') !== 'auto';
+                        });
+                        if (map[slotId].length === 0) delete map[slotId];
+                    });
+                }
+                filterAutoFromMap(d.assignments);
+                filterAutoFromMap(d.specialAssignments);
+                // manualAssignments are always manual — leave untouched
+                // Purge 'auto' entries from assignmentSources
+                Object.keys(src).forEach(slotId => {
+                    Object.keys(src[slotId] || {}).forEach(tid => {
+                        if (src[slotId][tid] === 'auto') delete src[slotId][tid];
+                    });
+                    if (Object.keys(src[slotId] || {}).length === 0) delete src[slotId];
+                });
+            });
+
+            autoSave();
+            const examTabs = CALENDAR_KEYS;
+            if (examTabs.includes(currentTab)) {
+                renderCalendar(currentTab);
+            } else {
+                examTabs.forEach(t => renderCalendar(t));
+            }
+            if (currentTab === 'TEACHERS') generateTeacherCards();
+            showClipToast('\u2713 Cleared ' + autoCount + ' auto assignment' + (autoCount !== 1 ? 's' : '') + ' \u2014 manual & self-claimed preserved');
         }
         
         function exportState() {
@@ -7558,8 +8130,20 @@
                 const all = [];
                 Object.keys(examData).forEach(examType => {
                     const data = examData[examType];
-                    function scan(map) {
+                    // Build absorbed continuation slot IDs so merged slots don't double-count
+                    const _absorbedIds = new Set();
+                    if (data.slotMergeDown) {
+                        data.slotMergeDown.forEach(primarySid => {
+                            const _sp = primarySid.split('-');
+                            const _nextPIdx = getNextPeriodIdx(parseInt(_sp[_sp.length - 1]));
+                            if (_nextPIdx !== undefined) {
+                                _absorbedIds.add(examType + '-' + _sp[_sp.length - 2] + '-' + _nextPIdx);
+                            }
+                        });
+                    }
+                    function scan(map, sourceLabel) {
                         Object.keys(map).forEach(slotId => {
+                            if (_absorbedIds.has(slotId)) return; // skip continuation half of merged slot
                             const proctors = map[slotId];
                             if (!proctors || !proctors.includes(teacher.id)) return;
                             const parts = slotId.split('-');
@@ -7568,22 +8152,32 @@
                             const date = data.dates[dateIdx];
                             if (!date) return;
                             const block = getMergeBlockLabel(examType, slotId, getCycleBlockForSlot(dateIdx, periodIdx, examType));
+                            const _src = data.assignmentSources?.[slotId]?.[String(teacher.id)] || sourceLabel;
                             all.push({
-                                date, periodIdx, examType,
+                                date, periodIdx, examType, slotId,
                                 block: block || '—',
                                 exam: (data.slotExamNames && data.slotExamNames[slotId]) || '(unnamed)',
                                 start: data.slotTimes     ? (data.slotTimes[slotId]     || '') : '',
                                 end:   data.slotEndTimes  ? (data.slotEndTimes[slotId]  || '') : '',
                                 room:  data.slotRoom      ? (data.slotRoom[slotId]      || '') : '',
                                 students: data.slotStudents ? (data.slotStudents[slotId] || '') : '',
+                                source: _src,
                             });
                         });
                     }
-                    scan(data.assignments || {});
-                    scan(data.specialAssignments || {});
+                    scan(data.assignments        || {}, 'auto');
+                    scan(data.specialAssignments || {}, 'auto');
+                    scan(data.manualAssignments  || {}, 'manual'); // include manually-assigned
                 });
-                sortExamRows(all);
-                return all;
+                // Deduplicate: a teacher may appear in both assignments and manualAssignments for same slot
+                const _seen = new Set();
+                const deduped = all.filter(a => {
+                    const _k = (a.date ? a.date.getTime() : 0) + '|' + a.slotId;
+                    if (_seen.has(_k)) return false;
+                    _seen.add(_k); return true;
+                });
+                deduped.sort((a, b) => (a.date - b.date) || (a.start || '').localeCompare(b.start || ''));
+                return deduped;
             }
 
             function buildAvailGrid(teacher) {
@@ -7638,7 +8232,9 @@
                 const barColor    = assigned >= required ? '#27ae60' : assigned > 0 ? '#f39c12' : '#e74c3c';
                 const statusLabel = assigned >= required ? '✓ Complete' : assigned > 0 ? `${assigned}/${required} sessions` : 'No assignments';
                 const statusColor = assigned >= required ? '#27ae60' : assigned > 0 ? '#f39c12' : '#e74c3c';
-                const accentColor = teacher.color || '#3498db';
+                const _tsFlags      = getTeacherFlags(teacher);
+                const _tsFlagPills  = buildTeacherFlagPills(_tsFlags);
+                const accentColor = _tsFlags.hasDoubleBooking ? '#e74c3c' : _tsFlags.hasUnavailable ? '#c0392b' : _tsFlags.isOverbooked ? '#e67e22' : (teacher.color || '#3498db');
                 const cardId      = 'tcard-' + teacher.id;
 
                 html += `
@@ -7652,16 +8248,19 @@
                             <div style="font-weight:700;font-size:14px;color:#2c3e50;">${teacher.name}</div>
                             <div style="font-size:11px;color:#7f8c8d;margin-top:1px;">${teacher.program || 'IB'} · ${teacher.gender === 'M' ? 'Male' : 'Female'}</div>
                         </div>
-                        <!-- Mini progress bar -->
-                        <div style="width:100px;flex-shrink:0;">
-                            <div style="background:#ecf0f1;border-radius:4px;height:5px;margin-bottom:3px;">
-                                <div style="width:${pct}%;height:100%;background:${barColor};border-radius:4px;"></div>
+                        <!-- Flag pills + mini progress bar (right-aligned group) -->
+                        <div style="display:flex;align-items:center;gap:8px;flex-shrink:0;">
+                            <span id="${cardId}-pills">${_tsFlagPills}</span>
+                            <div style="width:100px;">
+                                <div style="background:#ecf0f1;border-radius:4px;height:5px;margin-bottom:3px;">
+                                    <div id="${cardId}-barfill" style="width:${pct}%;height:100%;background:${barColor};border-radius:4px;"></div>
+                                </div>
+                                <div id="${cardId}-barlabel" style="font-size:11px;color:${statusColor};text-align:right;font-weight:600;">${statusLabel}</div>
                             </div>
-                            <div style="font-size:11px;color:${statusColor};text-align:right;font-weight:600;">${statusLabel}</div>
                         </div>
                         <!-- Print button -->
-                        <button onclick="event.stopPropagation();printTeacherSchedule(${teacher.id})"
-                            title="Print individual exam schedule"
+                        <button onclick="event.stopPropagation();printTeacherSchedule(${teacher.id}, true)"
+                            title="Print confirmed exam sessions"
                             style="flex-shrink:0;padding:6px 10px;background:white;border:1px solid #d0d7de;border-radius:6px;cursor:pointer;font-size:12px;color:#555;transition:all 0.15s;display:flex;align-items:center;gap:5px;"
                             onmouseover="this.style.background='#f0f4ff';this.style.borderColor='#3498db';this.style.color='#3498db';"
                             onmouseout="this.style.background='white';this.style.borderColor='#d0d7de';this.style.color='#555';">
@@ -7759,8 +8358,21 @@
             var allAssignments = [];
             Object.keys(examData).forEach(function(examType) {
                 var data = examData[examType];
-                function scan(map) {
+                // Fix #2: build set of absorbed continuation slot IDs
+                var _ptAbsorbedIds = new Set();
+                if (data.slotMergeDown) {
+                    data.slotMergeDown.forEach(function(primarySid) {
+                        var _sp = primarySid.split('-');
+                        var _nextPIdx = getNextPeriodIdx(parseInt(_sp[_sp.length - 1]));
+                        if (_nextPIdx !== undefined) {
+                            _ptAbsorbedIds.add(examType + '-' + _sp[_sp.length - 2] + '-' + _nextPIdx);
+                        }
+                    });
+                }
+                function scan(map, sourceLabel) {
                     Object.keys(map).forEach(function(slotId) {
+                        // Skip absorbed continuation slots
+                        if (_ptAbsorbedIds.has(slotId)) return;
                         var proctors = map[slotId];
                         if (!proctors || !proctors.includes(teacher.id)) return;
                         var parts = slotId.split('-');
@@ -7768,6 +8380,7 @@
                         var date = data.dates[dateIdx];
                         if (!date) return;
                         var block = getMergeBlockLabel(examType, slotId, getCycleBlockForSlot(dateIdx, periodIdx, examType));
+                        var _src = data.assignmentSources?.[slotId]?.[String(teacher.id)] || sourceLabel;
                         allAssignments.push({
                             date, periodIdx, examType,
                             block: block || '—',
@@ -7775,11 +8388,20 @@
                             start: data.slotTimes    ? (data.slotTimes[slotId]    || '') : '',
                             end:   data.slotEndTimes ? (data.slotEndTimes[slotId] || '') : '',
                             room:  data.slotRoom     ? (data.slotRoom[slotId]     || '') : '',
+                            source: _src,
                         });
                     });
                 }
-                scan(data.assignments || {});
-                scan(data.specialAssignments || {});
+                scan(data.assignments || {},        'auto');
+                scan(data.specialAssignments || {}, 'auto');
+                scan(data.manualAssignments  || {}, 'manual'); // Fix #4: include manual assignments
+            });
+            // De-duplicate in case a teacher appears in both assignments and manualAssignments for same slot
+            var _ptSeen = new Set();
+            allAssignments = allAssignments.filter(function(a) {
+                var _k = (a.date ? a.date.getTime() : 0) + '|' + a.block + '|' + a.exam + '|' + a.room;
+                if (_ptSeen.has(_k)) return false;
+                _ptSeen.add(_k); return true;
             });
             sortExamRows(allAssignments);
 
@@ -7956,9 +8578,58 @@
                 doc.setFont(undefined, 'italic'); doc.setFontSize(9); doc.setTextColor(180,180,180);
                 doc.text('No assignments yet.', COL.date, y); y += 8;
             } else {
-                allAssignments.forEach(function(a, i) {
-                    if (y > 272) { addFooter(); doc.addPage(); globalPage++; y = 12; y = drawTableHeader(y, false); }
-                    y = drawRow(y, null, null, a.examType, a.date, a.block, a.exam, a.room, a.start, a.end, i % 2 === 0);
+                // Group by date for day-load pill strips
+                var _pdfConfGroups = [];
+                var _pdfConfLastDk = null;
+                allAssignments.forEach(function(a) {
+                    var dk = fmtDateLong(a.date);
+                    if (dk !== _pdfConfLastDk) { _pdfConfGroups.push({ dk: dk, date: a.date, items: [] }); _pdfConfLastDk = dk; }
+                    _pdfConfGroups[_pdfConfGroups.length-1].items.push(a);
+                });
+                _pdfConfGroups.forEach(function(grp) {
+                    if (y > 268) { addFooter(); doc.addPage(); globalPage++; y = 12; y = drawTableHeader(y, false); }
+                    // Day header strip
+                    var _pdfDaySchedule = getScheduleForDate(grp.date) || [];
+                    var _pdfDayCommits  = teacherBlockCommitments[teacher.id] || {};
+                    // Assigned blocks for this day (green pills)
+                    var _assignedBlocksToday = new Set();
+                    grp.items.forEach(function(a) {
+                        (a.block || '').split('+').forEach(function(p) { if (p) _assignedBlocksToday.add(p); });
+                    });
+                    var _seenPdfBlocks = new Set();
+                    var _dedupedPdfSched = _pdfDaySchedule.filter(function(b) {
+                        if (_seenPdfBlocks.has(b)) return false; _seenPdfBlocks.add(b); return true;
+                    });
+                    doc.setFillColor(245, 247, 250);
+                    doc.rect(MARGIN, y - 3, PAGE_W, 7, 'F');
+                    var _dayLabel2 = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'][grp.date.getDay()] + ' ' + grp.date.getDate() + ' ' + ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'][grp.date.getMonth()];
+                    doc.setFont(undefined, 'bold'); doc.setFontSize(8); doc.setTextColor(44,62,80);
+                    doc.text(_dayLabel2, MARGIN, y);
+                    var _pX2 = MARGIN + doc.getTextWidth(_dayLabel2) + 4;
+                    var _pH2 = 4, _pR2 = 1.5;
+                    _dedupedPdfSched.forEach(function(block) {
+                        var _isClaimed = _assignedBlocksToday.has(block);
+                        var _isBusy2 = (block === 'LUNCH' || block === 'After School') ? false : !_pdfDayCommits[block];
+                        var _lbl2;
+                        if (block === 'LUNCH') _lbl2 = 'Lunch';
+                        else if (block === 'After School') _lbl2 = 'After';
+                        else if (/^FLEX-/.test(block)) _lbl2 = 'Flex-' + block[5];
+                        else _lbl2 = block;
+                        doc.setFontSize(6);
+                        var _tw2 = doc.getTextWidth(_lbl2) + 4;
+                        if (_isClaimed)     { doc.setFillColor(39,174,96);  doc.setTextColor(255,255,255); }
+                        else if (_isBusy2)  { doc.setFillColor(248,113,113); doc.setTextColor(255,255,255); }
+                        else                { doc.setFillColor(226,232,240); doc.setTextColor(120,130,145); }
+                        doc.roundedRect(_pX2, y - _pH2 + 0.5, _tw2, _pH2, _pR2, _pR2, 'F');
+                        doc.text(_lbl2, _pX2 + _tw2/2, y - 0.5, { align:'center' });
+                        _pX2 += _tw2 + 2;
+                    });
+                    y += 5;
+                    grp.items.forEach(function(a, i) {
+                        if (y > 272) { addFooter(); doc.addPage(); globalPage++; y = 12; y = drawTableHeader(y, false); }
+                        y = drawRow(y, null, null, a.examType, a.date, a.block, a.exam, a.room, a.start, a.end, i % 2 === 0);
+                    });
+                    y += 2;
                 });
             }
 
@@ -8060,9 +8731,9 @@
             }
 
             addFooter();
-            var safeName = teacher.name.replace(/[^a-z0-9]/gi, '_');
             } // end if (!confirmedOnly)
-            doc.save('RIS_Schedule_' + safeName + (confirmedOnly ? '_confirmed' : '') + '.pdf');
+            var safeName = teacher.name.replace(/[^a-z0-9]/gi, '_');
+            doc.save('RIS_Schedule_' + safeName + (confirmedOnly ? '_confirmed' : '_full') + '.pdf');
         }
 
                 function exportAvailabilityMatrixPDF() {
@@ -8449,6 +9120,9 @@
             s.csvAliases = Object.fromEntries(CALENDAR_KEYS.map(k => [k, calMeta(k) ? (calMeta(k).csvAliases || '') : '']));
             s.calendarMeta = JSON.parse(JSON.stringify(CALENDAR_META));
             s.meta = JSON.parse(JSON.stringify(portalMeta));
+            // Persist save/run timestamps in state so they survive across machines and sessions
+            s.lastSavedAt  = localStorage.getItem('risScheduler_lastSave')  || null;
+            s.lastAutoRunAt = localStorage.getItem('risScheduler_lastRun')  || null;
             return s;
         }
 
@@ -8603,6 +9277,20 @@
             if (state.meta) {
                 portalMeta = Object.assign({ published: false, globalLock: false, adminPin: '2026ris' }, state.meta);
             }
+            // Restore save/run timestamps from state (cross-machine persistence)
+            // Only update localStorage if the state value is newer than what's already stored
+            if (state.lastSavedAt) {
+                const _localSave = localStorage.getItem('risScheduler_lastSave');
+                if (!_localSave || parseInt(state.lastSavedAt) > parseInt(_localSave)) {
+                    localStorage.setItem('risScheduler_lastSave', state.lastSavedAt);
+                }
+            }
+            if (state.lastAutoRunAt) {
+                const _localRun = localStorage.getItem('risScheduler_lastRun');
+                if (!_localRun || parseInt(state.lastAutoRunAt) > parseInt(_localRun)) {
+                    localStorage.setItem('risScheduler_lastRun', state.lastAutoRunAt);
+                }
+            }
             // Sync scheduler toggles for any calendar NOT present in the saved state
             // (i.e. new calendars with no saved settings yet). Calendars that have
             // explicit saved settings must NOT be overridden — syncSchedSettingsToSlots
@@ -8614,6 +9302,8 @@
             });
             // Refresh admin dashboard after state load — guarded so a dashboard error never aborts startup
             try { if (typeof updateAdminDashboard === 'function') updateAdminDashboard(); } catch(e) { console.warn('[applyState] dashboard update skipped:', e.message); }
+            // Refresh datalists so live room/option data is reflected in exam creator
+            try { if (typeof rebuildAllDataLists === 'function') rebuildAllDataLists(); } catch(e) {}
         }
 
         // ── Encode JSON string to base64 ──
@@ -8787,7 +9477,16 @@
                     delete d.assignmentSources[slotId][String(_targetTid)];
                 }
                 autoSave();
+                // Fix #9: refresh all affected UI immediately — teacher card, calendar grid, teacher list
                 refreshTeacherCardRight(_targetTid);
+                renderCalendar(calKey); // update calendar grid so name disappears from slot cell
+                // Refresh whichever teacher view is open — flags + progress update instantly
+                if (currentTab === 'TEACHERS') {
+                    if (typeof generateTeacherCards === 'function') generateTeacherCards();
+                } else if (currentTab === 'TEACHER_SCHEDULES') {
+                    // Targeted refresh: update just this teacher's accordion card (header flags + body)
+                    refreshTeacherScheduleCard(_targetTid);
+                }
                 return;
             }
             showPageMask('Unclaiming slot\u2026');
@@ -9913,113 +10612,262 @@
             list.innerHTML = html;
             container.style.display = 'block';
         }
-        function createExamSlots() {
-            if (currentSession?.role !== "admin") { showPinModal(); return; }
-            const calType  = document.getElementById('newExam_calendar')?.value;
-            const dateIdx  = document.getElementById('newExam_date')?.value;
-            const course   = (document.getElementById('newExam_course')?.value||'').trim();
-            const paper    = document.getElementById('newExam_paper')?.value||'';
-            const format   = document.getElementById('newExam_format')?.value||'';
-            const access   = document.getElementById('newExam_access')?.value||'';
-            const session  = document.getElementById('newExam_session')?.value||'';
-            const startStr = document.getElementById('newExam_start')?.value;
-            const endStr   = document.getElementById('newExam_end')?.value;
-            const roomSel  = document.getElementById('newExam_room')?.value;
-            const room     = roomSel==='_other_'?(document.getElementById('newExam_roomOther')?.value||''):roomSel;
-            const students = parseInt(document.getElementById('newExam_students')?.value)||0;
-            const proctors = parseInt(document.getElementById('newExam_proctors')?.value)||2;
-            const gender   = document.getElementById('newExam_gender')?.value||'';
-            const notes    = (document.getElementById('newExam_notes')?.value||'').trim();
+        // ── Collect current form values into a plain object ──────────────────────────
+        function _readExamForm() {
+            return {
+                calType:  document.getElementById('newExam_calendar')?.value || '',
+                dateIdx:  document.getElementById('newExam_date')?.value || '',
+                course:   (document.getElementById('newExam_course')?.value||'').trim(),
+                paper:    (document.getElementById('newExam_paper')?.value||'').trim(),
+                format:   (document.getElementById('newExam_format')?.value||'').trim(),
+                access:   (document.getElementById('newExam_access')?.value||'').trim(),
+                session:  (document.getElementById('newExam_session')?.value||'').trim(),
+                startStr: document.getElementById('newExam_start')?.value||'',
+                endStr:   document.getElementById('newExam_end')?.value||'',
+                room:     (document.getElementById('newExam_room')?.value||'').trim(),
+                students: parseInt(document.getElementById('newExam_students')?.value)||0,
+                proctors: parseInt(document.getElementById('newExam_proctors')?.value)||2,
+                gender:   document.getElementById('newExam_gender')?.value||'',
+                notes:    (document.getElementById('newExam_notes')?.value||'').trim(),
+            };
+        }
 
-            if (!calType)  return alert('Select a calendar.');
-            if (!dateIdx && dateIdx !== '0') return alert('Select a date.');
-            if (!course)   return alert('Enter a course name.');
-            if (!startStr || !endStr) return alert('Enter start and end times.');
-
+        // ── Actually execute the slot creation / re-creation ─────────────────────────
+        function _doCreateExamSlots(f) {
             const toMins = t => { const [h,m] = t.split(':').map(Number); return h*60+m; };
             const fmt    = m => `${String(Math.floor(m/60)).padStart(2,'0')}:${String(m%60).padStart(2,'0')}`;
-            const eS = toMins(startStr), eE = toMins(endStr);
-            if (eS >= eE) return alert('End time must be after start time.');
-
-            const examName = assembleExamName(course, {paper, format, access, session});
-            const data = examData[calType];
-
+            const examName = assembleExamName(f.course, {paper:f.paper, format:f.format, access:f.access, session:f.session});
+            const data = examData[f.calType];
             const CALENDAR_ROWS = getBellCalendarRows();
-
+            const eS = toMins(f.startStr), eE = toMins(f.endStr);
             const overlappingRows = CALENDAR_ROWS.filter(row => {
                 const rs = toMins(row.start), re = toMins(row.end);
                 return rs < eE && re > eS;
             });
             if (!overlappingRows.length) return alert('No calendar rows found for those times.');
-
             const n = overlappingRows.length;
-
-            // Use _previewMergeState if it matches current rows, else default all unmerged
             const mergeChecked = overlappingRows.map((_, i) => {
                 if (_previewMergeState.length === n) return _previewMergeState[i];
                 return false;
             });
-
             let created = 0;
             overlappingRows.forEach((row, i) => {
-                const slotId    = `${calType}-${dateIdx}-${row.periodIdx}`;
+                const slotId    = `${f.calType}-${f.dateIdx}-${row.periodIdx}`;
                 const slotStart = fmt(Math.max(toMins(row.start), eS));
                 const slotEnd   = fmt(Math.min(toMins(row.end),   eE));
-
                 data.examSlots.add(slotId);
                 data.slotExamNames[slotId]    = examName;
-                data.slotCourse[slotId]       = course;
-                data.slotTags[slotId]         = {paper, format, access, session};
+                data.slotCourse[slotId]       = f.course;
+                data.slotTags[slotId]         = {paper:f.paper, format:f.format, access:f.access, session:f.session};
                 data.slotTimes[slotId]        = slotStart;
-                data.slotEndTimes[slotId]     = slotEnd;  // may be updated below for merge-group head
-                data.slotProctorCount[slotId] = proctors;
-                if (room)     data.slotRoom[slotId]      = room;
-                if (students) data.slotStudents[slotId]  = students;
-                if (gender)   data.slotGenderReq[slotId] = gender;
-                if (notes)    data.slotNotes[slotId]     = notes;
+                data.slotEndTimes[slotId]     = slotEnd;
+                data.slotProctorCount[slotId] = f.proctors;
+                if (f.room)     data.slotRoom[slotId]      = f.room;
+                if (f.students) data.slotStudents[slotId]  = f.students;
+                if (f.gender)   data.slotGenderReq[slotId] = f.gender;
+                if (f.notes)    data.slotNotes[slotId]     = f.notes;
                 if (!data.assignments[slotId])        data.assignments[slotId] = [];
                 if (!data.specialAssignments[slotId]) data.specialAssignments[slotId] = [];
-
                 if (mergeChecked[i]) data.slotMergeDown.add(slotId);
                 created++;
             });
-
-            // Fix merged group end times: the head slot of each merge chain should show
-            // the end time of the last slot in the chain, so proctors see the full window.
             overlappingRows.forEach((row, i) => {
-                if (!mergeChecked[i]) return; // not a merge head (or not merged)
-                // Walk forward through the chain to find the last slot
+                if (!mergeChecked[i]) return;
                 let tail = i;
                 while (tail < overlappingRows.length - 1 && mergeChecked[tail]) tail++;
-                const tailSlotId  = `${calType}-${dateIdx}-${overlappingRows[tail].periodIdx}`;
-                const headSlotId  = `${calType}-${dateIdx}-${row.periodIdx}`;
-                const fullEndTime = data.slotEndTimes[tailSlotId];
-                data.slotEndTimes[headSlotId] = fullEndTime;
+                const tailSlotId  = `${f.calType}-${f.dateIdx}-${overlappingRows[tail].periodIdx}`;
+                const headSlotId  = `${f.calType}-${f.dateIdx}-${row.periodIdx}`;
+                data.slotEndTimes[headSlotId] = data.slotEndTimes[tailSlotId];
             });
-
             autoSave();
-            renderCalendar(calType);
-            switchTab(calType);
-            showClipToast(`✓ Created ${created} slot${created > 1 ? 's' : ''} for "${examName}"`);
-            // Reset the creator form and refresh the exam list
+            renderCalendar(f.calType);
+            switchTab(f.calType);
+            showClipToast(`✓ ${created} slot${created > 1 ? 's' : ''} saved for "${examName}"`);
             resetExamCreator();
             renderExamList();
+        }
+
+        function createExamSlots() {
+            if (currentSession?.role !== "admin") { showPinModal(); return; }
+            const f = _readExamForm();
+
+            if (!f.calType)  return alert('Select a calendar.');
+            if (!f.dateIdx && f.dateIdx !== '0') return alert('Select a date.');
+            if (!f.course)   return alert('Enter a course name.');
+            if (!f.startStr || !f.endStr) return alert('Enter start and end times.');
+
+            const toMins = t => { const [h,m] = t.split(':').map(Number); return h*60+m; };
+            const eS = toMins(f.startStr), eE = toMins(f.endStr);
+            if (eS >= eE) return alert('End time must be after start time.');
+
+            // ── If this is a brand-new exam (no _loadedExamKey), skip the confirm dialog ──
+            const ctx = window._loadedExamKey;
+            if (!ctx) { _doCreateExamSlots(f); return; }
+
+            // ── Edit mode: analyse what is changing and whether assignments are at risk ──
+            const oldCalType  = ctx.et;
+            const oldDateIdx  = ctx.dateIdx;
+            const oldSlots    = ctx.slots || [];   // array of old slotIds
+            const oldExamName = ctx.examName || '';
+            const newExamName = assembleExamName(f.course, {paper:f.paper, format:f.format, access:f.access, session:f.session});
+
+            // A slotId is cal-N-dateIdx-periodIdx. Date or calendar change = new slotIds.
+            const slotIdBreaking = (f.calType !== oldCalType) || (String(f.dateIdx) !== String(oldDateIdx));
+
+            // Count existing assignments on old slots
+            const teacherName = {};
+            (TEACHERS||[]).forEach(t => { teacherName[t.id] = t.name; });
+            const assignedSlots = [];
+            if (slotIdBreaking) {
+                oldSlots.forEach(slotId => {
+                    const d = examData[oldCalType];
+                    const allTids = [...new Set([
+                        ...(d.assignments?.[slotId]||[]),
+                        ...(d.specialAssignments?.[slotId]||[]),
+                        ...(d.manualAssignments?.[slotId]||[]),
+                    ])];
+                    if (allTids.length > 0) {
+                        const parts = slotId.split('-');
+                        const pi = parseInt(parts[parts.length-1]);
+                        const labels = {0:'P1',1:'P2',2:'P3',3:'Lunch',4:'P4',5:'Flex/ELB',6:'P5',7:'After School',8:'After School+',9:'Break',10:'After School #3'};
+                        assignedSlots.push({
+                            block: labels[pi] || `P${pi}`,
+                            teachers: allTids.map(id => teacherName[id] || `#${id}`),
+                        });
+                    }
+                });
+            }
+
+            // Build change summary rows
+            const fmt12h = t => { if(!t) return '—'; const [h,m]=t.split(':').map(Number); const ap=h>=12?'PM':'AM'; return (h%12||12)+':'+String(m).padStart(2,'0')+ap; };
+            const oldD = examData[oldCalType];
+            const ref  = oldSlots[0];
+            const changes = [];
+
+            if (f.calType !== oldCalType)
+                changes.push({ label:'Calendar', safe:false, from: calLabel(oldCalType), to: calLabel(f.calType) });
+            if (String(f.dateIdx) !== String(oldDateIdx)) {
+                const oldDate = oldD?.dates?.[parseInt(oldDateIdx)];
+                const newDate = examData[f.calType]?.dates?.[parseInt(f.dateIdx)];
+                const ds = d => d ? d.toLocaleDateString('en-US',{weekday:'short',month:'short',day:'numeric'}) : '?';
+                changes.push({ label:'Date', safe:false, from: ds(oldDate), to: ds(newDate) });
+            }
+            if (newExamName !== oldExamName)
+                changes.push({ label:'Exam Name', safe:true, from: oldExamName, to: newExamName });
+            const oldRoom  = oldD?.slotRoom?.[ref]  || '—';
+            const oldNotes = oldD?.slotNotes?.[ref] || '—';
+            const oldStart = oldD?.slotTimes?.[ref] || '';
+            const oldEnd   = oldD?.slotEndTimes?.[oldSlots[oldSlots.length-1]] || '';
+            const oldProc  = oldD?.slotProctorCount?.[ref] ?? 2;
+            if (f.room    !== oldRoom)               changes.push({ label:'Room',     safe:true, from: oldRoom||'—',          to: f.room||'—' });
+            if (f.startStr!== oldStart || f.endStr !== oldEnd)
+                changes.push({ label:'Time',     safe:true, from: fmt12h(oldStart)+'–'+fmt12h(oldEnd), to: fmt12h(f.startStr)+'–'+fmt12h(f.endStr) });
+            if (f.proctors!== oldProc)               changes.push({ label:'Proctors', safe:true, from: String(oldProc),         to: String(f.proctors) });
+            if (f.notes   !== oldNotes)              changes.push({ label:'Notes',    safe:true, from: oldNotes||'—',           to: f.notes||'—' });
+
+            // ── Show confirmation modal ────────────────────────────────────────────────
+            const hasUnsafe  = changes.some(c => !c.safe);
+            const hasChanges = changes.length > 0;
+            const lostAssign = slotIdBreaking && assignedSlots.length > 0;
+
+            const modal = document.createElement('div');
+            modal.style.cssText = 'position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.55);display:flex;align-items:center;justify-content:center;z-index:20000;';
+
+            const panel = document.createElement('div');
+            panel.style.cssText = 'background:white;border-radius:12px;box-shadow:0 8px 32px rgba(0,0,0,0.3);max-width:560px;width:94%;max-height:90vh;overflow:hidden;display:flex;flex-direction:column;';
+
+            const headerColor = lostAssign ? '#c0392b' : hasUnsafe ? '#e67e22' : '#27ae60';
+            const headerIcon  = lostAssign ? 'fa-triangle-exclamation' : hasUnsafe ? 'fa-circle-exclamation' : 'fa-circle-check';
+            const headerLabel = lostAssign ? 'Warning — Assignments Will Be Lost'
+                              : hasUnsafe  ? 'Heads Up — Slot IDs Will Change'
+                              : hasChanges ? 'Confirm Changes — Assignments Safe'
+                              :              'No Changes Detected';
+
+            const changeRows = changes.map(c => `
+                <tr>
+                    <td style="padding:5px 8px;font-weight:600;font-size:12px;color:#2c3e50;white-space:nowrap;">${c.label}</td>
+                    <td style="padding:5px 8px;font-size:12px;color:#7f8c8d;text-decoration:line-through;">${c.from}</td>
+                    <td style="padding:5px 4px;font-size:12px;color:#bdc3c7;">→</td>
+                    <td style="padding:5px 8px;font-size:12px;font-weight:600;color:${c.safe?'#27ae60':'#e74c3c'};">${c.to}</td>
+                    <td style="padding:5px 8px;">
+                        ${c.safe
+                            ? '<span style="font-size:10px;background:#eafaf1;color:#27ae60;font-weight:700;padding:2px 6px;border-radius:10px;">✓ Safe</span>'
+                            : '<span style="font-size:10px;background:#fdf2f0;color:#e74c3c;font-weight:700;padding:2px 6px;border-radius:10px;">⚠ New slot ID</span>'}
+                    </td>
+                </tr>`).join('');
+
+            const lostRows = assignedSlots.map(s =>
+                `<div style="font-size:12px;padding:4px 0;border-bottom:1px solid #f5b7b1;color:#922b21;">
+                    <strong>${s.block}:</strong> ${s.teachers.join(', ')}
+                </div>`).join('');
+
+            panel.innerHTML = `
+                <div style="background:${headerColor};padding:16px 20px;border-radius:12px 12px 0 0;display:flex;align-items:center;gap:10px;">
+                    <i class="fa-solid ${headerIcon}" style="color:white;font-size:18px;"></i>
+                    <span style="color:white;font-size:15px;font-weight:700;">${headerLabel}</span>
+                </div>
+                <div style="padding:20px 24px;max-height:60vh;overflow-y:auto;">
+                    ${!hasChanges ? `<p style="font-size:13px;color:#7f8c8d;margin:0;">Nothing has changed from the current saved values.</p>` : ''}
+                    ${hasChanges ? `
+                        <table style="width:100%;border-collapse:collapse;margin-bottom:${lostAssign?'16px':'0'};">
+                            <thead><tr>
+                                <th style="text-align:left;font-size:10px;color:#b2bec3;padding:0 8px 6px;text-transform:uppercase;">Field</th>
+                                <th style="text-align:left;font-size:10px;color:#b2bec3;padding:0 8px 6px;text-transform:uppercase;">Was</th>
+                                <th></th>
+                                <th style="text-align:left;font-size:10px;color:#b2bec3;padding:0 8px 6px;text-transform:uppercase;">Now</th>
+                                <th style="text-align:left;font-size:10px;color:#b2bec3;padding:0 8px 6px;text-transform:uppercase;">Impact</th>
+                            </tr></thead>
+                            <tbody>${changeRows}</tbody>
+                        </table>` : ''}
+                    ${lostAssign ? `
+                        <div style="background:#fdedec;border:1px solid #f5b7b1;border-radius:8px;padding:12px 14px;">
+                            <div style="font-size:12px;font-weight:700;color:#922b21;margin-bottom:8px;">
+                                <i class="fa-solid fa-triangle-exclamation" style="margin-right:5px;"></i>
+                                The following proctor assignments will be <u>permanently lost</u> — they are tied to the old slot IDs and cannot follow a date or calendar change:
+                            </div>
+                            ${lostRows}
+                        </div>` : ''}
+                    ${slotIdBreaking && !lostAssign ? `
+                        <div style="background:#fef9e7;border:1px solid #f9ca24;border-radius:8px;padding:10px 14px;margin-top:12px;font-size:12px;color:#7d6608;">
+                            <i class="fa-solid fa-circle-info" style="margin-right:5px;"></i>
+                            The date or calendar is changing, but no proctor assignments exist on the old slots — safe to proceed.
+                        </div>` : ''}
+                    ${!slotIdBreaking && !lostAssign && hasChanges ? `
+                        <div style="background:#eafaf1;border:1px solid #a9dfbf;border-radius:8px;padding:10px 14px;margin-top:12px;font-size:12px;color:#1e8449;">
+                            <i class="fa-solid fa-circle-check" style="margin-right:5px;"></i>
+                            All changes are metadata-only. Slot IDs are unchanged — all proctor assignments will be fully preserved.
+                        </div>` : ''}
+                </div>
+                <div style="padding:14px 24px 20px;display:flex;gap:10px;justify-content:flex-end;border-top:1px solid #ecf0f1;">
+                    <button id="_examConfirmCancel" style="padding:9px 20px;background:#ecf0f1;color:#2c3e50;border:none;border-radius:8px;cursor:pointer;font-size:13px;font-weight:600;">Cancel</button>
+                    ${hasChanges || !hasChanges ? `<button id="_examConfirmOk" style="padding:9px 20px;background:${lostAssign?'#e74c3c':'#27ae60'};color:white;border:none;border-radius:8px;cursor:pointer;font-size:13px;font-weight:600;">
+                        ${lostAssign ? 'Proceed Anyway' : 'Apply Changes'}
+                    </button>` : ''}
+                </div>
+            `;
+
+            modal.appendChild(panel);
+            document.body.appendChild(modal);
+
+            document.getElementById('_examConfirmCancel').onclick = () => modal.remove();
+            modal.onclick = e => { if (e.target === modal) modal.remove(); };
+            const okBtn = document.getElementById('_examConfirmOk');
+            if (okBtn) okBtn.onclick = () => { modal.remove(); _doCreateExamSlots(f); };
+
+            return; // wait for user action
         }
 
 
         // ── Exam Creator: reset form to blank ────────────────────────────────────────
         function initExamDropdowns() {
-            rebuildSelect('newExam_paper',  'paper',  '— none —',     null);
-            rebuildSelect('newExam_format', 'format', '— standard —', null);
-            rebuildSelect('newExam_access', 'access', '— standard —', null);
-            rebuildSelect('newExam_session','session','— primary —',  null);
-            rebuildSelect('newExam_room',   'room',   '— select —',   null);
+            rebuildAllDataLists();
         }
 
         function resetExamCreator() {
-            const fields = ['newExam_course','newExam_notes','newExam_students','newExam_roomOther'];
+            const fields = ['newExam_course','newExam_notes','newExam_students',
+                            'newExam_paper','newExam_format','newExam_access','newExam_session','newExam_room'];
             fields.forEach(id => { const el = document.getElementById(id); if (el) el.value = ''; });
-            ['newExam_paper','newExam_format','newExam_access','newExam_session','newExam_gender'].forEach(id => {
+            ['newExam_gender'].forEach(id => {
                 const el = document.getElementById(id); if (el) el.selectedIndex = 0;
             });
             const startEl = document.getElementById('newExam_start');
@@ -10028,7 +10876,6 @@
             if (endEl)   endEl.value   = '';
             const proctors = document.getElementById('newExam_proctors');
             if (proctors) proctors.value = '2';
-            document.getElementById('roomOtherRow').style.display = 'none';
             _previewMergeState = [];
             const preview = document.getElementById('examNamePreview');
             if (preview) preview.textContent = 'Enter course details below';
@@ -10120,9 +10967,16 @@
             setVal('newExam_gender',   d.slotGenderReq?.[firstSlot]     || '');
             setVal('newExam_notes',    d.slotNotes?.[firstSlot]         || '');
 
-            // Set times from first and last slot
-            const examStart = d.slotTimes?.[slots[0]] || '';
-            const examEnd   = d.slotEndTimes?.[slots[slots.length-1]] || '';
+            // Set times from the slot with the earliest start and the slot with the latest end
+            const toMinsLoad = t => { if (!t) return Infinity; const [h,m] = t.split(':').map(Number); return h*60+m; };
+            const examStart = slots.reduce((best, s) => {
+                const t = d.slotTimes?.[s] || '';
+                return (!best || toMinsLoad(t) < toMinsLoad(best)) ? t : best;
+            }, '');
+            const examEnd = slots.reduce((best, s) => {
+                const t = d.slotEndTimes?.[s] || '';
+                return (!best || (t && toMinsLoad(t) > toMinsLoad(best))) ? t : best;
+            }, '');
             setVal('newExam_start', examStart);
             setVal('newExam_end',   examEnd);
 
@@ -10197,7 +11051,7 @@
                 ['Students', dRef.slotStudents?.[ref2] || '—'],
                 ['Proctors', dRef.slotProctorCount?.[ref2] || 2],
                 ['Gender',   dRef.slotGenderReq?.[ref2] || 'Any'],
-                ['Time',     (dRef.slotTimes?.[ref2]||'') + '–' + (dRef.slotEndTimes?.[slots[slots.length-1]]||'')],
+                ['Time',     (dRef.slotTimes?.[ref2]||'') + '–' + (slots.reduce((b,s)=>{ const t=dRef.slotEndTimes?.[s]||''; return(!b||(t&&t>b))?t:b; },'') || '—')],
                 ['Slots',    slots.length + ' bell block' + (slots.length>1?'s':'')],
             ];
             if (detailEl) {
@@ -10225,9 +11079,10 @@
             const toMins = t => { if (!t) return 0; const [h,m] = t.split(':').map(Number); return h*60+m; };
             const fmt    = m => `${String(Math.floor(m/60)).padStart(2,'0')}:${String(m%60).padStart(2,'0')}`;
 
-            // Get the stored exam window from first/last slot
-            const examStart = d.slotTimes?.[slots[0]]             || '';
-            const examEnd   = d.slotEndTimes?.[slots[slots.length-1]] || '';
+            // Get the stored exam window using earliest start and latest end across all slots
+            const toMinsADB = t => { if (!t) return 0; const [h,m] = t.split(':').map(Number); return h*60+m; };
+            const examStart = slots.reduce((b,s)=>{ const t=d.slotTimes?.[s]||''; return(!b||toMinsADB(t)<toMinsADB(b))?t:b; }, '');
+            const examEnd   = slots.reduce((b,s)=>{ const t=d.slotEndTimes?.[s]||''; return(!b||(t&&toMinsADB(t)>toMinsADB(b)))?t:b; }, '');
             if (!examStart || !examEnd) return alert('Cannot determine exam window from stored data.');
 
             const eS = toMins(examStart), eE = toMins(examEnd);
