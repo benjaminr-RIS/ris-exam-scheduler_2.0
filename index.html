@@ -4127,6 +4127,8 @@
             delete ctx.data.slotExamNames[ctx.slotId];
             delete ctx.data.assignments[ctx.slotId];
             delete ctx.data.specialAssignments[ctx.slotId];
+            if (ctx.data.manualAssignments) delete ctx.data.manualAssignments[ctx.slotId];
+            if (ctx.data.assignmentSources) delete ctx.data.assignmentSources[ctx.slotId];
             if (ctx.data.slotTimes) delete ctx.data.slotTimes[ctx.slotId];
             if (ctx.data.slotEndTimes) delete ctx.data.slotEndTimes[ctx.slotId];
             if (ctx.data.slotNotes) delete ctx.data.slotNotes[ctx.slotId];
@@ -9352,6 +9354,15 @@
                 examData[type].specialAssignments = d.specialAssignments;
                 examData[type].manualAssignments  = d.manualAssignments  || {};
                 examData[type].assignmentSources  = d.assignmentSources  || {};
+                // ── Orphan sweep: remove assignment entries for slots no longer in examSlots ──
+                // Cleans up ghost records left behind by exam deletions that didn't
+                // previously purge all three assignment maps.
+                const _validSlots = examData[type].examSlots;
+                ['assignments','specialAssignments','manualAssignments','assignmentSources'].forEach(map => {
+                    const m = examData[type][map];
+                    if (!m || typeof m !== 'object') return;
+                    Object.keys(m).forEach(sid => { if (!_validSlots.has(sid)) delete m[sid]; });
+                });
             });
             // Restore portal meta (published, globalLock, adminPin)
             if (state.meta) {
