@@ -2978,10 +2978,23 @@
                             const teacherAssigned = Math.min(_aRegCount + _aManCount, proctorCount); // cap at proctorCount to avoid over-counting overlaps
                             const guestAssigned = data.slotGuestProctors ? (data.slotGuestProctors[slotId] || []).length : 0;
                             const assigned = teacherAssigned + guestAssigned;
-                            
+                            // Gender-satisfaction check: for MF slots, green only if at least one M and one F is assigned
+                            const _slotGenderReq = data.slotGenderReq ? (data.slotGenderReq[slotId] || '') : '';
+                            let _genderSatisfied = true;
+                            if (_slotGenderReq === 'MF' && assigned >= proctorCount) {
+                                const _aRegIds = isSpecial ? (data.specialAssignments[slotId] || []) : (data.assignments[slotId] || []);
+                                const _aManIds = data.manualAssignments ? (data.manualAssignments[slotId] || []) : [];
+                                const _allIds  = [...new Set([..._aRegIds, ..._aManIds])].filter(Boolean);
+                                const _guestEntries = data.slotGuestProctors ? (data.slotGuestProctors[slotId] || []) : [];
+                                let _hasMale = false, _hasFemale = false;
+                                _allIds.forEach(function(tid) { const _t = TEACHERS.find(function(x){ return x.id === tid; }); if (_t) { if (_t.gender === 'M') _hasMale = true; else if (_t.gender === 'F') _hasFemale = true; } });
+                                _guestEntries.forEach(function(e) { if (e.startsWith('M:')) _hasMale = true; else if (e.startsWith('F:')) _hasFemale = true; });
+                                _genderSatisfied = _hasMale && _hasFemale;
+                            }
+
                             if (!hasData) { bgColor = '#dfe6e9'; textColor = '#7f8c8d'; } // initiated but no data yet — neutral grey
                             else if (assigned === 0) { bgColor = '#e74c3c'; textColor = 'white'; }
-                            else if (assigned < proctorCount) { bgColor = '#f39c12'; textColor = 'white'; }
+                            else if (assigned < proctorCount || !_genderSatisfied) { bgColor = '#f39c12'; textColor = 'white'; }
                             else { bgColor = '#27ae60'; textColor = 'white'; }
                         }
 
@@ -3019,10 +3032,10 @@
                             const assignedIds = [...new Set([..._aReg, ..._aMan])].filter(t => t);
                             const assignedNames = assignedIds.map(id => {
                                 const t = TEACHERS.find(x => x.id === id);
-                                return t ? t.name.split(' ').pop() : '?';
+                                return t ? t.name : '?';
                             });
                             const guestNames = data.slotGuestProctors ? (data.slotGuestProctors[slotId] || []) : [];
-                            const allProctorNames = [...assignedNames, ...guestNames.map(g => { const n = /^[MF]:/.test(g) ? g.slice(2) : g; return n.split(' ').pop(); })];
+                            const allProctorNames = [...assignedNames, ...guestNames.map(g => { const n = /^[MF]:/.test(g) ? g.slice(2) : g; return n; })];
                             const endTime = data.slotEndTimes ? data.slotEndTimes[slotId] || '' : '';
                             const timeStr = (startTime || endTime) ? `${startTime}${startTime && endTime ? '–' : ''}${endTime}` : '';
                             const proctor = allProctorNames.length > 0 ? allProctorNames.join(', ') : `${assignedIds.length}/${proctorCount}`;
@@ -6823,6 +6836,7 @@
                             students:  data.slotStudents  ? (data.slotStudents[slotId]  || '') : '',
                             notes:     data.slotNotes     ? (data.slotNotes[slotId]     || '') : '',
                             genderReq: data.slotGenderReq ? (data.slotGenderReq[slotId] || '') : '',
+                            proctorCount: data.slotProctorCount ? (data.slotProctorCount[slotId] || 1) : 1,
                             cycleBlock,
                         });
                     });
@@ -6891,10 +6905,36 @@
                         doc.text(fmt12h(e.startTime), C.start, y);
                         doc.text(fmt12h(e.endTime), C.end, y);
                         doc.setFontSize(7);
+                        // Determine checkmark logic: show drawn ✓ when a gender column is not needed but covered
+                        // genderReq='M' → only males needed → if males covered, females col = ✓
+                        // genderReq='F' → only females needed → if females covered, males col = ✓
+                        // genderReq=''  → any gender ok → if all proctor slots filled, empty col = ✓
+                        function drawTick(tx, ty) {
+                            // Draw a small green checkmark at (tx, ty) in PDF mm coords
+                            doc.setDrawColor(80, 170, 80);
+                            doc.setLineWidth(0.5);
+                            doc.line(tx, ty - 0.5, tx + 1.2, ty + 1.4);
+                            doc.line(tx + 1.2, ty + 1.4, tx + 3.2, ty - 1.8);
+                            doc.setLineWidth(0.2);
+                            doc.setDrawColor(220, 220, 220);
+                        }
+                        const _mCovered = e.males.length > 0;
+                        const _fCovered = e.females.length > 0;
+                        const _totalCovered = e.males.length + e.females.length;
+                        const _mNeedTick = !_mCovered && (
+                            (e.genderReq === 'F' && _fCovered) ||
+                            (e.genderReq === '' && _totalCovered >= e.proctorCount && e.proctorCount > 0)
+                        );
+                        const _fNeedTick = !_fCovered && (
+                            (e.genderReq === 'M' && _mCovered) ||
+                            (e.genderReq === '' && _totalCovered >= e.proctorCount && e.proctorCount > 0)
+                        );
                         doc.setTextColor(52,152,219);
-                        doc.text(truncate(e.males.join(', ') || '-', C.notes-C.male-2), C.male, y);
+                        if (_mNeedTick) { drawTick(C.male, y); }
+                        else { doc.text(_mCovered ? truncate(e.males.join(', '), C.notes-C.male-2) : '-', C.male, y); }
                         doc.setTextColor(192,57,43);
-                        doc.text(truncate(e.females.join(', ') || '-', C.notes-C.female-2), C.female, y);
+                        if (_fNeedTick) { drawTick(C.female, y); }
+                        else { doc.text(_fCovered ? truncate(e.females.join(', '), C.notes-C.female-2) : '-', C.female, y); }
                         if (noteLines.length > 0) {
                             doc.setFontSize(6.5); doc.setFont(undefined,'normal'); doc.setTextColor(100,100,100);
                             noteLines.forEach(function(line, li) { doc.text(truncate(line, NOTES_W), C.notes, y+li*3.8); });
