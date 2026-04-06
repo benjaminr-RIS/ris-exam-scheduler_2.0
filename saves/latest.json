@@ -1833,8 +1833,7 @@
       "specialAssignments": {
         "cal-1-1-9": [
           15,
-          34,
-          5
+          34
         ],
         "cal-1-2-9": [
           8,
@@ -1911,8 +1910,9 @@
         ],
         "cal-1-9-9": [
           2,
-          34,
-          4
+          4,
+          33,
+          34
         ],
         "cal-1-10-5": [
           25
@@ -1992,12 +1992,15 @@
         ],
         "cal-1-9-9": [
           2,
+          4,
+          33,
           34
         ],
         "cal-1-9-2": [
           2,
           15,
-          23
+          23,
+          7
         ]
       },
       "assignmentSources": {
@@ -7529,7 +7532,7 @@
       "name": "Mr. Cameron",
       "required": 16,
       "gender": "M",
-      "program": "IB",
+      "program": "AP",
       "color": "#3498db",
       "pin": ""
     },
@@ -7574,7 +7577,7 @@
       "name": "Mr. Eammon",
       "required": 18,
       "gender": "M",
-      "program": "Both",
+      "program": "AP",
       "color": "#3498db",
       "pin": "1234"
     },
@@ -7601,7 +7604,7 @@
       "name": "Mr. Jeff",
       "required": 18,
       "gender": "M",
-      "program": "Both",
+      "program": "AP",
       "color": "#1abc9c",
       "pin": ""
     },
@@ -7679,7 +7682,7 @@
     },
     {
       "id": 33,
-      "name": "Mr. Aquino",
+      "name": "Mr. Augustine",
       "required": 0,
       "gender": "M",
       "program": "Both",
@@ -7700,7 +7703,7 @@
       "name": "Mr. Robert",
       "required": 18,
       "gender": "M",
-      "program": "Both",
+      "program": "AP",
       "color": "#e74c3c",
       "pin": "1234R"
     },
@@ -8212,22 +8215,13 @@
     "33": {
       "A1": "2026-04-27T00:00:00.000Z",
       "A2": "2026-04-27T00:00:00.000Z",
-      "A3": "2026-04-27T00:00:00.000Z",
-      "A4": "2026-04-27T00:00:00.000Z",
-      "A5": "2026-04-27T00:00:00.000Z",
       "B1": "2026-04-27T00:00:00.000Z",
-      "B2": "2026-04-27T00:00:00.000Z",
-      "B3": "2026-04-27T00:00:00.000Z",
-      "B4": "2026-04-27T00:00:00.000Z",
-      "B5": "2026-04-27T00:00:00.000Z",
       "C1": "2026-04-27T00:00:00.000Z",
       "C2": "2026-04-27T00:00:00.000Z",
       "C3": "2026-04-27T00:00:00.000Z",
-      "C4": "2026-04-27T00:00:00.000Z",
       "C5": "2026-04-27T00:00:00.000Z",
       "D1": "2026-04-27T00:00:00.000Z",
       "D2": "2026-04-27T00:00:00.000Z",
-      "D3": "2026-04-27T00:00:00.000Z",
       "D4": "2026-04-27T00:00:00.000Z",
       "D5": "2026-04-27T00:00:00.000Z",
       "FLEX-A": "2026-04-27T00:00:00.000Z",
@@ -9999,6 +9993,6 @@
     "adminPin": "2026RIS",
     "writeToken": "Z2l0aHViX3BhdF8xMUI3Q1hQSUEwczBLMXRSZk9sQVVjX1RHcXlVRlc1WGlrcWNKQkRyQk1pc0x3YjFIaTZKU0ZWN2IwcjFtUDRzWjM1TlVGNkZLTHJaNG92UVRV"
   },
-  "lastSavedAt": "1775442680702",
+  "lastSavedAt": "1775443473802",
   "lastAutoRunAt": "1775101879954"
 }
