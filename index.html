@@ -2972,19 +2972,19 @@
                         
                         if (isExam) {
                             const hasData = !!examName; // only colour if exam name has been saved
-                            // Fix: include manualAssignments in fill count so color reflects true assignment state
-                            const _aRegCount  = isSpecial ? (data.specialAssignments[slotId] || []).filter(t => t).length : (data.assignments[slotId] || []).length;
-                            const _aManCount  = data.manualAssignments ? (data.manualAssignments[slotId] || []).length : 0;
-                            const teacherAssigned = Math.min(_aRegCount + _aManCount, proctorCount); // cap at proctorCount to avoid over-counting overlaps
+                            // Deduplicate across specialAssignments/assignments and manualAssignments
+                            // to avoid double-counting teachers present in both maps (causes false green)
+                            const _aRegIds = isSpecial ? (data.specialAssignments[slotId] || []).filter(t => t) : (data.assignments[slotId] || []);
+                            const _aManIds = data.manualAssignments ? (data.manualAssignments[slotId] || []) : [];
+                            const _uniqueIds = new Set([..._aRegIds, ..._aManIds]);
+                            const teacherAssigned = Math.min(_uniqueIds.size, proctorCount);
                             const guestAssigned = data.slotGuestProctors ? (data.slotGuestProctors[slotId] || []).length : 0;
                             const assigned = teacherAssigned + guestAssigned;
                             // Gender-satisfaction check: for MF slots, green only if at least one M and one F is assigned
                             const _slotGenderReq = data.slotGenderReq ? (data.slotGenderReq[slotId] || '') : '';
                             let _genderSatisfied = true;
                             if (_slotGenderReq === 'MF' && assigned >= proctorCount) {
-                                const _aRegIds = isSpecial ? (data.specialAssignments[slotId] || []) : (data.assignments[slotId] || []);
-                                const _aManIds = data.manualAssignments ? (data.manualAssignments[slotId] || []) : [];
-                                const _allIds  = [...new Set([..._aRegIds, ..._aManIds])].filter(Boolean);
+                                const _allIds  = [..._uniqueIds].filter(Boolean);
                                 const _guestEntries = data.slotGuestProctors ? (data.slotGuestProctors[slotId] || []) : [];
                                 let _hasMale = false, _hasFemale = false;
                                 _allIds.forEach(function(tid) { const _t = TEACHERS.find(function(x){ return x.id === tid; }); if (_t) { if (_t.gender === 'M') _hasMale = true; else if (_t.gender === 'F') _hasFemale = true; } });
@@ -5064,6 +5064,12 @@
                             } else if (!isAdminView2) {
                                 actionCell = `<td style="padding:4px 8px;">
                                     <button id="claim-btn-${ae.slotId}" onclick="claimSlot('${ae.calKey}','${ae.slotId}')"
+                                        style="padding:4px 10px;background:#eaf4fd;border:1px solid #3498db;border-radius:5px;color:#2980b9;font-size:11px;font-weight:700;cursor:pointer;white-space:nowrap;">
+                                        <i class="fa-solid fa-plus" style="pointer-events:none;"></i> Claim</button>
+                                </td>`;
+                            } else {
+                                actionCell = `<td style="padding:4px 8px;">
+                                    <button onclick="adminClaimSlot('${ae.calKey}','${ae.slotId}',${teacher.id})"
                                         style="padding:4px 10px;background:#eaf4fd;border:1px solid #3498db;border-radius:5px;color:#2980b9;font-size:11px;font-weight:700;cursor:pointer;white-space:nowrap;">
                                         <i class="fa-solid fa-plus" style="pointer-events:none;"></i> Claim</button>
                                 </td>`;
@@ -9355,8 +9361,6 @@
                 examData[type].manualAssignments  = d.manualAssignments  || {};
                 examData[type].assignmentSources  = d.assignmentSources  || {};
                 // ── Orphan sweep: remove assignment entries for slots no longer in examSlots ──
-                // Cleans up ghost records left behind by exam deletions that didn't
-                // previously purge all three assignment maps.
                 const _validSlots = examData[type].examSlots;
                 ['assignments','specialAssignments','manualAssignments','assignmentSources'].forEach(map => {
                     const m = examData[type][map];
@@ -9614,6 +9618,37 @@
             }
         }
         // ── End teacher claim/unclaim ──────────────────────────────────────────────
+
+        function adminClaimSlot(calKey, slotId, teacherId) {
+            if (currentSession?.role !== 'admin') return;
+            const d = examData[calKey];
+            if (!d) return;
+            const tid = parseInt(teacherId);
+            const isSpecialSlot = d.specialAssignments && d.specialAssignments[slotId] !== undefined;
+            // Add to the correct assignment map (special vs regular) mirroring how the scheduler assigns
+            const mapKey = isSpecialSlot ? 'specialAssignments' : 'manualAssignments';
+            if (!d[mapKey]) d[mapKey] = {};
+            if (!d[mapKey][slotId]) d[mapKey][slotId] = [];
+            if (!d[mapKey][slotId].includes(tid)) d[mapKey][slotId].push(tid);
+            // Also add to manualAssignments if using specialAssignments (keeps both maps consistent)
+            if (mapKey === 'specialAssignments') {
+                if (!d.manualAssignments) d.manualAssignments = {};
+                if (!d.manualAssignments[slotId]) d.manualAssignments[slotId] = [];
+                if (!d.manualAssignments[slotId].includes(tid)) d.manualAssignments[slotId].push(tid);
+            }
+            // Record source
+            if (!d.assignmentSources) d.assignmentSources = {};
+            if (!d.assignmentSources[slotId]) d.assignmentSources[slotId] = {};
+            d.assignmentSources[slotId][String(tid)] = 'manual';
+            autoSave();
+            refreshTeacherCardRight(tid);
+            renderCalendar(calKey);
+            if (currentTab === 'TEACHERS') {
+                if (typeof generateTeacherCards === 'function') generateTeacherCards();
+            } else if (currentTab === 'TEACHER_SCHEDULES') {
+                refreshTeacherScheduleCard(tid);
+            }
+        }
 
         // ── Auto-load latest.json on page startup ──
         async function teacherSyncBtn() {
