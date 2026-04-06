@@ -1667,7 +1667,6 @@
       ],
       "assignments": {
         "cal-1-0-6": [
-          22,
           16
         ],
         "cal-1-1-2": [
@@ -1961,7 +1960,9 @@
           19,
           26
         ],
-        "cal-1-15-9": [],
+        "cal-1-15-9": [
+          26
+        ],
         "cal-1-15-3": [
           12,
           34
@@ -2096,6 +2097,12 @@
         ],
         "cal-1-10-5": [
           25
+        ],
+        "cal-1-15-9": [
+          26
+        ],
+        "cal-1-0-6": [
+          16
         ]
       },
       "assignmentSources": {
@@ -10331,6 +10338,6 @@
     "adminPin": "2026RIS",
     "writeToken": "Z2l0aHViX3BhdF8xMUI3Q1hQSUEwczBLMXRSZk9sQVVjX1RHcXlVRlc1WGlrcWNKQkRyQk1pc0x3YjFIaTZKU0ZWN2IwcjFtUDRzWjM1TlVGNkZLTHJaNG92UVRV"
   },
-  "lastSavedAt": "1775473026607",
+  "lastSavedAt": "1775473129541",
   "lastAutoRunAt": "1775445024447"
 }
