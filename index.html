@@ -2436,6 +2436,16 @@
         }
 
 
+        // ── Commitment date-aware availability check ───────────────────────────────
+        // Returns true only if the teacher has a commitment for this block AND
+        // the slot date is on or after the teacher's "available from" date.
+        // Treats "committed but not yet released" identically to "not committed" —
+        // the teacher is busy/unavailable for that day either way.
+        function isCommitted(commits, block, date) {
+            const cd = commits[block];
+            return !!cd && date >= new Date(cd);
+        }
+
         // ── Day-load pill visualization ────────────────────────────────────────────
         // Returns an HTML string of colored pills showing a teacher's schedule for a date.
         // salmon/red = teaching (busy block), blue = proctoring, gold = flex,
@@ -2483,8 +2493,8 @@
             function getPillClass(block) {
                 if (block === 'LUNCH') return 'lunch';
                 if (block === 'After School') return 'after';
-                if (/^FLEX-/.test(block)) return commitments[block] ? 'flex' : 'busy';
-                return commitments[block] ? 'free' : 'busy';
+                if (/^FLEX-/.test(block)) return isCommitted(commitments, block, date) ? 'flex' : 'busy';
+                return isCommitted(commitments, block, date) ? 'free' : 'busy';
             }
 
             // Deduplicate After School (Wednesday has two)
@@ -2509,10 +2519,10 @@
                 return `<span class="dl-pill ${cls}" style="${extraStyle}" title="${block} — ${titleText}">${label}</span>`;
             });
 
-            // Free blocks: has commitment AND not already assigned today
+            // Free blocks: has commitment for this date AND not already assigned today
             const freeCount = deduped.filter(b => {
                 if (b === 'LUNCH' || b === 'After School' || /^FLEX-/.test(b)) return false;
-                return !!commitments[b] && !assignedTodayBlocks.has(b);
+                return isCommitted(commitments, b, date) && !assignedTodayBlocks.has(b);
             }).length;
 
             return `<div style="display:flex;flex-wrap:wrap;gap:3px;align-items:center;">
@@ -3680,13 +3690,13 @@
                     const sch = getScheduleForDate(date) || [];
                     const commits = teacherBlockCommitments[a.id] || {};
                     const booked = getTeacherDayAssignedBlocks(a.id, slotsOnDate);
-                    return sch.filter(b => !/^(LUNCH|After School)$/.test(b) && !/^FLEX-/.test(b) && commits[b] && !booked.has(b)).length;
+                    return sch.filter(b => !/^(LUNCH|After School)$/.test(b) && !/^FLEX-/.test(b) && isCommitted(commits, b, date) && !booked.has(b)).length;
                 })();
                 const bFree = (function() {
                     const sch = getScheduleForDate(date) || [];
                     const commits = teacherBlockCommitments[b.id] || {};
                     const booked = getTeacherDayAssignedBlocks(b.id, slotsOnDate);
-                    return sch.filter(bl => !/^(LUNCH|After School)$/.test(bl) && !/^FLEX-/.test(bl) && commits[bl] && !booked.has(bl)).length;
+                    return sch.filter(bl => !/^(LUNCH|After School)$/.test(bl) && !/^FLEX-/.test(bl) && isCommitted(commits, bl, date) && !booked.has(bl)).length;
                 })();
                 if (bFree !== aFree) return bFree - aFree;
                 const aPct = getTotalAssignedHours(a.id) / Math.max(1, a.required||1);
@@ -3712,7 +3722,7 @@
                 function isTeacherFreeForBlock(t) {
                     const commits = teacherBlockCommitments[t.id] || {};
                     if (keyedParts.length === 0) return true; // pure unkeyed special (Break alone etc.)
-                    return keyedParts.every(p => !!commits[p]);
+                    return keyedParts.every(p => isCommitted(commits, p, date));
                 }
 
                 // Split free-block candidates into truly-free vs currently-proctoring-elsewhere
@@ -4386,7 +4396,7 @@
             });
             const hasDoubleBooking = Object.values(_slotsByDatePeriod).some(g => g.length > 1);
 
-            // Unavailable: assigned to a block not in teacher's commitments
+            // Unavailable: assigned to a block before teacher's available-from date, or not in commitments at all
             const _commits = teacherBlockCommitments[teacher.id] || {};
             const hasUnavailable = assignments.some(a => {
                 const _isAlwaysOk = [3,7,8,9,10].includes(a.periodIdx);
@@ -4395,7 +4405,8 @@
                 if (!_rawBlock || _rawBlock === '?') return false;
                 const _isReg  = /^[ABCD][12345]$/.test(_rawBlock);
                 const _isFlex = /^FLEX-/.test(_rawBlock);
-                if ((_isReg || _isFlex) && !_commits[_rawBlock]) return true;
+                const _aDate  = examData[a.examType]?.dates?.[a.dateIdx];
+                if ((_isReg || _isFlex) && !isCommitted(_commits, _rawBlock, _aDate)) return true;
                 // Also check second block of a merged slot
                 const _data = examData[a.examType];
                 if (_data && _data.slotMergeDown && _data.slotMergeDown.has(a.slotId)) {
@@ -4404,7 +4415,7 @@
                         const _nBlock = getCycleBlockForSlot(a.dateIdx, _nPIdx, a.examType);
                         const _nReg  = _nBlock && /^[ABCD][12345]$/.test(_nBlock);
                         const _nFlex = _nBlock && /^FLEX-/.test(_nBlock);
-                        if ((_nReg || _nFlex) && !_commits[_nBlock]) return true;
+                        if ((_nReg || _nFlex) && !isCommitted(_commits, _nBlock, _aDate)) return true;
                     }
                 }
                 return false;
@@ -4652,7 +4663,7 @@
                 if (!_rawBlock || _rawBlock === '?') return; // no-school day, skip
                 const _isRegular = /^[ABCD][12345]$/.test(_rawBlock);
                 const _isFlex    = /^FLEX-/.test(_rawBlock);
-                if ((_isRegular || _isFlex) && !_teacherCommits[_rawBlock]) {
+                if ((_isRegular || _isFlex) && !isCommitted(_teacherCommits, _rawBlock, a.date)) {
                     _unavailableSlotIds.add(a.slotId);
                 }
                 // For merged slots, also check the absorbed second block
@@ -4663,7 +4674,7 @@
                         const _nextBlock = getCycleBlockForSlot(_dIdx, _nextPIdx, a.examType);
                         const _nextIsRegular = _nextBlock && /^[ABCD][12345]$/.test(_nextBlock);
                         const _nextIsFlex    = _nextBlock && /^FLEX-/.test(_nextBlock);
-                        if ((_nextIsRegular || _nextIsFlex) && !_teacherCommits[_nextBlock]) {
+                        if ((_nextIsRegular || _nextIsFlex) && !isCommitted(_teacherCommits, _nextBlock, a.date)) {
                             _unavailableSlotIds.add(a.slotId);
                         }
                     }
@@ -6183,16 +6194,15 @@
                     const availCount = activeTeachers.filter(t => {
                         if (!progFilter.includes(t.program)) return false;
                         const commits = teacherBlockCommitments[t.id] || {};
+                        const _sd = data.dates[parseInt(dateIdx)];
                         if (pIdx === 5) {
-                            // Fix #8: require the specific FLEX-X block for this day
-                            if (!commits[lookupBlock]) return false;
-                            if (mergedLookupBlock && !commits[mergedLookupBlock]) return false;
+                            if (!isCommitted(commits, lookupBlock, _sd)) return false;
+                            if (mergedLookupBlock && !isCommitted(commits, mergedLookupBlock, _sd)) return false;
                         } else if (!isSpecialPeriod) {
-                            if (!commits[lookupBlock]) return false;
-                            if (mergedLookupBlock && !commits[mergedLookupBlock]) return false;
+                            if (!isCommitted(commits, lookupBlock, _sd)) return false;
+                            if (mergedLookupBlock && !isCommitted(commits, mergedLookupBlock, _sd)) return false;
                         } else {
-                            // Fix #5: special-period primary merged with a real block — require that real block
-                            if (mergedLookupBlock && !commits[mergedLookupBlock]) return false;
+                            if (mergedLookupBlock && !isCommitted(commits, mergedLookupBlock, _sd)) return false;
                         }
                         return true;
                     }).length;
@@ -6201,6 +6211,7 @@
                         examType, slotId, pIdx, isSpecialPeriod,
                         lookupBlock, mergedLookupBlock, genderReq, proctorCount, isIbCal,
                         dateIdx: parseInt(dateIdx), availCount,
+                        slotDate: data.dates[parseInt(dateIdx)],
                     });
                 });
             });
@@ -6211,6 +6222,7 @@
             // are correctly reflected before the next slot is chosen.
             function liveAvailCount(slot, progFilter) {
                 const _gReq = slot.genderReq || 'MF';
+                const _sd = slot.slotDate;
                 // For MF slots, true scarcity = min(available males, available females)
                 // since we need exactly one of each
                 if (_gReq === 'MF') {
@@ -6219,13 +6231,13 @@
                         if (t.gender !== 'M') return false;
                         const commits = teacherBlockCommitments[t.id] || {};
                         if (slot.pIdx === 5) {
-                            if (!commits[slot.lookupBlock]) return false;
-                            if (slot.mergedLookupBlock && !commits[slot.mergedLookupBlock]) return false;
+                            if (!isCommitted(commits, slot.lookupBlock, _sd)) return false;
+                            if (slot.mergedLookupBlock && !isCommitted(commits, slot.mergedLookupBlock, _sd)) return false;
                         } else if (!slot.isSpecialPeriod) {
-                            if (!commits[slot.lookupBlock]) return false;
-                            if (slot.mergedLookupBlock && !commits[slot.mergedLookupBlock]) return false;
+                            if (!isCommitted(commits, slot.lookupBlock, _sd)) return false;
+                            if (slot.mergedLookupBlock && !isCommitted(commits, slot.mergedLookupBlock, _sd)) return false;
                         } else {
-                            if (slot.mergedLookupBlock && !commits[slot.mergedLookupBlock]) return false;
+                            if (slot.mergedLookupBlock && !isCommitted(commits, slot.mergedLookupBlock, _sd)) return false;
                         }
                         if (getTotalAssignedHours(t.id) >= t.required) return false;
                         return true;
@@ -6235,13 +6247,13 @@
                         if (t.gender !== 'F') return false;
                         const commits = teacherBlockCommitments[t.id] || {};
                         if (slot.pIdx === 5) {
-                            if (!commits[slot.lookupBlock]) return false;
-                            if (slot.mergedLookupBlock && !commits[slot.mergedLookupBlock]) return false;
+                            if (!isCommitted(commits, slot.lookupBlock, _sd)) return false;
+                            if (slot.mergedLookupBlock && !isCommitted(commits, slot.mergedLookupBlock, _sd)) return false;
                         } else if (!slot.isSpecialPeriod) {
-                            if (!commits[slot.lookupBlock]) return false;
-                            if (slot.mergedLookupBlock && !commits[slot.mergedLookupBlock]) return false;
+                            if (!isCommitted(commits, slot.lookupBlock, _sd)) return false;
+                            if (slot.mergedLookupBlock && !isCommitted(commits, slot.mergedLookupBlock, _sd)) return false;
                         } else {
-                            if (slot.mergedLookupBlock && !commits[slot.mergedLookupBlock]) return false;
+                            if (slot.mergedLookupBlock && !isCommitted(commits, slot.mergedLookupBlock, _sd)) return false;
                         }
                         if (getTotalAssignedHours(t.id) >= t.required) return false;
                         return true;
@@ -6253,13 +6265,13 @@
                     if (_gReq && _gReq !== 'MF' && t.gender !== _gReq) return false;
                     const commits = teacherBlockCommitments[t.id] || {};
                     if (slot.pIdx === 5) {
-                        if (!commits[slot.lookupBlock]) return false;
-                        if (slot.mergedLookupBlock && !commits[slot.mergedLookupBlock]) return false;
+                        if (!isCommitted(commits, slot.lookupBlock, _sd)) return false;
+                        if (slot.mergedLookupBlock && !isCommitted(commits, slot.mergedLookupBlock, _sd)) return false;
                     } else if (!slot.isSpecialPeriod) {
-                        if (!commits[slot.lookupBlock]) return false;
-                        if (slot.mergedLookupBlock && !commits[slot.mergedLookupBlock]) return false;
+                        if (!isCommitted(commits, slot.lookupBlock, _sd)) return false;
+                        if (slot.mergedLookupBlock && !isCommitted(commits, slot.mergedLookupBlock, _sd)) return false;
                     } else {
-                        if (slot.mergedLookupBlock && !commits[slot.mergedLookupBlock]) return false;
+                        if (slot.mergedLookupBlock && !isCommitted(commits, slot.mergedLookupBlock, _sd)) return false;
                     }
                     if (getTotalAssignedHours(t.id) >= t.required) return false;
                     return true;
@@ -6289,7 +6301,8 @@
                             const lb = SPECIAL_PERIOD_FALLBACK[piN] !== undefined
                                 ? getCycleBlockForSlot(parseInt(di), SPECIAL_PERIOD_FALLBACK[piN], et)
                                 : getCycleBlockForSlot(di, pi, et);
-                            if (!commits[lb]) return false;
+                            const _sd = d.dates[parseInt(di)];
+                            if (!isCommitted(commits, lb, _sd)) return false;
                         }
                         const pc = d.slotProctorCount[sid] || 2;
                         const cur = isSpecAP ? (d.specialAssignments[sid]||[]) : (d.assignments[sid]||[]);
@@ -6343,19 +6356,20 @@
                 const candidates = activeTeachers.filter(t => {
                     if (!progFilter.includes(t.program)) return false;
                     const commits = teacherBlockCommitments[t.id] || {};
+                    const _sd = data.dates[dateIdx];
                     if (pIdx === 5) {
                         // Fix #8: FLEX — require the specific FLEX-X block for this day
-                        if (!commits[lookupBlock]) return false;
-                        if (mergedLookupBlock && !commits[mergedLookupBlock]) return false;
+                        if (!isCommitted(commits, lookupBlock, _sd)) return false;
+                        if (mergedLookupBlock && !isCommitted(commits, mergedLookupBlock, _sd)) return false;
                     } else if (!isSpecialPeriod) {
-                        // Regular block: must have the specific cycle block committed
-                        if (!commits[lookupBlock]) return false;
+                        // Regular block: must have the specific cycle block committed for this date
+                        if (!isCommitted(commits, lookupBlock, _sd)) return false;
                         // For merged slots, teacher must be free for BOTH blocks
-                        if (mergedLookupBlock && !commits[mergedLookupBlock]) return false;
+                        if (mergedLookupBlock && !isCommitted(commits, mergedLookupBlock, _sd)) return false;
                     } else {
                         // Fix #5: special-period primary (e.g. BREAK pIdx=9) merged with a real block —
                         // teacher must still be available for the absorbed real block
-                        if (mergedLookupBlock && !commits[mergedLookupBlock]) return false;
+                        if (mergedLookupBlock && !isCommitted(commits, mergedLookupBlock, _sd)) return false;
                     }
                     // Lunch / After School (pIdx 3,7,8,10): no commit key required
                     if (getTotalAssignedHours(t.id) >= t.required) return false;
@@ -6505,16 +6519,17 @@
                     const candidates = activeTeachers.filter(t => {
                         if (!progFilter.includes(t.program)) return false;
                         const commits = teacherBlockCommitments[t.id] || {};
+                        const _sd = data.dates[parseInt(dateIdx)];
                         if (pIdx === 5) {
                             // Fix #8: require the specific FLEX-X block for this day
-                            if (!commits[lookupBlock]) return false;
-                            if (mergedLookupBlock && !commits[mergedLookupBlock]) return false;
+                            if (!isCommitted(commits, lookupBlock, _sd)) return false;
+                            if (mergedLookupBlock && !isCommitted(commits, mergedLookupBlock, _sd)) return false;
                         } else if (!isSpecialPeriod) {
-                            if (!commits[lookupBlock]) return false;
-                            if (mergedLookupBlock && !commits[mergedLookupBlock]) return false;
+                            if (!isCommitted(commits, lookupBlock, _sd)) return false;
+                            if (mergedLookupBlock && !isCommitted(commits, mergedLookupBlock, _sd)) return false;
                         } else {
                             // Fix #5: special-period primary merged with a real block — require that real block
-                            if (mergedLookupBlock && !commits[mergedLookupBlock]) return false;
+                            if (mergedLookupBlock && !isCommitted(commits, mergedLookupBlock, _sd)) return false;
                         }
                         if (getTotalAssignedHours(t.id) >= t.required) return false;
                         if (currentAssignments.includes(t.id)) return false;
@@ -9625,18 +9640,15 @@
             if (!d) return;
             const tid = parseInt(teacherId);
             const isSpecialSlot = d.specialAssignments && d.specialAssignments[slotId] !== undefined;
-            // Add to the correct assignment map (special vs regular) mirroring how the scheduler assigns
             const mapKey = isSpecialSlot ? 'specialAssignments' : 'manualAssignments';
             if (!d[mapKey]) d[mapKey] = {};
             if (!d[mapKey][slotId]) d[mapKey][slotId] = [];
             if (!d[mapKey][slotId].includes(tid)) d[mapKey][slotId].push(tid);
-            // Also add to manualAssignments if using specialAssignments (keeps both maps consistent)
             if (mapKey === 'specialAssignments') {
                 if (!d.manualAssignments) d.manualAssignments = {};
                 if (!d.manualAssignments[slotId]) d.manualAssignments[slotId] = [];
                 if (!d.manualAssignments[slotId].includes(tid)) d.manualAssignments[slotId].push(tid);
             }
-            // Record source
             if (!d.assignmentSources) d.assignmentSources = {};
             if (!d.assignmentSources[slotId]) d.assignmentSources[slotId] = {};
             d.assignmentSources[slotId][String(tid)] = 'manual';
@@ -11736,4 +11748,3 @@
     </script>
 </body>
 </html>
-
