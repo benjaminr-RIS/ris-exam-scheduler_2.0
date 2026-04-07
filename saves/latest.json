@@ -1652,8 +1652,7 @@
       ],
       "assignments": {
         "cal-1-0-6": [
-          22,
-          16
+          22
         ],
         "cal-1-1-2": [
           10,
@@ -2094,8 +2093,7 @@
           39
         ],
         "cal-1-0-6": [
-          22,
-          16
+          22
         ],
         "cal-1-6-2": [
           23,
@@ -2142,7 +2140,6 @@
         },
         "cal-1-0-6": {
           "8": "self-claimed",
-          "16": "auto",
           "22": "manual"
         },
         "cal-1-1-6": {
@@ -10268,6 +10265,6 @@
     "adminPin": "2026RIS",
     "writeToken": "Z2l0aHViX3BhdF8xMUI3Q1hQSUEwczBLMXRSZk9sQVVjX1RHcXlVRlc1WGlrcWNKQkRyQk1pc0x3YjFIaTZKU0ZWN2IwcjFtUDRzWjM1TlVGNkZLTHJaNG92UVRV"
   },
-  "lastSavedAt": "1775567813304",
+  "lastSavedAt": "1775570217430",
   "lastAutoRunAt": "1775445024447"
 }
