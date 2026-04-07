@@ -844,7 +844,6 @@
         "cal-1-1-1": "MF",
         "cal-1-1-2": "MF",
         "cal-1-0-5": "MF",
-        "cal-1-0-6": "MF",
         "cal-1-1-6": "MF",
         "cal-1-1-7": "MF",
         "cal-1-2-1": "MF",
@@ -1690,7 +1689,6 @@
           6
         ],
         "cal-1-6-2": [
-          23,
           30
         ],
         "cal-1-6-6": [
@@ -2097,6 +2095,10 @@
         ],
         "cal-1-12-5": [
           39
+        ],
+        "cal-1-0-6": [
+          22,
+          16
         ]
       },
       "assignmentSources": {
@@ -2195,7 +2197,6 @@
           "25": "manual"
         },
         "cal-1-6-2": {
-          "23": "manual",
           "30": "auto"
         },
         "cal-1-6-3": {
@@ -4932,18 +4933,6 @@
         "cal-4-3-3": [
           21
         ],
-        "cal-4-0-4": [
-          31,
-          33
-        ],
-        "cal-4-0-5": [
-          31,
-          33
-        ],
-        "cal-4-0-6": [
-          31,
-          33
-        ],
         "cal-4-3-2": [
           9
         ],
@@ -5022,41 +5011,6 @@
         ]
       },
       "assignmentSources": {
-        "cal-4-0-0": {
-          "8": "self-claimed",
-          "23": "manual",
-          "31": "manual"
-        },
-        "cal-4-0-1": {
-          "23": "manual",
-          "31": "manual"
-        },
-        "cal-4-0-2": {
-          "23": "manual",
-          "31": "manual"
-        },
-        "cal-4-0-3": {
-          "23": "manual",
-          "31": "manual"
-        },
-        "cal-4-0-4": {
-          "11": "manual",
-          "23": "manual",
-          "31": "manual",
-          "33": "manual"
-        },
-        "cal-4-0-5": {
-          "11": "manual",
-          "23": "manual",
-          "31": "manual",
-          "33": "manual"
-        },
-        "cal-4-0-6": {
-          "11": "manual",
-          "23": "manual",
-          "31": "manual",
-          "33": "manual"
-        },
         "cal-4-1-1": {
           "18": "auto",
           "20": "auto",
@@ -5208,10 +5162,6 @@
         "cal-4-12-1": {
           "34": "auto",
           "36": "auto"
-        },
-        "cal-4-0-9": {
-          "18": "auto",
-          "35": "auto"
         },
         "cal-4-1-9": {
           "24": "auto",
@@ -6324,10 +6274,6 @@
         ]
       },
       "manualAssignments": {
-        "cal-5-0-4": [],
-        "cal-5-0-5": [],
-        "cal-5-0-6": [],
-        "cal-5-0-7": [],
         "cal-5-1-3": [
           20,
           39
@@ -6434,22 +6380,6 @@
         ]
       },
       "assignmentSources": {
-        "cal-5-0-4": {
-          "11": "manual",
-          "31": "manual",
-          "33": "manual"
-        },
-        "cal-5-0-5": {
-          "11": "manual",
-          "31": "manual",
-          "33": "manual"
-        },
-        "cal-5-0-6": {
-          "11": "manual",
-          "31": "manual",
-          "33": "manual"
-        },
-        "cal-5-0-7": {},
         "cal-5-1-3": {
           "9": "manual",
           "20": "auto"
@@ -10333,6 +10263,6 @@
     "adminPin": "2026RIS",
     "writeToken": "Z2l0aHViX3BhdF8xMUI3Q1hQSUEwczBLMXRSZk9sQVVjX1RHcXlVRlc1WGlrcWNKQkRyQk1pc0x3YjFIaTZKU0ZWN2IwcjFtUDRzWjM1TlVGNkZLTHJaNG92UVRV"
   },
-  "lastSavedAt": "1775476246800",
+  "lastSavedAt": "1775525823220",
   "lastAutoRunAt": "1775445024447"
 }
