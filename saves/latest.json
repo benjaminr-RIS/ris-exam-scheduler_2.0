@@ -1675,7 +1675,6 @@
           25
         ],
         "cal-1-3-6": [
-          6,
           23
         ],
         "cal-1-5-2": [
@@ -1819,7 +1818,6 @@
       },
       "specialAssignments": {
         "cal-1-1-9": [
-          6,
           34
         ],
         "cal-1-2-9": [
@@ -2001,7 +1999,6 @@
       },
       "manualAssignments": {
         "cal-1-1-9": [
-          6,
           34
         ],
         "cal-1-2-9": [
@@ -2101,7 +2098,6 @@
           4
         ],
         "cal-1-3-6": [
-          6,
           23
         ]
       },
@@ -3715,9 +3711,7 @@
           11,
           26
         ],
-        "cal-3-6-2": [
-          6
-        ],
+        "cal-3-6-2": [],
         "cal-3-11-6": [
           6
         ]
@@ -3804,9 +3798,7 @@
           "37": "auto"
         },
         "cal-3-11-2": {},
-        "cal-3-6-2": {
-          "6": "manual"
-        },
+        "cal-3-6-2": {},
         "cal-3-0-6": {
           "20": "auto"
         },
@@ -10234,6 +10226,6 @@
     "adminPin": "2026RIS",
     "writeToken": "Z2l0aHViX3BhdF8xMUI3Q1hQSUEwczBLMXRSZk9sQVVjX1RHcXlVRlc1WGlrcWNKQkRyQk1pc0x3YjFIaTZKU0ZWN2IwcjFtUDRzWjM1TlVGNkZLTHJaNG92UVRV"
   },
-  "lastSavedAt": "1775572578005",
+  "lastSavedAt": "1775574031496",
   "lastAutoRunAt": "1775445024447"
 }
