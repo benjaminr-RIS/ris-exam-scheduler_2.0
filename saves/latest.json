@@ -3706,9 +3706,7 @@
         "cal-3-3-7": [
           39
         ],
-        "cal-3-12-4": [
-          4
-        ],
+        "cal-3-12-4": [],
         "cal-3-9-1": [
           13,
           6
@@ -3818,9 +3816,7 @@
         "cal-3-11-4": {
           "33": "auto"
         },
-        "cal-3-12-4": {
-          "4": "manual"
-        },
+        "cal-3-12-4": {},
         "cal-3-2-6": {},
         "cal-3-3-2": {},
         "cal-3-3-3": {},
@@ -10234,6 +10230,6 @@
     "adminPin": "2026RIS",
     "writeToken": "Z2l0aHViX3BhdF8xMUI3Q1hQSUEwczBLMXRSZk9sQVVjX1RHcXlVRlc1WGlrcWNKQkRyQk1pc0x3YjFIaTZKU0ZWN2IwcjFtUDRzWjM1TlVGNkZLTHJaNG92UVRV"
   },
-  "lastSavedAt": "1775620683037",
+  "lastSavedAt": "1775620820890",
   "lastAutoRunAt": "1775445024447"
 }
