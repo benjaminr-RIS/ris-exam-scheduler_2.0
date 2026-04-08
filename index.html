@@ -2466,10 +2466,14 @@
                 if (!d) return;
                 const pIdx = parseInt(parseSlotId(sid).periodIdx);
                 const isSpecialSlot = [3,5,7,8,9,10].includes(pIdx);
-                const assignedArr = isSpecialSlot
+                // Check all three maps and deduplicate — manualAssignments can be set
+                // independently for special periods (lunch, flex, after school) via admin assign.
+                const regArr  = isSpecialSlot
                     ? (d.specialAssignments[sid] || [])
                     : (d.assignments[sid] || []);
-                if (!assignedArr.includes(teacherId)) return;
+                const manArr  = d.manualAssignments ? (d.manualAssignments[sid] || []) : [];
+                const allIds  = new Set([...regArr, ...manArr]);
+                if (!allIds.has(teacherId)) return;
                 const raw = getCycleBlockForSlot(parseSlotId(sid).dateIdx, pIdx, et);
                 const merged = getMergeBlockLabel(et, sid, raw);
                 (merged || raw || '').split('+').forEach(p => { if (p) assignedBlocks.add(p); });
@@ -2615,9 +2619,9 @@
                     const needed = d.slotProctorCount[slotId] || 2;
                     const pIdx = parseInt(slotId.split('-').pop());
                     const isSpecial = [3,5,7,8,9,10].includes(pIdx);
-                    const assigned = isSpecial
-                        ? (d.specialAssignments[slotId] || []).filter(Boolean).length
-                        : (d.assignments[slotId] || []).filter(Boolean).length;
+                    const _reg  = isSpecial ? (d.specialAssignments[slotId] || []) : (d.assignments[slotId] || []);
+                    const _man  = d.manualAssignments ? (d.manualAssignments[slotId] || []) : [];
+                    const assigned = new Set([..._reg, ..._man].filter(Boolean)).size;
                     const guests = (d.slotGuestProctors?.[slotId] || []).length;
                     const filled = Math.min(assigned + guests, needed);
 
@@ -6186,9 +6190,9 @@
                     }
 
                     const isSpecialPeriod = [3, 5, 7, 8, 9, 10].includes(pIdx);
-                    const currentAssignments = isSpecialPeriod
-                        ? (data.specialAssignments[slotId] || [])
-                        : (data.assignments[slotId] || []);
+                    const _curReg = isSpecialPeriod ? (data.specialAssignments[slotId] || []) : (data.assignments[slotId] || []);
+                    const _curMan = data.manualAssignments ? (data.manualAssignments[slotId] || []) : [];
+                    const currentAssignments = [...new Set([..._curReg, ..._curMan])];
                     const proctorCount = data.slotProctorCount[slotId] || 2;
                     if (proctorCount - currentAssignments.length <= 0) return;
 
@@ -6312,7 +6316,9 @@
                             if (!isCommitted(commits, lb, _sd)) return false;
                         }
                         const pc = d.slotProctorCount[sid] || 2;
-                        const cur = isSpecAP ? (d.specialAssignments[sid]||[]) : (d.assignments[sid]||[]);
+                        const _igReg = isSpecAP ? (d.specialAssignments[sid]||[]) : (d.assignments[sid]||[]);
+                        const _igMan = d.manualAssignments ? (d.manualAssignments[sid]||[]) : [];
+                        const cur = [...new Set([..._igReg, ..._igMan])];
                         return cur.length < pc && !cur.includes(teacher.id) &&
                                getTotalAssignedHours(teacher.id) < teacher.required;
                     });
@@ -6351,9 +6357,9 @@
                         mergedLookupBlock, genderReq, proctorCount, isIbCal, dateIdx } = slot;
                 const data = examData[examType];
 
-                const currentAssignments = isSpecialPeriod
-                    ? (data.specialAssignments[slotId] || [])
-                    : (data.assignments[slotId] || []);
+                const _curReg2 = isSpecialPeriod ? (data.specialAssignments[slotId] || []) : (data.assignments[slotId] || []);
+                const _curMan2 = data.manualAssignments ? (data.manualAssignments[slotId] || []) : [];
+                const currentAssignments = [...new Set([..._curReg2, ..._curMan2])];
                 const needed = proctorCount - currentAssignments.length;
                 if (needed <= 0) continue;
 
@@ -6498,9 +6504,9 @@
                     if (_swCycleBlock === '?' && !settings.noschool) return;
 
                     const isSpecialPeriod = [3, 5, 7, 8, 9, 10].includes(pIdx);
-                    const currentAssignments = isSpecialPeriod
-                        ? (data.specialAssignments[slotId] || [])
-                        : (data.assignments[slotId] || []);
+                    const _swReg = isSpecialPeriod ? (data.specialAssignments[slotId] || []) : (data.assignments[slotId] || []);
+                    const _swMan = data.manualAssignments ? (data.manualAssignments[slotId] || []) : [];
+                    const currentAssignments = [...new Set([..._swReg, ..._swMan])];
                     const proctorCount = data.slotProctorCount[slotId] || 2;
                     const needed = proctorCount - currentAssignments.length;
                     if (needed <= 0) return;
@@ -6636,7 +6642,9 @@
                     if (_rCycleBlock === '?' && !settings.noschool) return;
                     const pc = data.slotProctorCount[sid] || 2;
                     const isSpec = [3,5,7,8].includes(pIdx);
-                    const a = (isSpec ? (data.specialAssignments[sid]||[]) : (data.assignments[sid]||[])).length;
+                    const _rpReg = isSpec ? (data.specialAssignments[sid]||[]) : (data.assignments[sid]||[]);
+                    const _rpMan = data.manualAssignments ? (data.manualAssignments[sid]||[]) : [];
+                    const a = new Set([..._rpReg, ..._rpMan]).size;
                     if (a >= pc) filled++;
                     else if (a > 0) partial++;
                     else empty++;
@@ -7379,9 +7387,9 @@
                     const period = parseInt(periodIdx);
                     const isSpecial = period === 3 || period === 5 || period === 7 || period === 8 || period === 9 || period === 10;
                     
-                    const assigned = isSpecial ?
-                        (data.specialAssignments[slotId] || []).filter(t => t).length :
-                        (data.assignments[slotId] || []).length;
+                    const assigned = isSpecial
+                        ? new Set([...(data.specialAssignments[slotId] || []), ...(data.manualAssignments?.[slotId] || [])].filter(t => t)).size
+                        : new Set([...(data.assignments[slotId] || []), ...(data.manualAssignments?.[slotId] || [])]).size;
                     
                     const statusColor = assigned === 0 ? '#e74c3c' : assigned < proctorCount ? '#f39c12' : '#27ae60';
                     const statusIcon = assigned === 0 ? '<i class="fa-solid fa-circle-xmark" style="color:#e74c3c;"></i>' : assigned < proctorCount ? '<i class="fa-solid fa-circle-half-stroke" style="color:#f39c12;"></i>' : '<i class="fa-solid fa-circle-check" style="color:#27ae60;"></i>';
@@ -7811,7 +7819,11 @@
                     if (availFrom && date < availFrom) return;
 
                     const needed = data.slotProctorCount[slotId] || 2;
-                    const assigned = (data.assignments[slotId] || []).filter(x => x).length
+                    const pIdx_prev = parseInt(slotId.split('-').pop());
+                    const isSpecial_prev = [3,5,7,8,9,10].includes(pIdx_prev);
+                    const _prevReg = isSpecial_prev ? (data.specialAssignments?.[slotId] || []) : (data.assignments[slotId] || []);
+                    const _prevMan = data.manualAssignments ? (data.manualAssignments[slotId] || []) : [];
+                    const assigned = new Set([..._prevReg, ..._prevMan].filter(x => x)).size
                         + (data.slotGuestProctors ? (data.slotGuestProctors[slotId] || []).length : 0);
                     const spotsLeft = needed - assigned;
                     if (spotsLeft <= 0) return;
