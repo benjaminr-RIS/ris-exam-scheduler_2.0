@@ -4761,9 +4761,7 @@
           12,
           21
         ],
-        "cal-4-3-2": [
-          9
-        ],
+        "cal-4-3-2": [],
         "cal-4-5-0": [
           12,
           34
@@ -4868,7 +4866,8 @@
           34
         ],
         "cal-4-7-3": [
-          34
+          34,
+          9
         ],
         "cal-4-7-5": [],
         "cal-4-9-5": [],
@@ -4917,9 +4916,7 @@
         "cal-4-3-3": [
           21
         ],
-        "cal-4-3-2": [
-          9
-        ],
+        "cal-4-3-2": [],
         "cal-4-5-0": [
           12
         ],
@@ -4980,7 +4977,9 @@
           8
         ],
         "cal-4-9-2": [],
-        "cal-4-7-3": [],
+        "cal-4-7-3": [
+          9
+        ],
         "cal-4-2-5": [
           38,
           12
@@ -5016,7 +5015,6 @@
           "12": "manual"
         },
         "cal-4-3-2": {
-          "9": "manual",
           "37": "auto"
         },
         "cal-4-5-0": {
@@ -5047,6 +5045,7 @@
           "36": "auto"
         },
         "cal-4-7-3": {
+          "9": "manual",
           "21": "auto",
           "34": "auto"
         },
@@ -10220,6 +10219,6 @@
     "adminPin": "2026RIS",
     "writeToken": "Z2l0aHViX3BhdF8xMUI3Q1hQSUEwczBLMXRSZk9sQVVjX1RHcXlVRlc1WGlrcWNKQkRyQk1pc0x3YjFIaTZKU0ZWN2IwcjFtUDRzWjM1TlVGNkZLTHJaNG92UVRV"
   },
-  "lastSavedAt": "1775649033049",
+  "lastSavedAt": "1775649112947",
   "lastAutoRunAt": "1775445024447"
 }
