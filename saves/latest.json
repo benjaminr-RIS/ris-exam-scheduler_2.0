@@ -2094,9 +2094,7 @@
           23,
           30
         ],
-        "cal-1-15-2": [
-          4
-        ],
+        "cal-1-15-2": [],
         "cal-1-3-6": [
           23
         ],
@@ -2434,9 +2432,7 @@
         },
         "cal-1-14-3": {},
         "cal-1-15-1": {},
-        "cal-1-15-2": {
-          "4": "manual"
-        },
+        "cal-1-15-2": {},
         "cal-1-17-6": {}
       }
     },
@@ -10230,6 +10226,6 @@
     "adminPin": "2026RIS",
     "writeToken": "Z2l0aHViX3BhdF8xMUI3Q1hQSUEwczBLMXRSZk9sQVVjX1RHcXlVRlc1WGlrcWNKQkRyQk1pc0x3YjFIaTZKU0ZWN2IwcjFtUDRzWjM1TlVGNkZLTHJaNG92UVRV"
   },
-  "lastSavedAt": "1775620820890",
+  "lastSavedAt": "1775620921151",
   "lastAutoRunAt": "1775445024447"
 }
