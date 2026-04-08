@@ -2100,11 +2100,18 @@
                     const parts     = sid.split('-');
                     const dateIdx   = parseInt(parts[2]);
                     const periodIdx = parseInt(parts[3]);
-                    const blockId   = periodToId[periodIdx] || `p${periodIdx}`;
-                    const dateStr   = dateMap[dateIdx] || '';
-                    const blockLabel = mergeSet.has(sid)
-                        ? `${blockId}+${nextBellId(blockId)}`
-                        : blockId;
+
+                    // Use the actual runtime date from examData (correctly populated by initializeExamDates)
+                    // rather than a naive weekday counter which misses ? days and AP placeholders.
+                    const slotDateObj = cal.dates[dateIdx];
+                    const dateStr = slotDateObj
+                        ? `${String(slotDateObj.getDate()).padStart(2,'0')}/${String(slotDateObj.getMonth()+1).padStart(2,'0')}/${slotDateObj.getFullYear()}`
+                        : (dateMap[dateIdx] || '');
+
+                    // Use getCycleBlockForSlot + getMergeBlockLabel to match exactly what the
+                    // calendar grid and PDF display — not the raw bell row ID which doesn't rotate.
+                    const rawCycleBlock = getCycleBlockForSlot(dateIdx, periodIdx, meta.key) || '';
+                    const blockLabel    = getMergeBlockLabel(meta.key, sid, rawCycleBlock);
 
                     const t = (tags[sid] && typeof tags[sid] === 'object') ? tags[sid] : {};
 
@@ -11748,3 +11755,4 @@
     </script>
 </body>
 </html>
+
