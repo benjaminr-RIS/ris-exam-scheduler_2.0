@@ -8070,10 +8070,6 @@
     "11": {
       "B1": "2026-04-27T00:00:00.000Z",
       "D1": "2026-04-27T00:00:00.000Z",
-      "A2": "2026-04-27T00:00:00.000Z",
-      "B2": "2026-04-27T00:00:00.000Z",
-      "C2": "2026-04-27T00:00:00.000Z",
-      "D2": "2026-04-27T00:00:00.000Z",
       "B3": "2026-04-27T00:00:00.000Z",
       "A5": "2026-04-27T00:00:00.000Z",
       "C5": "2026-04-27T00:00:00.000Z"
@@ -10220,6 +10216,6 @@
     "adminPin": "2026RIS",
     "writeToken": "Z2l0aHViX3BhdF8xMUI3Q1hQSUEwczBLMXRSZk9sQVVjX1RHcXlVRlc1WGlrcWNKQkRyQk1pc0x3YjFIaTZKU0ZWN2IwcjFtUDRzWjM1TlVGNkZLTHJaNG92UVRV"
   },
-  "lastSavedAt": "1775787389974",
+  "lastSavedAt": "1775787586289",
   "lastAutoRunAt": "1775445024447"
 }
