@@ -4847,8 +4847,7 @@
           20
         ],
         "cal-4-7-2": [
-          18,
-          35
+          18
         ]
       },
       "specialAssignments": {
@@ -5170,8 +5169,7 @@
           "28": "auto"
         },
         "cal-4-7-2": {
-          "18": "auto",
-          "35": "auto"
+          "18": "auto"
         },
         "cal-4-7-9": {
           "15": "auto",
@@ -10216,6 +10214,6 @@
     "adminPin": "2026RIS",
     "writeToken": "Z2l0aHViX3BhdF8xMUI3Q1hQSUEwczBLMXRSZk9sQVVjX1RHcXlVRlc1WGlrcWNKQkRyQk1pc0x3YjFIaTZKU0ZWN2IwcjFtUDRzWjM1TlVGNkZLTHJaNG92UVRV"
   },
-  "lastSavedAt": "1775787586289",
+  "lastSavedAt": "1775787809187",
   "lastAutoRunAt": "1775445024447"
 }
