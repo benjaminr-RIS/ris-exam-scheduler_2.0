@@ -4877,14 +4877,15 @@
         "cal-4-12-5": [],
         "cal-4-12-7": [],
         "cal-4-2-5": [
-          38,
-          12
+          38
         ],
         "cal-4-3-5": [
           38
         ],
         "cal-4-6-5": [],
-        "cal-4-8-5": [],
+        "cal-4-8-5": [
+          12
+        ],
         "cal-4-1-9": [
           39,
           24
@@ -4984,8 +4985,7 @@
           9
         ],
         "cal-4-2-5": [
-          38,
-          12
+          38
         ],
         "cal-4-3-5": [
           38
@@ -5000,6 +5000,9 @@
         ],
         "cal-4-9-4": [
           31
+        ],
+        "cal-4-8-5": [
+          12
         ]
       },
       "assignmentSources": {
@@ -5123,7 +5126,9 @@
         "cal-4-2-5": {},
         "cal-4-3-5": {},
         "cal-4-6-5": {},
-        "cal-4-8-5": {},
+        "cal-4-8-5": {
+          "12": "manual"
+        },
         "cal-4-3-6": {
           "18": "auto",
           "28": "auto",
@@ -10222,6 +10227,6 @@
     "adminPin": "2026RIS",
     "writeToken": "Z2l0aHViX3BhdF8xMUI3Q1hQSUEwczBLMXRSZk9sQVVjX1RHcXlVRlc1WGlrcWNKQkRyQk1pc0x3YjFIaTZKU0ZWN2IwcjFtUDRzWjM1TlVGNkZLTHJaNG92UVRV"
   },
-  "lastSavedAt": "1775697443467",
+  "lastSavedAt": "1775787331291",
   "lastAutoRunAt": "1775445024447"
 }
