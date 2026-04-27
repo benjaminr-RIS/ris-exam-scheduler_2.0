@@ -6187,7 +6187,6 @@
       },
       "specialAssignments": {
         "cal-5-1-3": [
-          20,
           39
         ],
         "cal-5-4-5": [
@@ -6250,7 +6249,6 @@
       },
       "manualAssignments": {
         "cal-5-1-3": [
-          20,
           39
         ],
         "cal-5-3-0": [
@@ -6355,8 +6353,7 @@
       },
       "assignmentSources": {
         "cal-5-1-3": {
-          "9": "manual",
-          "20": "auto"
+          "9": "manual"
         },
         "cal-5-2-4": {
           "13": "manual"
@@ -10214,6 +10211,6 @@
     "adminPin": "2026RIS",
     "writeToken": "Z2l0aHViX3BhdF8xMUI3Q1hQSUEwczBLMXRSZk9sQVVjX1RHcXlVRlc1WGlrcWNKQkRyQk1pc0x3YjFIaTZKU0ZWN2IwcjFtUDRzWjM1TlVGNkZLTHJaNG92UVRV"
   },
-  "lastSavedAt": "1775788267008",
+  "lastSavedAt": "1777275048643",
   "lastAutoRunAt": "1775445024447"
 }
